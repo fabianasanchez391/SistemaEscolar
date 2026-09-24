@@ -1,0 +1,200 @@
+﻿@{
+    // Usa el mismo _Layout.cshtml del panel (sidebar + topbar).
+    ViewData["Title"] = "Editar Perfil";
+    ViewData["Page"] = "mi-perfil"; // Ajusta si tu sidebar usa otro data-page para esta sección.
+
+    // ===== DATOS DE EJEMPLO =====
+    // Solo sirven para ver cómo se mostrarán los hijos registrados en la escuela.
+    // TODO backend: reemplazar por los hijos reales vinculados al usuario.
+    var hijos = new[] {
+        new { Nombre = "Sofía Arias Mora",  Cedula = "1-2345-6789", Grado = "3.º grado",  Seccion = "A" },
+        new { Nombre = "Mateo Arias Mora",  Cedula = "1-3456-7890", Grado = "Preescolar", Seccion = "B" }
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/editarperfil.css" asp-append-version="true" />
+}
+
+<form class="ep-page" method="post" id="editarPerfilForm" novalidate>
+
+    <!-- ===== Encabezado del perfil ===== -->
+    <header class="ep-hero">
+        <div class="ep-hero__avatar">
+            <div class="ep-avatar__preview" id="avatarPreview">
+                <span id="avatarInitials">FA</span>
+                <img id="avatarImg" src="" alt="" hidden />
+            </div>
+            <label class="ep-avatar__edit" for="avatarInput" aria-label="Cambiar foto de perfil">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V6a2 2 0 0 1 2-2h9l5 5v10.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" /><path d="M14 4v5h5" /></svg>
+            </label>
+            <input type="file" id="avatarInput" name="Avatar" accept="image/png, image/jpeg" hidden />
+        </div>
+
+        <div class="ep-hero__info">
+            <h1>Fabiana Arias</h1>
+            <div class="ep-hero__meta">
+                <span class="ep-role-pill">Docente</span>
+                <span class="ep-hero__email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></svg>
+                    fabiana.arias@escuelaelvalle.edu
+                </span>
+            </div>
+            <div class="ep-hero__photo">
+                <button type="button" class="ep-avatar__remove" id="avatarRemoveBtn">Quitar foto</button>
+                <span class="ep-avatar__hint">JPG o PNG, máximo 2&nbsp;MB</span>
+            </div>
+        </div>
+
+        <div class="ep-hero__stats">
+            <div class="ep-stat"><strong>@hijos.Length</strong><span>Hijos vinculados</span></div>
+            <div class="ep-stat"><strong>@hijos.Select(h => h.Grado).Distinct().Count()</strong><span>Grados</span></div>
+        </div>
+    </header>
+
+    <div class="ep-grid">
+
+        <!-- ===== Columna principal: datos y seguridad ===== -->
+        <div class="ep-col">
+
+            <section class="ep-card">
+                <div class="ep-card__head">
+                    <span class="ep-card__icon ep-card__icon--blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
+                    </span>
+                    <div>
+                        <h2>Información personal</h2>
+                        <p>Estos datos son visibles para el personal administrativo.</p>
+                    </div>
+                </div>
+
+                <div class="ep-fields">
+                    <div class="ep-field">
+                        <label for="Nombre">Nombre</label>
+                        <input type="text" id="Nombre" name="Nombre" value="Fabiana" required />
+                    </div>
+                    <div class="ep-field">
+                        <label for="Apellido">Apellido</label>
+                        <input type="text" id="Apellido" name="Apellido" value="Arias" required />
+                    </div>
+                    <div class="ep-field">
+                        <label for="Correo">Correo electrónico</label>
+                        <input type="email" id="Correo" name="Correo" value="fabiana.arias@escuelaelvalle.edu" required />
+                    </div>
+                    <div class="ep-field">
+                        <label for="Telefono">Teléfono</label>
+                        <input type="tel" id="Telefono" name="Telefono" placeholder="8888-8888" />
+                    </div>
+                    <div class="ep-field ep-field--full">
+                        <label for="Puesto">Puesto</label>
+                        <input type="text" id="Puesto" name="Puesto" value="Docente" disabled />
+                        <span class="ep-field__note">El puesto lo administra la institución y no puede editarse aquí.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="ep-card">
+                <div class="ep-card__head">
+                    <span class="ep-card__icon ep-card__icon--navy">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 5 3 8.5 7 10 4-1.5 7-5 7-10V6l-7-3Z" /><path d="m9.5 12 1.8 1.8L14.5 10" /></svg>
+                    </span>
+                    <div>
+                        <h2>Seguridad</h2>
+                        <p>Déjalo en blanco si no deseas cambiar tu contraseña actual.</p>
+                    </div>
+                </div>
+
+                <div class="ep-fields ep-fields--pass">
+                    <div class="ep-field">
+                        <label for="PasswordActual">Contraseña actual</label>
+                        <div class="ep-password">
+                            <input type="password" id="PasswordActual" name="PasswordActual" autocomplete="current-password" />
+                            <button type="button" class="ep-password__toggle" data-target="PasswordActual" aria-label="Mostrar contraseña">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ep-field">
+                        <label for="PasswordNueva">Nueva contraseña</label>
+                        <div class="ep-password">
+                            <input type="password" id="PasswordNueva" name="PasswordNueva" autocomplete="new-password" minlength="8" />
+                            <button type="button" class="ep-password__toggle" data-target="PasswordNueva" aria-label="Mostrar contraseña">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ep-field">
+                        <label for="PasswordConfirmar">Confirmar contraseña</label>
+                        <div class="ep-password">
+                            <input type="password" id="PasswordConfirmar" name="PasswordConfirmar" autocomplete="new-password" minlength="8" />
+                            <button type="button" class="ep-password__toggle" data-target="PasswordConfirmar" aria-label="Mostrar contraseña">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ep-strength" id="epStrength" hidden>
+                    <div class="ep-strength__track"><span id="epStrengthFill"></span></div>
+                    <span class="ep-strength__label" id="epStrengthLabel"></span>
+                </div>
+
+                <p class="ep-field__error" id="passwordError" hidden>Las contraseñas no coinciden.</p>
+            </section>
+        </div>
+
+        <!-- ===== Columna lateral: hijos registrados en la escuela ===== -->
+        <aside class="ep-col">
+            <section class="ep-card ep-kids">
+                <div class="ep-card__head">
+                    <span class="ep-card__icon ep-card__icon--amber">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5c2.5-1.3 5.5-1.3 8 0v14c-2.5-1.3-5.5-1.3-8 0Z" /><path d="M20 5c-2.5-1.3-5.5-1.3-8 0v14c2.5-1.3 5.5-1.3 8 0Z" /></svg>
+                    </span>
+                    <div>
+                        <h2>Hijos en la escuela</h2>
+                        <p>Estudiantes vinculados a tu cuenta.</p>
+                    </div>
+                    <span class="ep-count">@hijos.Length</span>
+                </div>
+
+                @if (hijos.Length == 0)
+                {
+                    <p class="ep-kids__empty">Aún no tienes hijos vinculados.</p>
+                }
+                else
+                {
+                    <ul class="ep-kids__list">
+                        @for (var i = 0; i < hijos.Length; i++)
+                        {
+                            var h = hijos[i];
+                            <li class="ep-kid">
+                                <span class="ep-kid__avatar ep-kid__avatar--@(i % 4)">@string.Concat(h.Nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => p[0]))</span>
+                                <div class="ep-kid__info">
+                                    <strong>@h.Nombre</strong>
+                                    <span>Cédula @h.Cedula</span>
+                                </div>
+                                <div class="ep-kid__tags">
+                                    <span class="ep-chip">@h.Grado</span>
+                                    <span class="ep-chip ep-chip--soft">Sección @h.Seccion</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+            </section>
+        </aside>
+    </div>
+
+    <!-- ===== Barra de guardado (aparece al detectar cambios) ===== -->
+    <div class="ep-savebar" id="epSaveBar">
+        <span class="ep-savebar__text">Tienes cambios sin guardar</span>
+        <div class="ep-savebar__actions">
+            <button type="button" class="ep-btn ep-btn--ghost" id="epCancelBtn">Descartar cambios</button>
+            <button type="submit" class="ep-btn ep-btn--primary" id="epSaveBtn">Guardar cambios</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/js/editarperfil.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,84 @@
+is_global = true
+build_property.TargetFramework = net10.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Sistema_Escolar
+build_property.RootNamespace = Sistema_Escolar
+build_property.ProjectDir = C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 10.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 10.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/ControlAsistencia/Asistencia.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJvbEFzaXN0ZW5jaWFcQXNpc3RlbmNpYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/EdicionPerfiles/EditarPerfil.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRWRpY2lvblBlcmZpbGVzXEVkaXRhclBlcmZpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/GestionAcademica/Calificaciones.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2VzdGlvbkFjYWRlbWljYVxDYWxpZmljYWNpb25lcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/GestionPerfiles/Perfiles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2VzdGlvblBlcmZpbGVzXFBlcmZpbGVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/GestionPersonal/Personal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2VzdGlvblBlcnNvbmFsXFBlcnNvbmFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/Home/Acceso.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Nlc28uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/RegistroEstudiantes/Estudiantes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9Fc3R1ZGlhbnRlc1xFc3R1ZGlhbnRlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/SitioWeb/Sitio.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2l0aW9XZWJcU2l0aW8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/arias/OneDrive/Escritorio/Sistema Escolar/Sistema_Escolar/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-bgtshkgm0e

@@ -1,0 +1,439 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Inicio";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Escuela El Valle — Formando a los líderes del mañana</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/sitio.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- =================== NAVBAR =================== -->
+    <header class="navbar" id="navbar">
+        <div class="navbar__inner">
+            <a href="#inicio" class="navbar__brand">
+                <span class="navbar__brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="M12 3c-2 2.4-1 4-1 4s2-1 3 .6c1.4 2.2-.4 4.2-2 4.4" /><path d="M12 7c3.5 0 6.5 3 6.5 7.5S16 21 12 21s-6.5-3-6.5-6.5S8.5 7 12 7Z" /></svg>
+                </span>
+                <span>Escuela <strong>El Valle</strong></span>
+            </a>
+
+            <nav class="navbar__links" id="navbarLinks">
+                <a href="#inicio">Inicio</a>
+                <a href="#nosotros">Nosotros</a>
+                <a href="#programas">Programas</a>
+                <a href="#instalaciones">Instalaciones</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+
+            <div class="navbar__actions">
+                
+                <a asp-controller="Home" asp-action="Acceso" class="btn btn--login">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><path d="M10 17l5-5-5-5" /><path d="M15 12H3" /></svg>
+                    <span>Iniciar Sesión</span>
+                </a>
+                <button class="navbar__burger" id="navbarBurger" aria-label="Abrir menú" type="button">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- =================== HERO =================== -->
+    <section class="hero" id="inicio">
+        <div class="hero__inner">
+            <div class="hero__text">
+                <span class="hero__tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z" /><path d="M2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+                    Educación con propósito desde 2007
+                </span>
+                <h1>Formando a los líderes del mañana</h1>
+                <p>Somos una escuela pequeña donde cada estudiante tiene nombre y apellido para todo el personal. Acompañamos de cerca a cada niño, desde Preescolar hasta Sexto grado.</p>
+                <div class="hero__cta">
+                    <a href="#contacto" class="btn btn--primary">
+                        Solicitar información
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                    </a>
+              
+                    <a asp-controller="Home" asp-action="Acceso" class="btn btn--outline">
+                        Iniciar Sesión
+                    </a>
+                </div>
+
+                <div class="hero__trust">
+                    <div class="hero__avatars">
+                        <span class="hero__avatar hero__avatar--1">MJ</span>
+                        <span class="hero__avatar hero__avatar--2">AF</span>
+                        <span class="hero__avatar hero__avatar--3">DR</span>
+                        <span class="hero__avatar hero__avatar--4">+</span>
+                    </div>
+                    <p>Más de 90 familias confían en nosotros</p>
+                </div>
+            </div>
+
+            <div class="hero__art">
+                <svg class="hero__scene" viewBox="0 0 420 360" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="330" cy="70" r="42" fill="#f2ac33" />
+                    <path d="M120 250 C 80 190 100 120 190 110 C 250 102 300 140 300 190 C 300 230 260 250 230 250 Z" fill="#2f7de0" opacity="0.9" />
+                    <rect x="80" y="200" width="240" height="120" rx="14" fill="#ffffff" stroke="#d3e3f2" stroke-width="2" />
+                    <path d="M64 200 L200 120 L336 200 Z" fill="#e85d42" />
+                    <rect x="180" y="248" width="56" height="72" rx="6" fill="#123a66" />
+                    <circle cx="222" cy="284" r="3.4" fill="#f2ac33" />
+                    <rect x="104" y="230" width="42" height="36" rx="6" fill="#f2ac33" opacity="0.9" />
+                    <rect x="256" y="230" width="42" height="36" rx="6" fill="#2f7de0" opacity="0.85" />
+                    <rect x="192" y="104" width="16" height="26" fill="#123a66" />
+                    <rect x="188" y="94" width="24" height="12" rx="2" fill="#e85d42" />
+                    <path d="M40 320 Q210 300 380 320" stroke="#d3e3f2" stroke-width="10" fill="none" stroke-linecap="round" />
+                </svg>
+
+                <div class="hero__nota hero__nota--1">
+                    <span class="hero__nota-icono hero__nota-icono--green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="m5 13 4 4L19 7" /></svg>
+                    </span>
+                    <div>
+                        <strong>96%</strong>
+                        <span>Aprobación anual</span>
+                    </div>
+                </div>
+                <div class="hero__nota hero__nota--2">
+                    <span class="hero__nota-icono hero__nota-icono--coral">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><circle cx="9" cy="8" r="3.2" /><path d="M2 20c.8-3.6 3.4-5.6 7-5.6s6.2 2 7 5.6" /><circle cx="17.5" cy="8.5" r="2.4" /><path d="M15 14.4c2.6.4 4.3 2.1 5 5.6" /></svg>
+                    </span>
+                    <div>
+                        <strong>8 : 1</strong>
+                        <span>Estudiantes por docente</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none"><path d="M0,20 C 240,50 480,0 720,16 C 960,32 1200,4 1440,22 L1440,50 L0,50 Z" fill="#123a66" /></svg>
+        </div>
+    </section>
+
+    <!-- =================== FRANJA DE ESTADÍSTICAS (pizarra) =================== -->
+    <section class="stats-strip">
+        <div class="stats-strip__inner">
+            <div class="stats-strip__item">
+                <strong data-counter="18">0</strong>
+                <span>Años de trayectoria</span>
+            </div>
+            <div class="stats-strip__item">
+                <strong data-counter="95">0</strong><span class="stats-strip__plus">+</span>
+                <span>Estudiantes activos</span>
+            </div>
+            <div class="stats-strip__item">
+                <strong data-counter="12">0</strong>
+                <span>Docentes certificados</span>
+            </div>
+            <div class="stats-strip__item">
+                <strong data-counter="6">0</strong>
+                <span>Secciones</span>
+            </div>
+        </div>
+        <div class="wave" aria-hidden="true" style="transform: rotate(180deg);">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none"><path d="M0,20 C 240,50 480,0 720,16 C 960,32 1200,4 1440,22 L1440,50 L0,50 Z" fill="#f4f9fd" /></svg>
+        </div>
+    </section>
+
+    <!-- =================== NOSOTROS =================== -->
+    <section class="section" id="nosotros">
+        <div class="section__inner section__inner--split">
+            <div class="split__art">
+                <div class="split__img">
+                    <svg viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="300" height="260" rx="22" fill="#e6f0fa" />
+                        <rect x="40" y="46" width="140" height="100" rx="12" fill="#2f7de0" />
+                        <rect x="190" y="46" width="90" height="46" rx="10" fill="#e85d42" />
+                        <rect x="190" y="102" width="90" height="44" rx="10" fill="#f2ac33" />
+                        <rect x="40" y="160" width="240" height="90" rx="12" fill="#ffffff" stroke="#d3e3f2" stroke-width="2" />
+                        <rect x="58" y="178" width="120" height="9" rx="4.5" fill="#e6f0fa" />
+                        <rect x="58" y="198" width="180" height="9" rx="4.5" fill="#e6f0fa" />
+                        <rect x="58" y="218" width="90" height="9" rx="4.5" fill="#e6f0fa" />
+                    </svg>
+                </div>
+                <div class="split__badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="M12 2 2 7l10 5 10-5-10-5Z" /><path d="M2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+                    <div><strong>Desde 2007</strong><span>Formando comunidad</span></div>
+                </div>
+            </div>
+
+            <div class="split__text">
+                <h2 class="titulo-trazo">
+                    Un lugar donde cada niño encuentra su mejor versión
+                    <svg class="trazo" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M2 9 C 60 2 120 13 180 6 C 220 1 260 10 298 5" stroke="#f2ac33" stroke-width="6" fill="none" stroke-linecap="round" /></svg>
+                </h2>
+                <p>Somos una escuela pequeña, de solo seis secciones, donde el trato cercano no se pierde entre pasillos llenos de gente. Combinamos un currículo académico sólido con formación en valores, arte y deporte, en un ambiente familiar donde cada docente conoce a cada estudiante por su nombre.</p>
+
+                <ul class="check-list">
+                    <li><span class="check-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m5 13 4 4L19 7" /></svg></span>Docentes certificados y en constante capacitación</li>
+                    <li><span class="check-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m5 13 4 4L19 7" /></svg></span>Grupos de máximo 15 estudiantes por sección</li>
+                    <li><span class="check-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m5 13 4 4L19 7" /></svg></span>Seguimiento continuo de calificaciones y asistencia</li>
+                    <li><span class="check-list__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m5 13 4 4L19 7" /></svg></span>Instalaciones seguras y espacios verdes</li>
+                </ul>
+
+                <a href="#contacto" class="link-arrow">
+                    Conoce más sobre nuestra propuesta educativa
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== PROGRAMAS ACADÉMICOS =================== -->
+    <section class="section section--alt" id="programas">
+        <div class="section__inner">
+            <div class="section__head">
+                <h2 class="titulo-trazo">
+                    Un camino de aprendizaje para cada etapa
+                    <svg class="trazo" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M2 9 C 60 2 120 13 180 6 C 220 1 260 10 298 5" stroke="#e85d42" stroke-width="6" fill="none" stroke-linecap="round" /></svg>
+                </h2>
+                <p>Acompañamos a los estudiantes desde sus primeros pasos hasta el final de la primaria, con un plan de estudios pensado para cada edad.</p>
+            </div>
+
+            <div class="programs-grid">
+                <div class="program-card">
+                    <div class="program-card__icon program-card__icon--yellow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#15304d" stroke-width="1.8"><path d="M12 3v3M8 3v3M16 3v3" /><rect x="4" y="8" width="16" height="13" rx="3" /><path d="M9 14h.01M15 14h.01M9.5 17.5c.8.7 4.2.7 5 0" /></svg>
+                    </div>
+                    <h3>Preescolar</h3>
+                    <p>Materno infantil y Transición. Estimulación temprana, juego y primeros hábitos de aprendizaje.</p>
+                    <span class="program-card__tag">3 a 5 años</span>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-card__icon program-card__icon--green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></svg>
+                    </div>
+                    <h3>Primaria (1° a 3°)</h3>
+                    <p>Bases sólidas en lectoescritura, matemáticas, ciencias y valores, con acompañamiento cercano.</p>
+                    <span class="program-card__tag">6 a 8 años</span>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-card__icon program-card__icon--coral">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>
+                    </div>
+                    <h3>Primaria (4° a 6°)</h3>
+                    <p>Profundización académica, pensamiento crítico y preparación para la secundaria.</p>
+                    <span class="program-card__tag">9 a 11 años</span>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-card__icon program-card__icon--ink">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M13 2 3 14h7l-1 8 10-12h-7z" /></svg>
+                    </div>
+                    <h3>Actividades extracurriculares</h3>
+                    <p>Arte, música, deporte, robótica e inglés conversacional para complementar la formación académica.</p>
+                    <span class="program-card__tag">Todas las edades</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== ¿POR QUÉ ELEGIRNOS? =================== -->
+    <section class="section" id="por-que">
+        <div class="section__inner">
+            <div class="section__head">
+                <h2 class="titulo-trazo">
+                    Educación de calidad, con calidez humana
+                    <svg class="trazo" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M2 9 C 60 2 120 13 180 6 C 220 1 260 10 298 5" stroke="#2f7de0" stroke-width="6" fill="none" stroke-linecap="round" /></svg>
+                </h2>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 2 2 7l10 5 10-5-10-5Z" /><path d="M2 17l10 5 10-5M2 12l10 5 10-5" /></svg></div>
+                    <div><h3>Docentes certificados</h3><p>Equipo docente titulado y en formación continua, comprometido con cada estudiante.</p></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg></div>
+                    <div><h3>Seguimiento personalizado</h3><p>Reportes de calificaciones y asistencia disponibles en línea para cada familia.</p></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11Z" /></svg></div>
+                    <div><h3>Espacios seguros</h3><p>Infraestructura vigilada y protocolos claros de seguridad dentro y fuera del aula.</p></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M13 2 3 14h7l-1 8 10-12h-7z" /></svg></div>
+                    <div><h3>Formación integral</h3><p>Arte, deporte, valores y tecnología, en equilibrio con la formación académica.</p></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M2 20c.8-3.6 3.4-5.6 7-5.6s6.2 2 7 5.6" /><circle cx="17.5" cy="8.5" r="2.4" /><path d="M15 14.4c2.6.4 4.3 2.1 5 5.6" /></svg></div>
+                    <div><h3>Grupos de 15 estudiantes</h3><p>Secciones pequeñas con acompañamiento cercano para respetar el ritmo de cada estudiante.</p></div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></svg></div>
+                    <div><h3>Plataforma en línea</h3><p>Acceso al sistema escolar para consultar notas, asistencia y comunicados en cualquier momento.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== INSTALACIONES =================== -->
+    <section class="section section--alt" id="instalaciones">
+        <div class="section__inner">
+            <div class="section__head">
+                <h2 class="titulo-trazo">
+                    Espacios pensados para aprender y crecer
+                    <svg class="trazo" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M2 9 C 60 2 120 13 180 6 C 220 1 260 10 298 5" stroke="#f2ac33" stroke-width="6" fill="none" stroke-linecap="round" /></svg>
+                </h2>
+            </div>
+
+            <div class="gallery-grid">
+                <div class="gallery-card gallery-card--big tono--green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></svg>
+                    <h3>Aulas amplias e iluminadas</h3>
+                </div>
+                <div class="gallery-card tono--coral">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="m12 2 8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4Z" /></svg>
+                    <h3>Zonas deportivas</h3>
+                </div>
+                <div class="gallery-card tono--ink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 7h8M8 11h8M8 15h5" /></svg>
+                    <h3>Biblioteca</h3>
+                </div>
+                <div class="gallery-card tono--yellow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#15304d" stroke-width="1.6"><rect x="3" y="4" width="18" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg>
+                    <h3>Laboratorio de cómputo</h3>
+                </div>
+                <div class="gallery-card tono--green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M12 2C8 6 6 9 6 12a6 6 0 0 0 12 0c0-3-2-6-6-10Z" /></svg>
+                    <h3>Áreas verdes</h3>
+                </div>
+                <div class="gallery-card tono--coral">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M3 10h18M5 10V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M4 10v9a1 1 0 0 0 1 1h2v-4h10v4h2a1 1 0 0 0 1-1v-9" /></svg>
+                    <h3>Comedor escolar</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== CTA FINAL =================== -->
+    <section class="cta-band">
+        <div class="cta-band__inner">
+            <h2>¿Lista tu familia para unirse a El Valle?</h2>
+            <p>Escríbenos y con gusto te contamos todo sobre el proceso de matrícula.</p>
+            <div class="cta-band__actions">
+                <a href="#contacto" class="btn btn--white">Solicitar información</a>
+               
+                <a asp-controller="Home" asp-action="Acceso" class="btn btn--ghost-light">Iniciar Sesión</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== CONTACTO =================== -->
+    <section class="section" id="contacto">
+        <div class="section__inner section__inner--split section__inner--split-rev">
+            <div class="split__text">
+                <span class="hero__tag" style="margin-bottom:18px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
+                    Contacto
+                </span>
+                <h2>Conversemos sobre la educación de tu hijo o hija</h2>
+                <p>Estamos para ayudarte. Escríbenos y te responderemos a la brevedad.</p>
+
+                <div class="contact-info">
+                    <div class="contact-info__item">
+                        <span class="contact-info__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11Z" /></svg></span>
+                        <div><strong>Dirección</strong><span>200m norte de la plaza, El Valle, San José</span></div>
+                    </div>
+                    <div class="contact-info__item">
+                        <span class="contact-info__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L7.9 9.9a16 16 0 0 0 6 6l1.4-1.4a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.9 2.3Z" /></svg></span>
+                        <div><strong>Teléfono</strong><span>+506 2234 5678</span></div>
+                    </div>
+                    <div class="contact-info__item">
+                        <span class="contact-info__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg></span>
+                        <div><strong>Correo</strong><span>info@escuelaelvalle.ed.cr</span></div>
+                    </div>
+                    <div class="contact-info__item">
+                        <span class="contact-info__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg></span>
+                        <div><strong>Horario</strong><span>Lunes a viernes, 7:00 a.m. – 3:30 p.m.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form-card">
+                <form id="formContacto" novalidate>
+                    <div class="input-group">
+                        <input type="text" placeholder="Nombre completo" required />
+                    </div>
+                    <div class="input-group">
+                        <input type="email" placeholder="Correo electrónico" required />
+                    </div>
+                    <div class="input-group">
+                        <input type="tel" placeholder="Teléfono" />
+                    </div>
+                    <div class="input-group">
+                        <textarea rows="4" placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary" style="justify-content:center;">
+                        Enviar mensaje
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== FOOTER =================== -->
+    <footer class="footer">
+        <div class="footer__inner">
+            <div class="footer__brand">
+                <a href="#inicio" class="navbar__brand navbar__brand--footer">
+                    <span class="navbar__brand-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#123a66" stroke-width="1.9"><path d="M12 3c-2 2.4-1 4-1 4s2-1 3 .6c1.4 2.2-.4 4.2-2 4.4" /><path d="M12 7c3.5 0 6.5 3 6.5 7.5S16 21 12 21s-6.5-3-6.5-6.5S8.5 7 12 7Z" /></svg>
+                    </span>
+                    <span>Escuela <strong>El Valle</strong></span>
+                </a>
+                <p>Formando a los líderes del mañana desde 2007, con educación cercana y de calidad.</p>
+                <div class="footer__social">
+                    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z" /></svg></a>
+                    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg></a>
+                    <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-11.9 7.7L3 21l1.9-6a8.4 8.4 0 1 1 16.1-3.5Z" /></svg></a>
+                </div>
+            </div>
+
+            <div class="footer__col">
+                <h4>Navegación</h4>
+                <a href="#inicio">Inicio</a>
+                <a href="#nosotros">Nosotros</a>
+                <a href="#programas">Programas</a>
+                <a href="#instalaciones">Instalaciones</a>
+            </div>
+
+            <div class="footer__col">
+                <h4>Sistema escolar</h4>
+                <a asp-controller="Home" asp-action="Acceso">Iniciar Sesión</a>
+                <a asp-controller="Home" asp-action="Acceso">Solicitar matrícula</a>
+                <a href="#contacto">Solicitar matrícula</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+
+            <div class="footer__col">
+                <h4>Contacto</h4>
+                <span>200m norte de la plaza, El Valle</span>
+                <span>+506 2234 5678</span>
+                <span>info@escuelaelvalle.ed.cr</span>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <span>© @DateTime.Now.Year Escuela El Valle. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" aria-label="Volver arriba" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+    </button>
+
+    <script src="~/js/sitio.js" asp-append-version="true"></script>
+</body>
+</html>

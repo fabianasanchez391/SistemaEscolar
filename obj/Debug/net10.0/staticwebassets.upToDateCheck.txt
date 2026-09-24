@@ -1,0 +1,157 @@
+wwwroot\css\acceso.css
+wwwroot\css\asistencia.css
+wwwroot\css\calificaciones.css
+wwwroot\css\editarperfil.css
+wwwroot\css\estudiantes.css
+wwwroot\css\perfiles.css
+wwwroot\css\sidebar.css
+wwwroot\css\sitio.css
+wwwroot\css\usuarios.css
+wwwroot\favicon.ico
+wwwroot\js\acceso.js
+wwwroot\js\asistencia.js
+wwwroot\js\calificaciones.js
+wwwroot\js\editarperfil.js
+wwwroot\js\estudiantes.js
+wwwroot\js\perfiles.js
+wwwroot\js\sidebar.js
+wwwroot\js\sitio.js
+wwwroot\js\usuarios.js
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\dist\jquery.slim.js
+wwwroot\lib\jquery\dist\jquery.slim.min.js
+wwwroot\lib\jquery\dist\jquery.slim.min.map
+wwwroot\lib\jquery\LICENSE.txt
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\editarperfil.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\favicon.ico
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\editarperfil.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation\dist\additional-methods.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation\dist\jquery.validate.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery-validation\LICENSE.md
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.min.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.slim.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.slim.min.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.slim.min.map
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\LICENSE.txt
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\asistencia.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\sidebar.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\asistencia.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\perfiles.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\perfiles.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\estudiantes.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\estudiantes.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\sitio.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\acceso.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\sidebar.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\sitio.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\usuarios.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\calificaciones.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\usuarios.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\acceso.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\calificaciones.css

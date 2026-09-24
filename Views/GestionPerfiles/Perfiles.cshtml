@@ -1,0 +1,172 @@
+﻿@{
+    ViewData["Title"] = "Gestión de Perfiles";
+    ViewData["Page"] = "perfiles";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/perfiles.css" asp-append-version="true" />
+}
+
+<div class="perfiles-layout">
+
+    <!-- =================== COLUMNA PRINCIPAL =================== -->
+    <div>
+        <!-- ---- Hero ---- -->
+        <div class="module-hero">
+            <div class="module-hero__left">
+                <div class="module-hero__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="8" cy="8" r="3" /><path d="M2 20c.9-3.4 3.4-5.3 6-5.3s5.1 1.9 6 5.3" /><circle cx="17.5" cy="8.5" r="2.2" /><path d="M14.8 20c.6-2.4 2.3-3.9 4.2-3.9" /></svg>
+                </div>
+                <div class="module-hero__text">
+                    <h1>Gestión de Perfiles</h1>
+                    <p>Consulte el registro de padres y encargados, y los hijos que tienen registrados en la escuela.</p>
+                </div>
+            </div>
+            <div class="module-hero__illustration" aria-hidden="true">
+                <svg viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="110" cy="85" r="80" fill="#eaf1ff" />
+                    <circle cx="82" cy="66" r="20" fill="#1a2c56" />
+                    <path d="M46 140c5-22 20-33 36-33s31 11 36 33Z" fill="#1a2c56" />
+                    <circle cx="146" cy="82" r="14" fill="#2f6fed" />
+                    <path d="M118 140c4-16 15-24 28-24s24 8 28 24Z" fill="#2f6fed" />
+                    <circle cx="172" cy="118" r="8" fill="#22b573" />
+                    <path d="M156 148c3-10 9-15 16-15s13 5 16 15Z" fill="#22b573" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- ---- Barra de acciones (solo consulta: sin registrar/editar) ---- -->
+        <div class="main-actions-bar">
+            <span class="view-only-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                Módulo de solo consulta
+            </span>
+            <div class="main-actions-bar__right">
+                <button class="btn btn--outline" id="btnExport" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+                    Exportar padres
+                </button>
+            </div>
+        </div>
+
+        <!-- ---- Tabla ---- -->
+        <div class="table-card">
+            <div class="table-scroll">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Padre o encargado</th>
+                            <th>Cédula</th>
+                            <th>Celular</th>
+                            <th>Correo electrónico</th>
+                            <th>Hijos registrados</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="padresTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <div>No se encontraron padres con los filtros seleccionados.</div>
+            </div>
+
+            <div class="table-pagination">
+                <span id="resultsCount">Mostrando 0 de 0 padres</span>
+                <div class="pagination-btns">
+                    <button class="pg-btn" id="pgPrev" type="button">‹</button>
+                    <button class="pg-btn is-active" type="button">1</button>
+                    <button class="pg-btn" id="pgNext" type="button">›</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== PANEL LATERAL =================== -->
+    <aside>
+        <!-- ---- Filtros ---- -->
+        <div class="side-panel">
+            <div class="side-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
+                Filtros de búsqueda
+            </div>
+
+            <label class="filter-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <input type="search" id="searchInput" placeholder="Buscar por nombre o cédula..." />
+            </label>
+
+            <div class="filter-group">
+                <label for="seccionFilter">Sección del hijo</label>
+                <select id="seccionFilter">
+                    <option value="todos">Todas</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
+                    Limpiar
+                </button>
+                <button class="btn btn--success" id="btnAplicarFiltros" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    Aplicar
+                </button>
+            </div>
+        </div>
+
+        <!-- ---- Recordatorio ---- -->
+        <div class="tip-panel" id="tipPanel">
+            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+            <div class="tip-panel__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
+            </div>
+            <div class="tip-panel__text">
+                <h4>Recuerda</h4>
+                <p>Este módulo solo permite consultar información. Los datos de padres y estudiantes se registran desde <strong>Registro de Estudiantes</strong>.</p>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- =================== MODAL VER DETALLE =================== -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-card" style="max-width:460px;">
+        <div class="modal-card__head head-padre">
+            <div class="modal-card__head-info">
+                <div class="modal-card__head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
+                </div>
+                <div>
+                    <h2 id="detailModalTitle">Detalle del padre</h2>
+                    <p id="detailModalSubtitle">Información registrada</p>
+                </div>
+            </div>
+            <button class="modal-close" id="detailModalCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="modal-card__body">
+            <div id="detailModalInfo"></div>
+
+            <div class="detail-children">
+                <p class="detail-children__title">Hijos registrados</p>
+                <div id="detailModalChildren"></div>
+            </div>
+        </div>
+        <div class="modal-card__foot">
+            <button class="btn btn--outline" id="detailModalCloseBtn2" type="button">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Librería para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="~/js/perfiles.js" asp-append-version="true"></script>
+}

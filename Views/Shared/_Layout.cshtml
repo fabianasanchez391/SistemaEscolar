@@ -1,0 +1,274 @@
+﻿@{
+    var pageTitle = ViewData["Title"] as string ?? "Panel de Control";
+    var activePage = ViewData["Page"] as string ?? "dashboard";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@pageTitle · Escuela El Valle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/sidebar.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body data-page="@activePage">
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-shell">
+
+        <!-- =================== SIDEBAR =================== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar__brand">
+                <div class="sidebar__brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3 2 8l10 5 10-5-10-5Z"></path>
+                        <path d="M6 10.5V16c0 1 2.7 3 6 3s6-2 6-3v-5.5"></path>
+                    </svg>
+                </div>
+                <div class="sidebar__brand-text">
+                    <div class="name">Escuela El Valle</div>
+                    <div class="tagline">Aprender hoy, construir mañana</div>
+                </div>
+                <button class="sidebar__close" id="sidebarCloseBtn" aria-label="Cerrar menú" type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <nav class="sidebar__nav" aria-label="Navegación principal">
+                <div class="nav-group">
+                    <p class="nav-group__label">Principal</p>
+                    <ul>
+                        <li>
+                            <a class="nav-item" data-page="dashboard" asp-controller="Home" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h14V9.5" /><path d="M9 21v-6h6v6" /></svg>
+                                Panel de Control
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <p class="nav-group__label">Administración</p>
+                    <ul>
+                        <li>
+                            <a class="nav-item" data-page="personal" asp-controller="GestionPersonal" asp-action="Personal">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M3 11h18M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>
+                                Gestión de Personal
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="nav-item" data-page="estudiantes" asp-controller="RegistroEstudiantes" asp-action="Estudiantes">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
+                                Registro de Estudiantes
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="nav-item" data-page="perfiles" asp-controller="GestionPerfiles" asp-action="Perfiles">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3" /><path d="M8 9h8M8 13h5" /></svg>
+                                Gestión de Perfiles
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <p class="nav-group__label">Gestión académica</p>
+                    <ul>
+                        <li>
+                            <a class="nav-item" data-page="academico" asp-controller="GestionAcademica" asp-action="Calificaciones">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10" /></svg>
+                                Gestión de Calificaciones
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="asistencia" asp-controller="ControlAsistencia" asp-action="Asistencia">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" /><path d="m9 12 2 2 4-4" /></svg>
+                                Control de Asistencia
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="justificaciones" asp-controller="Justificaciones" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h11l3 3v13H5z" /><path d="M9 12h6M9 16h4" /></svg>
+                                Gestión de Justificaciones
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="boletas" asp-controller="Boletas" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2" /><path d="M9 8h6M9 12h6M9 16h3" /></svg>
+                                Gestión de Boletas
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="materiales" asp-controller="Materiales" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5V6a2 2 0 0 1 2-2h9l5 5v10.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" /><path d="M14 4v5h5" /></svg>
+                                Materiales y Tareas
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="calendario" asp-controller="Calendario" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M4 10h16M8 3v4M16 3v4" /></svg>
+                                Calendario Académico
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <p class="nav-group__label">Comunicación</p>
+                    <ul>
+                        <li>
+                            <a class="nav-item" data-page="citas" asp-controller="Citas" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M4 10h16" /><path d="m9 15 2 2 4-4" /></svg>
+                                Gestión de Citas
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="institucional" asp-controller="Institucional" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" /><path d="M12 8v5l3 2" /></svg>
+                                Información Institucional
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <p class="nav-group__label">Consultas y reportes</p>
+                    <ul>
+                        <li>
+                            <a class="nav-item" data-page="reportes" asp-controller="Reportes" asp-action="Index">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7" /></svg>
+                                Reportes
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar__footer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
+                <p>Juntos por una mejor<br />educación</p>
+            </div>
+        </aside>
+
+        <!-- =================== TOPBAR =================== -->
+        <header class="topbar">
+            <button class="topbar__menu-btn" id="menuToggleBtn" type="button" aria-label="Abrir menú" aria-expanded="false">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+
+            <label class="topbar__search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <input type="search" placeholder="Buscar en el sistema..." aria-label="Buscar en el sistema" />
+            </label>
+
+            <div class="topbar__right">
+                <!-- ===== Notificaciones ===== -->
+                <div class="dropdown-wrap" id="notifWrap">
+                    <button class="icon-btn" id="notificationsBtn" type="button" aria-label="Notificaciones" aria-haspopup="true" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" /><path d="M10 21a2 2 0 0 0 4 0" /></svg>
+                        <span class="icon-btn__badge" id="notifBadge">3</span>
+                    </button>
+
+                    <div class="dropdown-panel notif-panel" id="notifPanel" role="menu" aria-hidden="true">
+                        <div class="dropdown-panel__head">
+                            <span>Notificaciones</span>
+                            <button class="dropdown-panel__action" id="markAllReadBtn" type="button">Marcar todas como leídas</button>
+                        </div>
+
+                        <div class="notif-list" id="notifList">
+                            <!-- TODO backend: reemplazar por las notificaciones reales del usuario -->
+                            <div class="notif-item is-unread" data-notif-id="1">
+                                <span class="icon-chip icon-chip--blue">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h11l3 3v13H5z" /><path d="M9 12h6M9 16h4" /></svg>
+                                </span>
+                                <div class="notif-item__body">
+                                    <p class="notif-item__title">Nueva justificación recibida</p>
+                                    <p class="notif-item__sub">María López envió una justificación de ausencia.</p>
+                                    <span class="notif-item__time">Hace 10 min</span>
+                                </div>
+                            </div>
+                            <div class="notif-item is-unread" data-notif-id="2">
+                                <span class="icon-chip icon-chip--teal">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" /><path d="m9 12 2 2 4-4" /></svg>
+                                </span>
+                                <div class="notif-item__body">
+                                    <p class="notif-item__title">Asistencia registrada</p>
+                                    <p class="notif-item__sub">Se cerró el registro de asistencia de 6°B.</p>
+                                    <span class="notif-item__time">Hace 1 hora</span>
+                                </div>
+                            </div>
+                            <div class="notif-item is-unread" data-notif-id="3">
+                                <span class="icon-chip icon-chip--purple">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M4 10h16" /><path d="m9 15 2 2 4-4" /></svg>
+                                </span>
+                                <div class="notif-item__body">
+                                    <p class="notif-item__title">Cita agendada</p>
+                                    <p class="notif-item__sub">Reunión con el padre de familia el viernes 10:00 a.m.</p>
+                                    <span class="notif-item__time">Ayer</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-panel__foot">
+                            <a asp-controller="Notificaciones" asp-action="Index"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== Usuario ===== -->
+                <div class="dropdown-wrap" id="userWrap">
+                    <button class="topbar__user" id="userMenuBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                        <span class="topbar__avatar">FA</span>
+                        <span class="topbar__user-text">
+                            <span class="user-name">Fabiana Arias</span>
+                            <span class="user-role">Docente</span>
+                        </span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" /></svg>
+                    </button>
+
+                    <div class="dropdown-panel user-panel" id="userPanel" role="menu" aria-hidden="true">
+                        <div class="dropdown-panel__user">
+                            <span class="topbar__avatar">FA</span>
+                            <div>
+                                <p class="dropdown-panel__user-name">Fabiana Arias</p>
+                                <p class="dropdown-panel__user-role">Docente</p>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <!-- TODO backend: ajustar controller/action de estas dos rutas según tu enrutamiento real -->
+                        <a class="dropdown-item" role="menuitem" asp-controller="EdicionPerfiles" asp-action="EditarPerfil">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
+                            Ver perfil
+                        </a>
+                        <a class="dropdown-item dropdown-item--danger" role="menuitem" asp-controller="Home" asp-action="Acceso">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" /><path d="M10 17l5-5-5-5" /><path d="M15 12H3" /></svg>
+                            Cerrar sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- =================== CONTENIDO =================== -->
+        <main class="main">
+            @RenderBody()
+        </main>
+
+
+    </div>
+
+    <!-- =================== FOOTER FIJO =================== -->
+    <footer class="app-footer">
+        © @DateTime.Now.Year Escuela El Valle. Todos los derechos reservados.
+    </footer>
+
+    <script src="~/js/sidebar.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

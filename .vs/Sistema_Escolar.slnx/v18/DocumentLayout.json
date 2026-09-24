@@ -1,0 +1,194 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\sitioweb\\sitio.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\sitioweb\\sitio.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\edicionperfiles\\editarperfil.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\edicionperfiles\\editarperfil.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\registroestudiantes\\estudiantes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\registroestudiantes\\estudiantes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\home\\acceso.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\home\\acceso.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\gestionpersonal\\personal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\gestionpersonal\\personal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\gestionperfiles\\perfiles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\gestionperfiles\\perfiles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\gestionacademica\\calificaciones.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\gestionacademica\\calificaciones.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|c:\\users\\arias\\onedrive\\escritorio\\sistema escolar\\sistema_escolar\\views\\controlasistencia\\asistencia.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C62BCE85-AB3B-6BE6-7888-D4AD61570C44}|Sistema_Escolar.csproj|solutionrelative:views\\controlasistencia\\asistencia.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 21,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Sitio.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\SitioWeb\\Sitio.cshtml",
+              "RelativeDocumentMoniker": "Views\\SitioWeb\\Sitio.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\SitioWeb\\Sitio.cshtml",
+              "RelativeToolTip": "Views\\SitioWeb\\Sitio.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:12:23.278Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:12:18.55Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Estudiantes.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\RegistroEstudiantes\\Estudiantes.cshtml",
+              "RelativeDocumentMoniker": "Views\\RegistroEstudiantes\\Estudiantes.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\RegistroEstudiantes\\Estudiantes.cshtml",
+              "RelativeToolTip": "Views\\RegistroEstudiantes\\Estudiantes.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:12:12.185Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAADgBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:11:48.757Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Acceso.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\Home\\Acceso.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Acceso.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\Home\\Acceso.cshtml",
+              "RelativeToolTip": "Views\\Home\\Acceso.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:11:47.008Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Personal.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\GestionPersonal\\Personal.cshtml",
+              "RelativeDocumentMoniker": "Views\\GestionPersonal\\Personal.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\GestionPersonal\\Personal.cshtml",
+              "RelativeToolTip": "Views\\GestionPersonal\\Personal.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:11:43.926Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Perfiles.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\GestionPerfiles\\Perfiles.cshtml",
+              "RelativeDocumentMoniker": "Views\\GestionPerfiles\\Perfiles.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\GestionPerfiles\\Perfiles.cshtml",
+              "RelativeToolTip": "Views\\GestionPerfiles\\Perfiles.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:11:40.533Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Calificaciones.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\GestionAcademica\\Calificaciones.cshtml",
+              "RelativeDocumentMoniker": "Views\\GestionAcademica\\Calificaciones.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\GestionAcademica\\Calificaciones.cshtml",
+              "RelativeToolTip": "Views\\GestionAcademica\\Calificaciones.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:11:37.516Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EditarPerfil.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\EdicionPerfiles\\EditarPerfil.cshtml",
+              "RelativeDocumentMoniker": "Views\\EdicionPerfiles\\EditarPerfil.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\EdicionPerfiles\\EditarPerfil.cshtml",
+              "RelativeToolTip": "Views\\EdicionPerfiles\\EditarPerfil.cshtml",
+              "ViewState": "AgIAAK0AAAAAAAAAAAAAwMgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:11:06.16Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Asistencia.cshtml",
+              "DocumentMoniker": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\ControlAsistencia\\Asistencia.cshtml",
+              "RelativeDocumentMoniker": "Views\\ControlAsistencia\\Asistencia.cshtml",
+              "ToolTip": "C:\\Users\\arias\\OneDrive\\Escritorio\\Sistema Escolar\\Sistema_Escolar\\Views\\ControlAsistencia\\Asistencia.cshtml",
+              "RelativeToolTip": "Views\\ControlAsistencia\\Asistencia.cshtml",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-24T02:11:02.765Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

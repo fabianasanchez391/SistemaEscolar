@@ -1,0 +1,297 @@
+﻿@{
+    ViewData["Title"] = "Gestión de Personal";
+    ViewData["Page"] = "personal";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/usuarios.css" asp-append-version="true" />
+}
+
+<div class="usuarios-layout">
+
+    <!-- =================== COLUMNA PRINCIPAL =================== -->
+    <div>
+        <!-- ---- Hero ---- -->
+        <div class="module-hero">
+            <div class="module-hero__left">
+                <div class="module-hero__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M3 20c1-3.4 3.6-5.2 6-5.2s5 1.8 6 5.2" /><circle cx="17" cy="9" r="2.6" /><path d="M15.5 14.3c2.2.2 4 1.8 4.7 4.2" /></svg>
+                </div>
+                <div class="module-hero__text">
+                    <h1>Gestión de Personal</h1>
+                    <p>Administra a los docentes y al personal administrativo de la Escuela El Valle.</p>
+                </div>
+            </div>
+            <div class="module-hero__illustration" aria-hidden="true">
+                <svg viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="110" cy="85" r="80" fill="#eaf1ff" />
+                    <circle cx="80" cy="70" r="22" fill="#1a2c56" />
+                    <path d="M40 145c6-24 22-36 40-36s34 12 40 36Z" fill="#1a2c56" />
+                    <circle cx="140" cy="78" r="17" fill="#2f6fed" />
+                    <path d="M110 145c5-19 17-28 30-28s25 9 30 28Z" fill="#2f6fed" />
+                    <circle cx="176" cy="90" r="8" fill="#22b573" />
+                    <path d="M160 145c3-11 9-16 16-16s13 5 16 16Z" fill="#22b573" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- ---- Tarjetas de resumen / pestañas por rol ---- -->
+        <!-- Cada tarjeta funciona como pestaña exclusiva: solo un rol (o los inactivos) se muestra a la vez. -->
+        <div class="role-stats-row" id="roleStatsRow">
+            <div class="role-stat-card role-stat-card--docentes is-active" data-role="docente">
+                <div class="role-stat-card__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
+                </div>
+                <div class="role-stat-card__body">
+                    <div class="role-stat-card__label">Docentes</div>
+                    <div class="role-stat-card__value" id="statDocentes">0</div>
+                    <span class="role-stat-card__link">Ver detalle <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" /></svg></span>
+                </div>
+            </div>
+
+            <div class="role-stat-card role-stat-card--admin" data-role="admin">
+                <div class="role-stat-card__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M3 11h18M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>
+                </div>
+                <div class="role-stat-card__body">
+                    <div class="role-stat-card__label">Personal administrativo</div>
+                    <div class="role-stat-card__value" id="statAdmin">0</div>
+                    <span class="role-stat-card__link">Ver detalle <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" /></svg></span>
+                </div>
+            </div>
+
+            <!-- Pestaña de inactivos: reúne a los usuarios desactivados de cualquier rol,
+                 separados por completo de las listas de activos. -->
+            <div class="role-stat-card role-stat-card--inactivos" data-role="inactivo">
+                <div class="role-stat-card__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1-3.4 3.6-5.2 7-5.2" /><path d="M15 15l6 6M21 15l-6 6" /></svg>
+                </div>
+                <div class="role-stat-card__body">
+                    <div class="role-stat-card__label">Inactivos</div>
+                    <div class="role-stat-card__value" id="statInactivos">0</div>
+                    <span class="role-stat-card__link">Ver detalle <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" /></svg></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ---- Barra de acciones ---- -->
+        <div class="main-actions-bar">
+            <button class="btn btn--success" id="btnRegistrarUsuario" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                <span id="btnRegistrarLabel">Registrar docente</span>
+            </button>
+            <div class="main-actions-bar__right">
+                <button class="btn btn--outline" id="btnExport" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+                    <span id="btnExportLabel">Exportar docentes</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ---- Tabla ---- -->
+        <!-- El encabezado (thead) se genera dinámicamente según el rol activo, -->
+        <!-- así cada pestaña muestra solo las columnas que le corresponden. -->
+        <div class="table-card">
+            <div class="table-scroll">
+                <table class="users-table">
+                    <thead id="usersTableHead"></thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <div>No se encontraron usuarios con los filtros seleccionados.</div>
+            </div>
+
+            <div class="table-pagination">
+                <span id="resultsCount">Mostrando 0 de 0 usuarios</span>
+                <div class="pagination-btns">
+                    <button class="pg-btn" id="pgPrev" type="button">‹</button>
+                    <button class="pg-btn is-active" type="button">1</button>
+                    <button class="pg-btn" id="pgNext" type="button">›</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== PANEL LATERAL =================== -->
+    <aside>
+        <!-- ---- Filtros ---- -->
+        <div class="side-panel">
+            <div class="side-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
+                Filtros de búsqueda
+            </div>
+
+            <label class="filter-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <input type="search" id="searchInput" placeholder="Buscar por nombre, cédula o correo..." />
+            </label>
+
+            <!-- Este filtro solo aplica a la pestaña de Docentes (grupo asignado);
+                 se oculta en Personal administrativo e Inactivos -->
+            <div class="filter-group" id="subFilterGroup">
+                <label for="grupoFilter" id="subFilterLabel">Grupo asignado</label>
+                <select id="grupoFilter">
+                    <option value="todos">Todos</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
+                    Limpiar
+                </button>
+                <button class="btn btn--success" id="btnAplicarFiltros" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    Aplicar
+                </button>
+            </div>
+        </div>
+
+        <!-- ---- Acciones rápidas ---- -->
+        <div class="side-panel">
+            <div class="side-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3" /><circle cx="16" cy="9" r="2.4" /><path d="M3 19c.9-3 3.3-4.8 6-4.8s5.1 1.8 6 4.8" /><path d="M15 14.6c2 .3 3.6 1.8 4.2 3.9" /></svg>
+                Acciones rápidas
+            </div>
+            <button class="quick-action-btn quick-action-btn--teacher" id="qaDocente" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
+                Registrar docente
+            </button>
+            <button class="quick-action-btn quick-action-btn--admin" id="qaAdmin" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M3 11h18M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>
+                Registrar personal administrativo
+            </button>
+        </div>
+
+        <!-- ---- Recordatorio ---- -->
+        <div class="tip-panel" id="tipPanel">
+            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+            <div class="tip-panel__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
+            </div>
+            <div class="tip-panel__text">
+                <h4>Recuerda</h4>
+                <p>Todo usuario se registra como <strong>Activo</strong> por defecto. Al desactivar un usuario pasa a la pestaña <strong>Inactivos</strong>; ningún registro puede eliminarse desde este panel, solo editarse.</p>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- =================== MODAL DOCENTE =================== -->
+<div class="modal-overlay" id="teacherModal">
+    <div class="modal-card">
+        <div class="modal-card__head head-docente">
+            <div class="modal-card__head-info">
+                <div class="modal-card__head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
+                </div>
+                <div>
+                    <h2 id="teacherModalTitle">Nuevo Docente</h2>
+                    <p>Complete los datos del docente</p>
+                </div>
+            </div>
+            <button class="modal-close" id="teacherModalCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="modal-card__body">
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="tCedula">Cédula</label>
+                    <input type="text" id="tCedula" placeholder="1-2345-6789" />
+                </div>
+                <div class="form-field">
+                    <label for="tNombre">Nombre completo</label>
+                    <input type="text" id="tNombre" placeholder="Ej. Fabiana Arias" />
+                </div>
+            </div>
+            <div class="form-field full">
+                <label for="tCorreo">Correo electrónico</label>
+                <input type="email" id="tCorreo" placeholder="correo@elvalle.ed.cr" />
+            </div>
+            <div class="form-field full">
+                <label>Asignación de grupos <span style="font-weight:400;color:var(--ink-500)">(máximo 3)</span></label>
+                <div class="group-picker" id="groupPicker"></div>
+            </div>
+        </div>
+        <div class="modal-card__foot">
+            <button class="btn btn--outline" id="teacherModalCancelBtn" type="button">Cancelar</button>
+            <button class="btn" id="teacherModalSaveBtn" type="button" style="background:var(--teal-600);border-color:var(--teal-600);color:#fff;">Guardar Docente</button>
+        </div>
+    </div>
+</div>
+
+<!-- =================== MODAL PERSONAL ADMINISTRATIVO =================== -->
+<div class="modal-overlay" id="adminModal">
+    <div class="modal-card">
+        <div class="modal-card__head head-admin">
+            <div class="modal-card__head-info">
+                <div class="modal-card__head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M3 11h18M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>
+                </div>
+                <div>
+                    <h2 id="adminModalTitle">Nuevo Personal Administrativo</h2>
+                    <p>Complete los datos del colaborador</p>
+                </div>
+            </div>
+            <button class="modal-close" id="adminModalCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="modal-card__body">
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="aCedula">Cédula</label>
+                    <input type="text" id="aCedula" placeholder="1-2345-6789" />
+                </div>
+                <div class="form-field">
+                    <label for="aNombre">Nombre completo</label>
+                    <input type="text" id="aNombre" placeholder="Ej. Elena Vargas Peña" />
+                </div>
+            </div>
+            <div class="form-field full">
+                <label for="aCorreo">Correo electrónico</label>
+                <input type="email" id="aCorreo" placeholder="correo@elvalle.ed.cr" />
+            </div>
+        </div>
+        <div class="modal-card__foot">
+            <button class="btn btn--outline" id="adminModalCancelBtn" type="button">Cancelar</button>
+            <button class="btn" id="adminModalSaveBtn" type="button" style="background:var(--ink-700);border-color:var(--ink-700);color:#fff;">Guardar Personal</button>
+        </div>
+    </div>
+</div>
+
+<!-- =================== MODAL VER DETALLE =================== -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-card" style="max-width:440px;">
+        <div class="modal-card__head head-docente" id="detailModalHead">
+            <div class="modal-card__head-info">
+                <div class="modal-card__head-icon" id="detailModalIcon"></div>
+                <div>
+                    <h2 id="detailModalTitle">Detalle de usuario</h2>
+                    <p id="detailModalSubtitle">Información registrada</p>
+                </div>
+            </div>
+            <button class="modal-close" id="detailModalCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="modal-card__body" id="detailModalBody"></div>
+        <div class="modal-card__foot">
+            <button class="btn btn--outline" id="detailModalCloseBtn2" type="button">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Librerías para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="~/js/usuarios.js" asp-append-version="true"></script>
+}

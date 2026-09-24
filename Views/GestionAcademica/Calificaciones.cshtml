@@ -1,0 +1,218 @@
+﻿@{
+    ViewData["Title"] = "Gestión de Calificaciones";
+    ViewData["Page"] = "academico";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/calificaciones.css" asp-append-version="true" />
+}
+
+<!-- ---- Hero (solo visible en la vista de secciones) ---- -->
+<div class="module-hero" id="moduleHero">
+    <div class="module-hero__left">
+        <div class="module-hero__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /><path d="M22 9v6" /></svg>
+        </div>
+        <div class="module-hero__text">
+            <h1>Gestión de Calificaciones</h1>
+            <p>Seleccione una sección para consultar y registrar las calificaciones de sus estudiantes.</p>
+        </div>
+    </div>
+    <div class="module-hero__illustration" aria-hidden="true">
+        <svg viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="110" cy="85" r="80" fill="#eaf1ff" />
+            <rect x="55" y="55" width="70" height="90" rx="8" fill="#1a2c56" />
+            <rect x="65" y="70" width="50" height="6" rx="3" fill="#eaf1ff" />
+            <rect x="65" y="84" width="50" height="6" rx="3" fill="#eaf1ff" />
+            <rect x="65" y="98" width="34" height="6" rx="3" fill="#eaf1ff" />
+            <circle cx="150" cy="100" r="28" fill="#2f6fed" />
+            <path d="M138 100l8 8 16-16" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </div>
+</div>
+
+<div class="calificaciones-layout">
+
+    <!-- =================== COLUMNA PRINCIPAL =================== -->
+    <div>
+
+        <!-- ---- VISTA 1: Grid de secciones ---- -->
+        <div id="seccionesView">
+            <div class="stats-row" id="seccionesStats"></div>
+
+            <div class="main-actions-bar">
+                <label class="filter-search filter-search--inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    <input type="search" id="seccionSearchInput" placeholder="Buscar sección..." />
+                </label>
+                <div class="main-actions-bar__right">
+                    <span class="active-filter-tag" id="riesgoFilterTag" style="display:none;">
+
+                    </span>
+                    <span class="results-tag" id="seccionesCount">0 secciones</span>
+                </div>
+            </div>
+
+            <div class="secciones-grid" id="seccionesGrid"></div>
+
+            <div class="empty-state" id="seccionesEmptyState">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <div>No se encontraron secciones con ese nombre.</div>
+            </div>
+        </div>
+
+        <!-- ---- VISTA 2: Tabla de estudiantes de una sección ---- -->
+        <div id="estudiantesView" style="display:none;">
+
+            <div class="main-actions-bar">
+                <div class="seccion-actual-group">
+                    <button class="btn btn--outline" id="btnVolverSecciones" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6" /></svg>
+                        Volver a secciones
+                    </button>
+                    <div class="seccion-actual" id="seccionActualLabel"></div>
+                </div>
+                <div class="main-actions-bar__right">
+                    <button class="btn btn--outline" id="btnExportSeccion" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+                        Exportar calificaciones
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-row" id="estudiantesStats"></div>
+
+            <div class="table-card">
+                <div class="table-card__legend">
+                    <span class="legend-item"><span class="legend-dot legend-dot--bien"></span>Aprobado (≥ 70)</span>
+                    <span class="legend-item"><span class="legend-dot legend-dot--riesgo"></span>En riesgo (&lt; 70)</span>
+                </div>
+                <div class="table-scroll">
+                    <table class="grades-table">
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                <th>Cédula</th>
+                                <th class="materia-th materia-th--0">Español</th>
+                                <th class="materia-th materia-th--1">Est. Sociales</th>
+                                <th class="materia-th materia-th--2">Ciencias</th>
+                                <th class="materia-th materia-th--3">Matemáticas</th>
+                                <th class="materia-th materia-th--4">Inglés</th>
+                                <th>Promedio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="estudiantesTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state" id="estudiantesEmptyState">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    <div>No se encontraron estudiantes con los filtros seleccionados.</div>
+                </div>
+
+                <div class="table-pagination">
+                    <span id="estudiantesResultsCount">Mostrando 0 de 0 estudiantes</span>
+                    <div class="pagination-btns" id="estudiantesPagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== PANEL LATERAL =================== -->
+    <aside>
+        <!-- ---- Filtros (solo visibles dentro de una sección) ---- -->
+        <div class="side-panel" id="filtrosPanel" style="display:none;">
+            <div class="side-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
+                Filtros de búsqueda
+            </div>
+
+            <label class="filter-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <input type="search" id="estudianteSearchInput" placeholder="Buscar por nombre o cédula..." />
+            </label>
+
+            <div class="filter-group">
+                <label for="materiaFilter">Materia a resaltar</label>
+                <select id="materiaFilter">
+                    <option value="todas">Todas</option>
+                    <option value="Español">Español</option>
+                    <option value="Estudios Sociales">Estudios Sociales</option>
+                    <option value="Ciencias">Ciencias</option>
+                    <option value="Matemáticas">Matemáticas</option>
+                    <option value="Inglés">Inglés</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="rendimientoFilter">Rendimiento</label>
+                <select id="rendimientoFilter">
+                    <option value="todos">Todos</option>
+                    <option value="aprobado">Promedio aprobado (≥ 70)</option>
+                    <option value="riesgo">En riesgo (&lt; 70)</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
+                    Limpiar
+                </button>
+                <button class="btn btn--success" id="btnAplicarFiltros" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    Aplicar
+                </button>
+            </div>
+        </div>
+
+        <!-- ---- Recordatorio ---- -->
+        <div class="tip-panel" id="tipPanel">
+            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+            <div class="tip-panel__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
+            </div>
+            <div class="tip-panel__text">
+                <h4>Recuerda</h4>
+                <p>El promedio de cada materia se calcula con las notas de <strong>exámenes, tareas, extraclases y cotidiano</strong>. Puede agregar o editar notas desde el detalle de cada estudiante.</p>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- =================== MODAL DETALLE DE CALIFICACIONES =================== -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-card" style="max-width:640px;">
+        <div class="modal-card__head head-calif">
+            <div class="modal-card__head-info">
+                <div class="modal-card__head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></svg>
+                </div>
+                <div>
+                    <h2 id="detailModalTitle">Detalle de calificaciones</h2>
+                    <p id="detailModalSubtitle">Estudiante <span class="modal-mode-badge" id="modalModeBadge"></span></p>
+                </div>
+            </div>
+            <button class="modal-close" id="detailModalCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="modal-card__body">
+            <div class="materia-tabs" id="materiaTabs"></div>
+            <div id="materiaPanels"></div>
+        </div>
+        <div class="modal-card__foot">
+            <button class="btn btn--outline" id="detailModalCloseBtn2" type="button">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Librería para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="~/js/calificaciones.js" asp-append-version="true"></script>
+}

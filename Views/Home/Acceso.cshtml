@@ -1,0 +1,237 @@
+﻿@{
+    ViewData["Title"] = "Acceso";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Escuela El Valle</title>
+    <link rel="stylesheet" href="~/css/acceso.css" asp-append-version="true" />
+</head>
+<body>
+
+    <div class="auth-page">
+
+        <!-- El estado (login/registro) es la clase "is-signup" en este contenedor -->
+        <div class="auth-shell" id="authShell">
+
+            <!-- ================= INICIAR SESIÓN ================= -->
+            <div class="form-panel form-panel--signin">
+                <div class="form-panel__scroll">
+                    <div class="auth-card__inner">
+
+                        <a asp-controller="SitioWeb" asp-action="Sitio" class="auth-back">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m11 19-7-7 7-7" /><path d="M4 12h16" /></svg>
+                            Regresar al sitio web
+                        </a>
+
+                        <h2>Iniciar sesión</h2>
+                        <p class="auth-card__sub">Ingresá tu correo y contraseña para continuar.</p>
+
+                        <form id="loginForm" novalidate>
+                            <div class="auth-field-group">
+                                <label for="loginCorreo">Correo electrónico</label>
+                                <div class="auth-field">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m4 7 8 6 8-6" /></svg>
+                                    <input type="email" id="loginCorreo" placeholder="tucorreo@ejemplo.com" autocomplete="email" />
+                                </div>
+                            </div>
+
+                            <div class="auth-field-group">
+                                <label for="loginClave">Contraseña</label>
+                                <div class="auth-field">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2.5" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                                    <input type="password" id="loginClave" placeholder="••••••••" autocomplete="current-password" />
+                                    <button type="button" class="auth-field__toggle" data-target="loginClave">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="auth-row-between">
+                                <label class="auth-checkbox">
+                                    <input type="checkbox" />
+                                    Recordarme
+                                </label>
+                                <button type="button" class="auth-link" id="btnOlvide">¿Olvidaste tu contraseña?</button>
+                            </div>
+
+                            <a asp-controller="Home" asp-action="Index" class="auth-btn auth-btn--primary">Iniciar sesión</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= REGISTRARME ================= -->
+            <div class="form-panel form-panel--signup">
+                <div class="form-panel__scroll">
+                    <div class="auth-card__inner">
+                        <h2>Registrarme</h2>
+                        <p class="auth-card__sub">Creá tu cuenta de encargado.</p>
+
+                        <form id="registerForm" novalidate>
+                            <div class="auth-field-group">
+                                <label for="regCorreo">Correo electrónico</label>
+                                <div class="auth-field">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m4 7 8 6 8-6" /></svg>
+                                    <input type="email" id="regCorreo" placeholder="tucorreo@ejemplo.com" autocomplete="email" />
+                                </div>
+                            </div>
+
+                            <div class="auth-field-row">
+                                <div class="auth-field-group">
+                                    <label for="regNombre">Nombre completo</label>
+                                    <div class="auth-field">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4" /><path d="M5 20c1.3-3.9 4.2-6 7-6s5.7 2.1 7 6" /></svg>
+                                        <input type="text" id="regNombre" placeholder="Nombre y apellidos" autocomplete="name" />
+                                    </div>
+                                </div>
+                                <div class="auth-field-group">
+                                    <label for="regCelular">Celular</label>
+                                    <div class="auth-field">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2.2" /><path d="M11 18h2" /></svg>
+                                        <input type="tel" id="regCelular" placeholder="8888-8888" autocomplete="tel" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="auth-field-row">
+                                <div class="auth-field-group">
+                                    <label for="regClave">Contraseña</label>
+                                    <div class="auth-field">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2.5" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                                        <input type="password" id="regClave" placeholder="••••••••" autocomplete="new-password" />
+                                        <button type="button" class="auth-field__toggle" data-target="regClave">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="auth-field-group">
+                                    <label for="regClaveConfirm">Confirmar</label>
+                                    <div class="auth-field">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2.5" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                                        <input type="password" id="regClaveConfirm" placeholder="••••••••" autocomplete="new-password" />
+                                        <button type="button" class="auth-field__toggle" data-target="regClaveConfirm">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ---- Hijos ---- -->
+                            <div class="auth-children">
+                                <div class="auth-children__head">
+                                    <h3>Hijos a vincular</h3>
+                                    <p>Cédula y nombre de cada hijo/a.</p>
+                                </div>
+
+                                <div id="childrenList"></div>
+
+                                <button type="button" class="auth-add-child" id="btnAgregarHijo">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                                    Agregar hijo
+                                </button>
+                            </div>
+
+                            <a asp-controller="Home" asp-action="Acceso" class="auth-btn auth-btn--primary">Crear cuenta</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PANEL DESLIZANTE (ILUSTRACIÓN) ================= -->
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay__icons">
+                        <span class="auth-icon auth-icon--book">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 5c2.5-1.3 5.5-1.3 8 0v14c-2.5-1.3-5.5-1.3-8 0Z" /><path d="M20 5c-2.5-1.3-5.5-1.3-8 0v14c2.5-1.3 5.5-1.3 8 0Z" /></svg>
+                        </span>
+                        <span class="auth-icon auth-icon--pencil">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+                        </span>
+                        <span class="auth-icon auth-icon--apple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 8c-3.5 0-6 2.7-6 6.6C6 18.6 8.6 21 10.6 21c1 0 1.4-.6 2.4-.6s1.3.6 2.4.6c2.2 0 4.6-3 4.6-6C20 11 17.8 8 15 8c-1.1 0-1.7.6-2.6.6C11.6 8.6 11 8 12 8Z" /><path d="M13 8c0-1.8 1.3-3 3-3" /></svg>
+                        </span>
+                        <span class="auth-icon auth-icon--star">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="m12 3 2.6 5.9L21 9.6l-4.7 4.2L17.6 21 12 17.6 6.4 21l1.3-7.2L3 9.6l6.4-.7Z" /></svg>
+                        </span>
+                        <span class="auth-icon auth-icon--book2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5" /><path d="M8 9h8M8 13h5" /></svg>
+                        </span>
+                    </div>
+
+                    <!-- Se muestra cuando el registro está activo: invita a volver a iniciar sesión -->
+                    <div class="overlay-panel overlay-panel--left">
+                        <span class="overlay-panel__badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M3 20c1-3.4 3.6-5.2 6-5.2s5 1.8 6 5.2" /><circle cx="17" cy="9" r="2.6" /><path d="M15.5 14.3c2.2.2 4 1.8 4.7 4.2" /></svg>
+                            Escuela El Valle
+                        </span>
+                        <h1>¿Ya tenés cuenta?</h1>
+                        <p>Iniciá sesión para ver las tareas, avisos y el progreso de tus hijos.</p>
+                        <button type="button" class="overlay-btn" id="btnGoSignIn">Iniciar sesión</button>
+                    </div>
+
+                    <!-- Se muestra cuando el login está activo: invita a registrarse -->
+                    <div class="overlay-panel overlay-panel--right">
+                        <span class="overlay-panel__badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M3 20c1-3.4 3.6-5.2 6-5.2s5 1.8 6 5.2" /><circle cx="17" cy="9" r="2.6" /><path d="M15.5 14.3c2.2.2 4 1.8 4.7 4.2" /></svg>
+                            Escuela El Valle
+                        </span>
+                        <h1>¿Sos nuevo acá?</h1>
+                        <p>Registrate como encargado y vinculá a tus hijos en solo un minuto.</p>
+                        <button type="button" class="overlay-btn" id="btnGoSignUp">Registrarme</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ---- Modal: Olvidé mi contraseña ---- -->
+    <div class="auth-modal-overlay" id="forgotModal">
+        <div class="auth-modal">
+            <div class="auth-modal__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2.5" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+            </div>
+
+            <div class="auth-modal__form">
+                <h3>Recuperar contraseña</h3>
+                <p>Escribí tu correo y te enviaremos un enlace para crear una nueva contraseña.</p>
+                <div class="auth-field-group">
+                    <label for="forgotEmail">Correo electrónico</label>
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m4 7 8 6 8-6" /></svg>
+                        <input type="email" id="forgotEmail" placeholder="tucorreo@ejemplo.com" />
+                    </div>
+                </div>
+                <div class="auth-modal__actions">
+                    <button type="button" class="auth-btn auth-btn--ghost" id="forgotModalClose">Cancelar</button>
+                    <button type="button" class="auth-btn auth-btn--primary" id="forgotSubmit">Enviar enlace</button>
+                </div>
+            </div>
+
+            <div class="auth-modal__success">
+                <h3>Revisá tu correo</h3>
+                <p>Si el correo está registrado, vas a recibir un enlace para restablecer tu contraseña en unos minutos.</p>
+                <button type="button" class="auth-btn auth-btn--primary" id="forgotModalClose2">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---- Toast ---- -->
+    <div class="auth-toast" id="authToast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5" /></svg>
+        <span></span>
+    </div>
+
+    <!-- ---- Footer ---- -->
+    <footer class="auth-footer">
+        <div class="auth-footer__brand"></div>
+        <p class="auth-footer__copy">© @DateTime.Now.Year Escuela El Valle. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="~/js/acceso.js" asp-append-version="true"></script>
+</body>
+</html>

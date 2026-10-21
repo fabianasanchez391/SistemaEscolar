@@ -1,5 +1,4 @@
-﻿
-(function () {
+﻿(function () {
     "use strict";
 
     const ESTADOS = [
@@ -9,6 +8,7 @@
     ];
 
     const ESTUDIANTES_POR_PAGINA = 6;
+    const STORAGE_KEY = "asistencia_registros_v1";
 
     function hoyISO() {
         const d = new Date();
@@ -25,6 +25,22 @@
 
     function initials(name) {
         return name.split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+    }
+
+    // ---- Utilidades de DOM (las plantillas viven en el .cshtml) ----
+    // Clona el primer elemento de un <template>.
+    function clonar(idTemplate) {
+        return document.getElementById(idTemplate).content.firstElementChild.cloneNode(true);
+    }
+
+    // Busca dentro de una plantilla clonada el elemento marcado con data-ref="nombre".
+    function ref(raiz, nombre) {
+        return raiz.querySelector(`[data-ref="${nombre}"]`);
+    }
+
+    // Muestra u oculta un elemento mediante la clase .is-hidden (definida en el CSS).
+    function mostrar(el, visible) {
+        el.classList.toggle("is-hidden", !visible);
     }
 
     // ---- Generador de historial de ejemplo para los últimos N días hábiles ----
@@ -97,9 +113,7 @@
     // ---- Estado ----
     let vistaActual = "secciones"; // "secciones" | "estudiantes"
     let seccionSeleccionadaId = null;
-    let seccionSearch = "";
     let estudianteSearch = "";
-    let estadoFilter = "todos";
     let fechaSeleccionada = hoyISO();
     let paginaActual = 1;
 
@@ -109,7 +123,6 @@
     const seccionesGrid = document.getElementById("seccionesGrid");
     const seccionesEmptyState = document.getElementById("seccionesEmptyState");
     const seccionesCount = document.getElementById("seccionesCount");
-    const seccionSearchInput = document.getElementById("seccionSearchInput");
 
     const estudiantesTableBody = document.getElementById("estudiantesTableBody");
     const estudiantesEmptyState = document.getElementById("estudiantesEmptyState");
@@ -117,10 +130,7 @@
     const seccionActualLabel = document.getElementById("seccionActualLabel");
 
     const btnVolverSecciones = document.getElementById("btnVolverSecciones");
-    const filtrosPanel = document.getElementById("filtrosPanel");
-    const accionesRapidasPanel = document.getElementById("accionesRapidasPanel");
     const estudianteSearchInput = document.getElementById("estudianteSearchInput");
-    const estadoFilterSelect = document.getElementById("estadoFilter");
     const fechaAsistenciaInput = document.getElementById("fechaAsistenciaInput");
 
     const moduleHero = document.getElementById("moduleHero");
@@ -186,8 +196,6 @@
     // AsistenciaController (guardar y consultar por fecha en la BD).
     // Mientras tanto, se guarda en localStorage para que la asistencia
     // quede registrada y se pueda consultar al volver a una fecha pasada.
-    const STORAGE_KEY = "asistencia_registros_v1";
-
     function cargarAsistenciaGuardada() {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
@@ -211,11 +219,10 @@
     // VISTA 1: SECCIONES
     // =========================================================
     function getSeccionesFiltradas() {
-        const q = seccionSearch.trim().toLowerCase();
-        return seccionesData.filter(s => !q || s.nombre.toLowerCase().includes(q));
+        return seccionesData;
     }
 
-    function seccionCardHtml(s, idx) {
+    function crearSeccionCard(s, idx) {
         const activos = estudiantesActivos(s);
         const estadosHoy = activos.map(e => estadoDelDia(e, fechaSeleccionada));
         const registrados = estadosHoy.filter(x => x !== null).length;
@@ -223,43 +230,32 @@
         const pct = registrados ? Math.round((presentesTardias / registrados) * 100) : 0;
         const ausentesHoy = estadosHoy.filter(x => x === "ausente").length;
         const c = colorIndex(s.nombre + idx);
-        return `
-            <div class="seccion-card" data-id="${s.id}">
-                <div class="seccion-card__accent accent--${c}"></div>
-                <div class="seccion-card__body">
-                    <div class="seccion-card__icon accent--${c}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
-                    </div>
-                    <div>
-                        <div class="seccion-card__name">${s.nombre}</div>
-                    </div>
-                    <div class="seccion-card__progress">
-                        <div class="seccion-card__progress-fill ${ausentesHoy > 0 ? "fill--riesgo" : ""}" style="width:${Math.max(4, pct)}%;"></div>
-                    </div>
-                    <div class="seccion-card__meta">
-                        <span>${activos.length} estudiante(s) activo(s)</span>
-                        <span class="seccion-card__prom ${ausentesHoy > 0 ? "prom--riesgo" : ""}">${ausentesHoy} ausente(s) hoy</span>
-                    </div>
-                </div>
-            </div>`;
+
+        const card = clonar("tplSeccionCard");
+        card.dataset.id = s.id;
+        ref(card, "accent").classList.add(`accent--${c}`);
+        ref(card, "icon").classList.add(`accent--${c}`);
+        ref(card, "nombre").textContent = s.nombre;
+
+        const progreso = ref(card, "progreso");
+        progreso.value = Math.max(4, pct);
+        progreso.classList.toggle("fill--riesgo", ausentesHoy > 0);
+
+        ref(card, "activos").textContent = `${activos.length} estudiante(s) activo(s)`;
+        const chipAusentes = ref(card, "ausentes");
+        chipAusentes.textContent = `${ausentesHoy} ausente(s) hoy`;
+        chipAusentes.classList.toggle("prom--riesgo", ausentesHoy > 0);
+
+        card.addEventListener("click", () => abrirSeccion(s.id));
+        return card;
     }
 
     function renderSecciones() {
         const list = getSeccionesFiltradas();
-        seccionesGrid.innerHTML = list.map((s, i) => seccionCardHtml(s, i)).join("");
-        seccionesEmptyState.style.display = list.length === 0 ? "block" : "none";
+        seccionesGrid.replaceChildren(...list.map((s, i) => crearSeccionCard(s, i)));
+        seccionesEmptyState.classList.toggle("is-visible", list.length === 0);
         seccionesCount.textContent = `${list.length} sección(es)`;
-
-        seccionesGrid.querySelectorAll(".seccion-card").forEach(card => {
-            card.addEventListener("click", () => abrirSeccion(parseInt(card.dataset.id, 10)));
-        });
     }
-
-    let seccionSearchTimer;
-    seccionSearchInput.addEventListener("input", () => {
-        clearTimeout(seccionSearchTimer);
-        seccionSearchTimer = setTimeout(() => { seccionSearch = seccionSearchInput.value; renderSecciones(); }, 200);
-    });
 
     // =========================================================
     // VISTA 2: ESTUDIANTES ACTIVOS DE UNA SECCIÓN
@@ -268,10 +264,8 @@
         seccionSeleccionadaId = id;
         vistaActual = "estudiantes";
         estudianteSearch = "";
-        estadoFilter = "todos";
         paginaActual = 1;
         estudianteSearchInput.value = "";
-        estadoFilterSelect.value = "todos";
         actualizarVista();
     }
 
@@ -283,11 +277,9 @@
 
     function actualizarVista() {
         const enSeccion = vistaActual === "estudiantes";
-        moduleHero.style.display = enSeccion ? "none" : "flex";
-        seccionesView.style.display = enSeccion ? "none" : "block";
-        estudiantesView.style.display = enSeccion ? "block" : "none";
-        filtrosPanel.style.display = enSeccion ? "block" : "none";
-        accionesRapidasPanel.style.display = enSeccion ? "block" : "none";
+        mostrar(moduleHero, !enSeccion);
+        mostrar(seccionesView, !enSeccion);
+        mostrar(estudiantesView, enSeccion);
 
         if (enSeccion) {
             const seccion = seccionesData.find(s => s.id === seccionSeleccionadaId);
@@ -306,115 +298,117 @@
         const seccion = getSeccionActual();
         const q = estudianteSearch.trim().toLowerCase();
 
-        return estudiantesActivos(seccion).filter(e => {
-            const matchSearch = !q || e.nombre.toLowerCase().includes(q) || e.cedula.toLowerCase().includes(q);
-
-            let matchEstado = true;
-            if (estadoFilter !== "todos") {
-                const estado = estadoDelDia(e, fechaSeleccionada);
-                matchEstado = estadoFilter === "sinRegistrar" ? estado === null : estado === estadoFilter;
-            }
-
-            return matchSearch && matchEstado;
-        });
+        return estudiantesActivos(seccion).filter(e =>
+            !q || e.nombre.toLowerCase().includes(q) || e.cedula.toLowerCase().includes(q));
     }
 
-    function estadoBotonesHtml(estudiante) {
-        const actual = estadoDelDia(estudiante, fechaSeleccionada);
-        return `
-            <div class="estado-btns" data-id="${estudiante.id}">
-                ${ESTADOS.map(es => `
-                    <button class="estado-btn estado-btn--${es.color} ${actual === es.key ? "is-active" : ""}" data-estado="${es.key}" type="button" title="${es.label}">
-                        ${es.label}
-                    </button>`).join("")}
-            </div>`;
-    }
-
-    function mesBarraHtml(estudiante) {
+    // Rellena la mini barra del mes. Los tres <progress> están apilados y usan
+    // valores acumulados: ausente (100) > presente + tardía > solo presente.
+    function pintarResumenMes(fila, estudiante) {
         const r = resumenMes(estudiante, fechaSeleccionada);
-        if (r.total === 0) {
-            return `<div class="mes-resumen"><span class="mes-resumen__sin">Sin registros este mes</span></div>`;
-        }
-        return `
-            <div class="mes-resumen">
-                <div class="mes-resumen__bar">
-                    <span class="mes-seg mes-seg--presente" style="width:${(r.presentes / r.total) * 100}%"></span>
-                    <span class="mes-seg mes-seg--tardia" style="width:${(r.tardias / r.total) * 100}%"></span>
-                    <span class="mes-seg mes-seg--ausente" style="width:${(r.ausentes / r.total) * 100}%"></span>
-                </div>
-                <span class="mes-resumen__pct ${r.pct !== null && r.pct < 80 ? "pct--riesgo" : ""}">${fmtPct(r.pct)}</span>
-            </div>`;
+        const hayRegistros = r.total > 0;
+
+        mostrar(ref(fila, "mesSin"), !hayRegistros);
+        mostrar(ref(fila, "mesBar"), hayRegistros);
+        mostrar(ref(fila, "mesPct"), hayRegistros);
+        if (!hayRegistros) return;
+
+        ref(fila, "segTardia").value = ((r.presentes + r.tardias) / r.total) * 100;
+        ref(fila, "segPresente").value = (r.presentes / r.total) * 100;
+
+        const pctEl = ref(fila, "mesPct");
+        pctEl.textContent = fmtPct(r.pct);
+        pctEl.classList.toggle("pct--riesgo", r.pct !== null && r.pct < 80);
     }
 
-    function estudianteRowHtml(e, idx) {
+    function crearFilaEstudiante(e, idx) {
         const c = colorIndex(e.nombre + idx);
-        return `
-            <td>
-                <div class="user-cell">
-                    <div class="user-avatar accent--${c}">${initials(e.nombre)}</div>
-                    <span class="user-cell__name">${e.nombre}</span>
-                </div>
-            </td>
-            <td>${e.cedula}</td>
-            <td>${estadoBotonesHtml(e)}</td>
-            <td>${mesBarraHtml(e)}</td>
-            <td>
-                <div class="row-actions">
-                    <button class="row-action-btn view-btn" data-id="${e.id}" title="Ver historial" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-                    </button>
-                </div>
-            </td>`;
+        const fila = clonar("tplEstudianteRow");
+
+        const avatar = ref(fila, "avatar");
+        avatar.classList.add(`accent--${c}`);
+        avatar.textContent = initials(e.nombre);
+        ref(fila, "nombre").textContent = e.nombre;
+        ref(fila, "cedula").textContent = e.cedula;
+
+        // Botones de estado (presente / tardía / ausente)
+        const actual = estadoDelDia(e, fechaSeleccionada);
+        fila.querySelectorAll(".estado-btn").forEach(btn => {
+            btn.classList.toggle("is-active", btn.dataset.estado === actual);
+            btn.addEventListener("click", () => {
+                setEstadoDelDia(e, fechaSeleccionada, btn.dataset.estado);
+                persistirAsistencia();
+                renderEstudiantes();
+            });
+        });
+
+        pintarResumenMes(fila, e);
+
+        ref(fila, "verBtn").addEventListener("click", () => openDetailModal(e.id));
+        return fila;
+    }
+
+    // ---- Paginación compacta: 1 … 4 5 6 … 12 (no se desborda en móvil) ----
+    function paginasVisibles(actual, total) {
+        const set = new Set([1, total, actual - 1, actual, actual + 1]);
+        const pages = [...set].filter(p => p >= 1 && p <= total).sort((a, b) => a - b);
+        const out = [];
+        pages.forEach((p, i) => {
+            if (i && p - pages[i - 1] > 1) out.push("…");
+            out.push(p);
+        });
+        return out;
+    }
+
+    function crearBotonPagina(texto, opciones) {
+        const btn = clonar("tplPgBtn");
+        btn.textContent = texto;
+        btn.classList.toggle("is-active", !!opciones.activo);
+        btn.disabled = !!opciones.deshabilitado;
+        btn.addEventListener("click", opciones.alClic);
+        return btn;
     }
 
     function renderPaginacion(totalItems) {
         const totalPaginas = Math.max(1, Math.ceil(totalItems / ESTUDIANTES_POR_PAGINA));
         if (paginaActual > totalPaginas) paginaActual = totalPaginas;
 
-        let botones = `<button class="pg-btn" id="pgPrev" type="button" ${paginaActual === 1 ? "disabled" : ""}>‹</button>`;
-        for (let p = 1; p <= totalPaginas; p++) {
-            botones += `<button class="pg-btn ${p === paginaActual ? "is-active" : ""}" data-page="${p}" type="button">${p}</button>`;
-        }
-        botones += `<button class="pg-btn" id="pgNext" type="button" ${paginaActual === totalPaginas ? "disabled" : ""}>›</button>`;
+        const nodos = [];
 
-        estudiantesPagination.innerHTML = botones;
+        nodos.push(crearBotonPagina("‹", {
+            deshabilitado: paginaActual === 1,
+            alClic: () => { if (paginaActual > 1) { paginaActual--; renderEstudiantes(); } },
+        }));
 
-        document.getElementById("pgPrev").addEventListener("click", () => { if (paginaActual > 1) { paginaActual--; renderEstudiantes(); } });
-        document.getElementById("pgNext").addEventListener("click", () => { if (paginaActual < totalPaginas) { paginaActual++; renderEstudiantes(); } });
-        estudiantesPagination.querySelectorAll("[data-page]").forEach(btn => {
-            btn.addEventListener("click", () => { paginaActual = parseInt(btn.dataset.page, 10); renderEstudiantes(); });
+        paginasVisibles(paginaActual, totalPaginas).forEach(p => {
+            if (p === "…") {
+                nodos.push(clonar("tplPgDots"));
+            } else {
+                nodos.push(crearBotonPagina(String(p), {
+                    activo: p === paginaActual,
+                    alClic: () => { paginaActual = p; renderEstudiantes(); },
+                }));
+            }
         });
+
+        nodos.push(crearBotonPagina("›", {
+            deshabilitado: paginaActual === totalPaginas,
+            alClic: () => { if (paginaActual < totalPaginas) { paginaActual++; renderEstudiantes(); } },
+        }));
+
+        estudiantesPagination.replaceChildren(...nodos);
     }
 
     function renderEstudiantes() {
-        const seccion = getSeccionActual();
-
         const listCompleta = getEstudiantesFiltrados();
         const inicio = (paginaActual - 1) * ESTUDIANTES_POR_PAGINA;
         const listPagina = listCompleta.slice(inicio, inicio + ESTUDIANTES_POR_PAGINA);
 
-        estudiantesTableBody.innerHTML = listPagina.map((e, i) => `<tr>${estudianteRowHtml(e, inicio + i)}</tr>`).join("");
-        estudiantesEmptyState.style.display = listCompleta.length === 0 ? "block" : "none";
+        estudiantesTableBody.replaceChildren(...listPagina.map((e, i) => crearFilaEstudiante(e, inicio + i)));
+        estudiantesEmptyState.classList.toggle("is-visible", listCompleta.length === 0);
         estudiantesResultsCount.textContent = `Mostrando ${listPagina.length} de ${listCompleta.length} estudiantes`;
 
         renderPaginacion(listCompleta.length);
-
-        // Botones de estado (presente / tardía / ausente) por fila
-        estudiantesTableBody.querySelectorAll(".estado-btns").forEach(group => {
-            const id = parseInt(group.dataset.id, 10);
-            const estudiante = seccion.estudiantes.find(e => e.id === id);
-            group.querySelectorAll(".estado-btn").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    setEstadoDelDia(estudiante, fechaSeleccionada, btn.dataset.estado);
-                    persistirAsistencia();
-                    renderEstudiantes();
-                });
-            });
-        });
-
-        estudiantesTableBody.querySelectorAll(".view-btn").forEach(el => {
-            el.addEventListener("click", () => openDetailModal(parseInt(el.dataset.id, 10)));
-        });
     }
 
     // ---- Selector de fecha ----
@@ -425,23 +419,7 @@
         else renderSecciones();
     });
 
-    // ---- Filtros del panel lateral ----
-    document.getElementById("btnAplicarFiltros").addEventListener("click", () => {
-        estudianteSearch = estudianteSearchInput.value;
-        estadoFilter = estadoFilterSelect.value;
-        paginaActual = 1;
-        renderEstudiantes();
-    });
-
-    document.getElementById("btnLimpiarFiltros").addEventListener("click", () => {
-        estudianteSearch = "";
-        estadoFilter = "todos";
-        paginaActual = 1;
-        estudianteSearchInput.value = "";
-        estadoFilterSelect.value = "todos";
-        renderEstudiantes();
-    });
-
+    // ---- Buscador (filtra mientras se escribe) ----
     let estudianteSearchTimer;
     estudianteSearchInput.addEventListener("input", () => {
         clearTimeout(estudianteSearchTimer);
@@ -450,7 +428,7 @@
 
     btnVolverSecciones.addEventListener("click", volverASecciones);
 
-    // ---- Acciones rápidas ----
+    // ---- Marcar todos presentes ----
     document.getElementById("btnMarcarTodosPresentes").addEventListener("click", () => {
         const seccion = getSeccionActual();
         if (!confirm(`¿Marcar como presentes a todos los estudiantes activos de ${seccion.nombre} para el ${fmtFechaLarga(fechaSeleccionada)}?`)) return;
@@ -467,23 +445,29 @@
         // TODO: reemplazar por llamada real al AsistenciaController (POST)
     });
 
-    // ---- Tip panel ----
-    document.getElementById("tipCloseBtn").addEventListener("click", () => {
-        document.getElementById("tipPanel").style.display = "none";
-    });
-
     // =========================================================
     // MODAL: HISTORIAL DE ASISTENCIA
     // =========================================================
     const detailModal = document.getElementById("detailModal");
-    const historialResumen = document.getElementById("historialResumen");
     const historialList = document.getElementById("historialList");
+    const historialEmpty = document.getElementById("historialEmpty");
+    const histPresentes = document.getElementById("histPresentes");
+    const histTardias = document.getElementById("histTardias");
+    const histAusentes = document.getElementById("histAusentes");
+    const histPct = document.getElementById("histPct");
     let estudianteActualId = null;
 
-    function badgeEstado(estado) {
-        if (!estado) return `<span class="hist-badge hist-badge--sin">Sin registrar</span>`;
+    function aplicarBadgeEstado(badge, estado) {
         const es = ESTADOS.find(x => x.key === estado);
-        return `<span class="hist-badge hist-badge--${es.color}">${es.label}</span>`;
+        badge.classList.add(es ? `hist-badge--${es.color}` : "hist-badge--sin");
+        badge.textContent = es ? es.label : "Sin registrar";
+    }
+
+    function crearFilaHistorial(estudiante, fecha) {
+        const fila = clonar("tplHistRow");
+        ref(fila, "fecha").textContent = fmtFechaLarga(fecha);
+        aplicarBadgeEstado(ref(fila, "badge"), estudiante.asistencia[fecha]);
+        return fila;
     }
 
     function renderHistorial() {
@@ -496,19 +480,13 @@
         const ausentes = registros.filter(f => estudiante.asistencia[f] === "ausente").length;
         const pct = total ? Math.round(((presentes + tardias) / total) * 100) : null;
 
-        historialResumen.innerHTML = `
-            <div class="historial-resumen__item"><span class="legend-dot legend-dot--presente"></span>${presentes} presente(s)</div>
-            <div class="historial-resumen__item"><span class="legend-dot legend-dot--tardia"></span>${tardias} tardía(s)</div>
-            <div class="historial-resumen__item"><span class="legend-dot legend-dot--ausente"></span>${ausentes} ausente(s)</div>
-            <div class="historial-resumen__pct">Asistencia: <strong>${fmtPct(pct)}</strong></div>`;
+        histPresentes.textContent = presentes;
+        histTardias.textContent = tardias;
+        histAusentes.textContent = ausentes;
+        histPct.textContent = fmtPct(pct);
 
-        historialList.innerHTML = registros.length
-            ? registros.map(f => `
-                <div class="hist-row">
-                    <span class="hist-row__fecha">${fmtFechaLarga(f)}</span>
-                    ${badgeEstado(estudiante.asistencia[f])}
-                </div>`).join("")
-            : `<div style="font-size:12.5px;color:var(--ink-500);text-align:center;padding:20px 0;">Aún no hay registros de asistencia para este estudiante.</div>`;
+        historialList.replaceChildren(...registros.map(f => crearFilaHistorial(estudiante, f)));
+        mostrar(historialEmpty, registros.length === 0);
     }
 
     function openDetailModal(id) {

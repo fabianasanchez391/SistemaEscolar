@@ -1,18 +1,17 @@
-﻿
-
-/* ---------- Layout general: contenido + panel lateral ---------- */
+﻿/* ---------- Layout general: una sola columna a todo el ancho ---------- */
 .estudiantes-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
-    gap: 20px;
-    align-items: start;
+    display: block;
+    min-width: 0;
 }
 
-    /* Corrige el "grid blowout": sin esto, la tabla con min-width
-       empuja todo el layout a desbordarse en pantallas angostas. */
-    .estudiantes-layout > * {
+    .estudiantes-layout > div {
         min-width: 0;
     }
+
+/* ---------- Utilidad (la usa el JS para mostrar/ocultar sin estilos en línea) ---------- */
+.is-hidden {
+    display: none !important;
+}
 
 /* ---------- Hero ---------- */
 .module-hero {
@@ -232,6 +231,13 @@
     background: #fff;
 }
 
+/* Botón de guardar de los modales (antes tenía estilos en línea) */
+.btn--primary {
+    background: var(--blue-600);
+    border-color: var(--blue-600);
+    color: #fff;
+}
+
 .main-actions-bar__right {
     display: flex;
     gap: 10px;
@@ -242,6 +248,32 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 16px;
+}
+
+/* Paleta de colores que rota entre las tarjetas (el JS solo asigna la clase) */
+.section-color--0 {
+    --card-from: #8b7cf6;
+    --card-to: #5b4bd6;
+}
+
+.section-color--1 {
+    --card-from: #ff8a7a;
+    --card-to: #ef5b4e;
+}
+
+.section-color--2 {
+    --card-from: #2dd4bf;
+    --card-to: #0f9c8f;
+}
+
+.section-color--3 {
+    --card-from: #4c86f5;
+    --card-to: #2f6fed;
+}
+
+.section-color--4 {
+    --card-from: #ffb84c;
+    --card-to: #f5910b;
 }
 
 .section-card {
@@ -348,20 +380,34 @@
         flex-shrink: 0;
     }
 
+/* Barra de progreso: se usa <progress> para no necesitar estilos en línea */
 .section-card__progress {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
     height: 7px;
+    border: none;
     border-radius: 999px;
     background: var(--paper);
     overflow: hidden;
     margin-top: 2px;
 }
 
-.section-card__progress-fill {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #34c759, #22b573);
-    transition: width 0.3s ease;
-}
+    .section-card__progress::-webkit-progress-bar {
+        background: var(--paper);
+        border-radius: 999px;
+    }
+
+    .section-card__progress::-webkit-progress-value {
+        border-radius: 999px;
+        background: linear-gradient(90deg, #34c759, #22b573);
+    }
+
+    .section-card__progress::-moz-progress-bar {
+        border-radius: 999px;
+        background: linear-gradient(90deg, #34c759, #22b573);
+    }
 
 .section-card__footer {
     display: flex;
@@ -646,19 +692,29 @@
         color: var(--purple-600);
     }
 
-.table-pagination {
+/* ---------- Pie de tabla: conteo a la izquierda, paginación a la derecha ----------
+   Mismo diseño que el módulo de asistencia. Está fuera de la tabla (no es un
+   <tfoot>) para que no se desborde ni se corte con el scroll horizontal en
+   pantallas pequeñas. */
+.table-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
     padding: 14px 20px;
+    border-top: 1px solid var(--line);
     font-size: 12.5px;
     color: var(--ink-500);
-    flex-wrap: wrap;
-    gap: 10px;
 }
+
+    .table-footer .pagination-btns {
+        justify-content: flex-end;
+    }
 
 .pagination-btns {
     display: flex;
+    justify-content: center;
     gap: 6px;
     flex-wrap: wrap;
 }
@@ -668,7 +724,7 @@
     height: 30px;
     padding: 0 8px;
     border-radius: 8px;
-    border: 1px solid var(--line);
+    border: 1px solid #afb1b8;
     background: #fff;
     font-size: 12.5px;
     font-weight: 600;
@@ -682,6 +738,17 @@
         color: #fff;
     }
 
+    .pg-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+.pg-dots {
+    align-self: center;
+    padding: 0 2px;
+    color: var(--ink-500);
+}
+
 .empty-state {
     text-align: center;
     padding: 50px 20px;
@@ -689,6 +756,10 @@
     font-size: 13.5px;
     display: none;
 }
+
+    .empty-state.is-visible {
+        display: block;
+    }
 
     .empty-state svg {
         width: 42px;
@@ -704,42 +775,33 @@
     border-radius: var(--radius-lg);
 }
 
-/* ---------- Panel lateral: filtros ---------- */
-.side-panel {
+/* ---------- Barra de filtros ---------- */
+.filters-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    margin-bottom: 16px;
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
-    padding: 20px;
-    margin-bottom: 18px;
 }
-
-.side-panel__title {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 14.5px;
-    font-weight: 700;
-    color: var(--ink-900);
-    margin-bottom: 16px;
-}
-
-    .side-panel__title svg {
-        width: 18px;
-        height: 18px;
-        color: var(--blue-600);
-        flex-shrink: 0;
-    }
 
 .filter-search {
+    flex: 1 1 280px;
     display: flex;
     align-items: center;
     gap: 9px;
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 16px;
+    padding: 0 12px;
+    min-height: 40px;
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
 }
 
     .filter-search svg {
@@ -761,23 +823,24 @@
     }
 
 .filter-group {
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    margin: 0;
 }
-
-    .filter-group:last-of-type {
-        margin-bottom: 0;
-    }
 
     .filter-group label {
         display: block;
-        font-size: 12px;
+        font-size: 11.5px;
         font-weight: 700;
         color: var(--ink-700);
-        margin-bottom: 7px;
+        margin-bottom: 5px;
     }
 
     .filter-group select {
         width: 100%;
+        min-height: 40px;
+        box-sizing: border-box;
         border: 1.5px solid var(--line);
         border-radius: 10px;
         padding: 9px 12px;
@@ -796,111 +859,42 @@
 .filter-actions {
     display: flex;
     gap: 8px;
-    margin-top: 18px;
 }
 
     .filter-actions .btn {
-        flex: 1;
-        justify-content: center;
-        padding: 9px;
+        min-height: 40px;
+        padding: 9px 16px;
         font-size: 12.5px;
+        justify-content: center;
     }
 
-/* ---------- Panel: acciones rápidas ---------- */
-.quick-action-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 11px 14px;
-    border-radius: 11px;
-    border: none;
-    font-size: 13px;
-    font-weight: 700;
-    font-family: inherit;
-    color: #fff;
-    cursor: pointer;
-    margin-bottom: 9px;
-    transition: filter 0.15s ease, transform 0.15s ease;
-}
-
-    .quick-action-btn:last-child {
-        margin-bottom: 0;
-    }
-
-    .quick-action-btn svg {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-    }
-
-    .quick-action-btn:hover {
-        filter: brightness(0.95);
-        transform: translateY(-1px);
-    }
-
-.quick-action-btn--section {
+/* Botones de registro (antes "Acciones rápidas") */
+.btn--violet {
     background: linear-gradient(135deg, #7c6bf0, #5b4bd6);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(91, 75, 214, 0.3);
 }
 
-.quick-action-btn--student {
+    .btn--violet:hover {
+        box-shadow: 0 8px 20px rgba(91, 75, 214, 0.4);
+    }
+
+.btn--blue {
     background: linear-gradient(135deg, #4c86f5, #2f6fed);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(47, 111, 237, 0.3);
 }
 
-/* ---------- Panel: recordatorio ---------- */
-.tip-panel {
-    background: var(--blue-100);
-    border: 1px solid #cfe0fb;
-    border-radius: var(--radius-lg);
-    padding: 16px 18px;
+    .btn--blue:hover {
+        box-shadow: 0 8px 20px rgba(47, 111, 237, 0.4);
+    }
+
+.main-actions-bar__left {
     display: flex;
-    gap: 12px;
-    position: relative;
-}
-
-.tip-panel__icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: var(--blue-600);
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-}
-
-    .tip-panel__icon svg {
-        width: 17px;
-        height: 17px;
-        color: #fff;
-    }
-
-.tip-panel__text {
-    min-width: 0;
-}
-
-    .tip-panel__text h4 {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--ink-900);
-        margin: 0 0 4px;
-    }
-
-    .tip-panel__text p {
-        font-size: 12px;
-        color: var(--ink-700);
-        line-height: 1.5;
-        margin: 0;
-    }
-
-.tip-panel__close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--ink-500);
-    padding: 4px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 /* ---------- Modales ---------- */
@@ -927,6 +921,15 @@
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 25px 70px rgba(10, 16, 33, 0.3);
+}
+
+/* Anchos propios de cada modal (antes con estilo en línea) */
+.modal-card--seccion {
+    max-width: 480px;
+}
+
+.modal-card--detalle {
+    max-width: 440px;
 }
 
 .modal-card__head {
@@ -1119,6 +1122,7 @@
     gap: 18px;
     box-shadow: 0 25px 70px rgba(10, 16, 33, 0.3);
     animation: toastPop 0.18s ease;
+    max-width: 100%;
 }
 
 .toast-success-icon {
@@ -1156,20 +1160,53 @@
     }
 }
 
+/* ---------- Vista enfocada: dentro de una sección ----------
+   Solo se ven: buscador, "Volver a secciones", registrar estudiante, exportar y la tabla. */
+.estudiantes-layout.is-section-focus .module-hero,
+.estudiantes-layout.is-section-focus .role-stats-row,
+.estudiantes-layout.is-section-focus .section-header,
+.estudiantes-layout.is-section-focus .filter-group,
+.estudiantes-layout.is-section-focus .filter-actions,
+.estudiantes-layout.is-section-focus #qaSeccion {
+    display: none;
+}
+
+/* "Volver" a la izquierda; "Registrar estudiante" y "Exportar" a la derecha en la misma fila; la tabla debajo */
+.estudiantes-layout.is-section-focus #estudiantesView {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 12px;
+    align-items: center;
+}
+
+    .estudiantes-layout.is-section-focus #estudiantesView .back-btn {
+        justify-self: start;
+    }
+
+    .estudiantes-layout.is-section-focus #estudiantesView .main-actions-bar {
+        justify-content: flex-end;
+    }
+
+    .estudiantes-layout.is-section-focus #estudiantesView .table-card {
+        grid-column: 1 / -1;
+    }
+
+@media (max-width: 640px) {
+    .estudiantes-layout.is-section-focus #estudiantesView {
+        grid-template-columns: 1fr;
+    }
+
+        .estudiantes-layout.is-section-focus #estudiantesView .table-card {
+            grid-column: auto;
+        }
+}
+
 /* =========================================================
    Responsive
    Mismos quiebres que el módulo de Usuarios: 991 / 768 / 640 / 420 / 360
    ========================================================= */
 
 @media (max-width: 991px) {
-    .estudiantes-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .side-panel {
-        order: 2;
-    }
-
     .module-hero__illustration {
         width: 100px;
     }
@@ -1195,6 +1232,10 @@
             flex: 1;
             justify-content: center;
         }
+
+    .filters-bar {
+        padding: 14px 16px;
+    }
 
     .section-header {
         align-items: flex-start;
@@ -1240,15 +1281,37 @@
         grid-template-columns: 1fr;
     }
 
-    .table-pagination {
-        justify-content: center;
-        text-align: center;
+    .main-actions-bar__left {
         flex-direction: column;
     }
 
-    .pagination-btns {
-        justify-content: center;
+    .filter-group {
         width: 100%;
+    }
+
+    .filter-actions {
+        width: 100%;
+    }
+
+        .filter-actions .btn {
+            flex: 1;
+        }
+
+    /* Pie de tabla: conteo arriba y paginación centrada debajo */
+    .table-footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 14px 16px;
+    }
+
+        .table-footer .pagination-btns {
+            justify-content: center;
+        }
+
+    .pg-btn {
+        min-width: 36px;
+        height: 36px;
     }
 
     .modal-overlay {
@@ -1285,7 +1348,7 @@
         display: none;
     }
 
-    .role-stat-card, .section-card, .side-panel {
+    .role-stat-card, .section-card {
         padding: 14px 16px;
     }
 
@@ -1300,6 +1363,10 @@
     .row-action-btn {
         width: 28px;
         height: 28px;
+    }
+
+    .toast-success-card {
+        padding: 28px 24px;
     }
 }
 

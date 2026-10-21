@@ -1,8 +1,12 @@
 wwwroot\css\acceso.css
 wwwroot\css\asistencia.css
+wwwroot\css\boletas.css
+wwwroot\css\calendario.css
 wwwroot\css\calificaciones.css
 wwwroot\css\editarperfil.css
 wwwroot\css\estudiantes.css
+wwwroot\css\justificaciones.css
+wwwroot\css\materiales.css
 wwwroot\css\perfiles.css
 wwwroot\css\sidebar.css
 wwwroot\css\sitio.css
@@ -10,9 +14,13 @@ wwwroot\css\usuarios.css
 wwwroot\favicon.ico
 wwwroot\js\acceso.js
 wwwroot\js\asistencia.js
+wwwroot\js\boletas.js
+wwwroot\js\calendario.js
 wwwroot\js\calificaciones.js
 wwwroot\js\editarperfil.js
 wwwroot\js\estudiantes.js
+wwwroot\js\justificaciones.js
+wwwroot\js\materiales.js
 wwwroot\js\perfiles.js
 wwwroot\js\sidebar.js
 wwwroot\js\sitio.js
@@ -139,19 +147,27 @@ C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\j
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.slim.min.js
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\dist\jquery.slim.min.map
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\lib\jquery\LICENSE.txt
-C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\asistencia.js
-C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\sidebar.js
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\asistencia.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\sidebar.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\asistencia.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\estudiantes.js
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\perfiles.js
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\perfiles.css
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\estudiantes.css
-C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\estudiantes.js
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\sitio.css
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\acceso.css
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\sidebar.css
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\sitio.js
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\usuarios.css
-C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\calificaciones.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\calificaciones.css
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\usuarios.js
 C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\acceso.js
-C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\calificaciones.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\calificaciones.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\justificaciones.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\justificaciones.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\boletas.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\boletas.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\materiales.css
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\materiales.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\js\calendario.js
+C:\Users\arias\OneDrive\Escritorio\Sistema Escolar\Sistema_Escolar\wwwroot\css\calendario.css

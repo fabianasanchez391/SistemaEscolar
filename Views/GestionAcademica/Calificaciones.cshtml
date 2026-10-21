@@ -39,19 +39,8 @@
 
         <!-- ---- VISTA 1: Grid de secciones ---- -->
         <div id="seccionesView">
-            <div class="stats-row" id="seccionesStats"></div>
-
-            <div class="main-actions-bar">
-                <label class="filter-search filter-search--inline">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                    <input type="search" id="seccionSearchInput" placeholder="Buscar sección..." />
-                </label>
-                <div class="main-actions-bar__right">
-                    <span class="active-filter-tag" id="riesgoFilterTag" style="display:none;">
-
-                    </span>
-                    <span class="results-tag" id="seccionesCount">0 secciones</span>
-                </div>
+            <div class="main-actions-bar main-actions-bar--end">
+                <span class="results-tag" id="seccionesCount">0 secciones</span>
             </div>
 
             <div class="secciones-grid" id="seccionesGrid"></div>
@@ -63,15 +52,20 @@
         </div>
 
         <!-- ---- VISTA 2: Tabla de estudiantes de una sección ---- -->
-        <div id="estudiantesView" style="display:none;">
+        <div id="estudiantesView" class="is-hidden">
 
             <div class="main-actions-bar">
                 <div class="seccion-actual-group">
-                    <button class="btn btn--outline" id="btnVolverSecciones" type="button">
+                    <button class="btn btn--back" id="btnVolverSecciones" type="button">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6" /></svg>
                         Volver a secciones
                     </button>
-                    <div class="seccion-actual" id="seccionActualLabel"></div>
+                    <div class="seccion-actual" id="seccionActualLabel">
+                        <span class="seccion-actual__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
+                        </span>
+                        <span class="seccion-actual__name" id="seccionActualNombre"></span>
+                    </div>
                 </div>
                 <div class="main-actions-bar__right">
                     <button class="btn btn--outline" id="btnExportSeccion" type="button">
@@ -81,9 +75,15 @@
                 </div>
             </div>
 
-            <div class="stats-row" id="estudiantesStats"></div>
-
             <div class="table-card">
+                <!-- Barra de búsqueda sobre la tabla -->
+                <div class="table-toolbar">
+                    <label class="filter-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                        <input type="search" id="estudianteSearchInput" placeholder="Buscar por nombre o cédula..." />
+                    </label>
+                </div>
+
                 <div class="table-card__legend">
                     <span class="legend-item"><span class="legend-dot legend-dot--bien"></span>Aprobado (≥ 70)</span>
                     <span class="legend-item"><span class="legend-dot legend-dot--riesgo"></span>En riesgo (&lt; 70)</span>
@@ -112,80 +112,21 @@
                     <div>No se encontraron estudiantes con los filtros seleccionados.</div>
                 </div>
 
-                <div class="table-pagination">
-                    <span id="estudiantesResultsCount">Mostrando 0 de 0 estudiantes</span>
+                <!-- Pie de tabla: conteo y paginación (fuera de la tabla para que se acomode en responsive) -->
+                <div class="table-footer">
+                    <span class="pg-info" id="estudiantesResultsCount">Mostrando 0 de 0 estudiantes</span>
                     <div class="pagination-btns" id="estudiantesPagination"></div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- =================== PANEL LATERAL =================== -->
-    <aside>
-        <!-- ---- Filtros (solo visibles dentro de una sección) ---- -->
-        <div class="side-panel" id="filtrosPanel" style="display:none;">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
-                Filtros de búsqueda
-            </div>
-
-            <label class="filter-search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                <input type="search" id="estudianteSearchInput" placeholder="Buscar por nombre o cédula..." />
-            </label>
-
-            <div class="filter-group">
-                <label for="materiaFilter">Materia a resaltar</label>
-                <select id="materiaFilter">
-                    <option value="todas">Todas</option>
-                    <option value="Español">Español</option>
-                    <option value="Estudios Sociales">Estudios Sociales</option>
-                    <option value="Ciencias">Ciencias</option>
-                    <option value="Matemáticas">Matemáticas</option>
-                    <option value="Inglés">Inglés</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="rendimientoFilter">Rendimiento</label>
-                <select id="rendimientoFilter">
-                    <option value="todos">Todos</option>
-                    <option value="aprobado">Promedio aprobado (≥ 70)</option>
-                    <option value="riesgo">En riesgo (&lt; 70)</option>
-                </select>
-            </div>
-
-            <div class="filter-actions">
-                <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
-                    Limpiar
-                </button>
-                <button class="btn btn--success" id="btnAplicarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                    Aplicar
-                </button>
-            </div>
-        </div>
-
-        <!-- ---- Recordatorio ---- -->
-        <div class="tip-panel" id="tipPanel">
-            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-            </button>
-            <div class="tip-panel__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
-            </div>
-            <div class="tip-panel__text">
-                <h4>Recuerda</h4>
-                <p>El promedio de cada materia se calcula con las notas de <strong>exámenes, tareas, extraclases y cotidiano</strong>. Puede agregar o editar notas desde el detalle de cada estudiante.</p>
-            </div>
-        </div>
-    </aside>
 </div>
 
 <!-- =================== MODAL DETALLE DE CALIFICACIONES =================== -->
 <div class="modal-overlay" id="detailModal">
-    <div class="modal-card" style="max-width:640px;">
+    <div class="modal-card modal-card--calif">
         <div class="modal-card__head head-calif">
             <div class="modal-card__head-info">
                 <div class="modal-card__head-icon">
@@ -193,7 +134,7 @@
                 </div>
                 <div>
                     <h2 id="detailModalTitle">Detalle de calificaciones</h2>
-                    <p id="detailModalSubtitle">Estudiante <span class="modal-mode-badge" id="modalModeBadge"></span></p>
+                    <p><span id="detailModalSubtitle">Estudiante</span> <span class="modal-mode-badge" id="modalModeBadge"></span></p>
                 </div>
             </div>
             <button class="modal-close" id="detailModalCloseBtn" type="button" aria-label="Cerrar">
@@ -209,6 +150,114 @@
         </div>
     </div>
 </div>
+
+<!-- =========================================================
+     PLANTILLAS HTML
+     El JS solo las clona y rellena con textos; no construye HTML.
+     ========================================================= -->
+<!-- Tarjeta de sección -->
+<template id="tplSeccionCard">
+    <div class="seccion-card">
+        <div class="seccion-card__accent" data-ref="accent"></div>
+        <div class="seccion-card__body">
+            <div class="seccion-card__icon" data-ref="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
+            </div>
+            <div>
+                <div class="seccion-card__name" data-ref="nombre"></div>
+            </div>
+            <progress class="seccion-card__progress" data-ref="progreso" max="100" value="0"></progress>
+            <div class="seccion-card__meta">
+                <span data-ref="total"></span>
+                <span class="seccion-card__prom" data-ref="prom"></span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Fila de estudiante (una celda por materia, en el mismo orden del encabezado) -->
+<template id="tplEstudianteRow">
+    <tr>
+        <td>
+            <div class="user-cell">
+                <div class="user-avatar" data-ref="avatar"></div>
+                <span class="user-cell__name" data-ref="nombre"></span>
+            </div>
+        </td>
+        <td data-ref="cedula"></td>
+        <td class="grade-cell" data-ref="materia0"></td>
+        <td class="grade-cell" data-ref="materia1"></td>
+        <td class="grade-cell" data-ref="materia2"></td>
+        <td class="grade-cell" data-ref="materia3"></td>
+        <td class="grade-cell" data-ref="materia4"></td>
+        <td class="grade-cell"><span class="prom-pill" data-ref="promedio"></span></td>
+        <td>
+            <div class="row-actions">
+                <button class="row-action-btn view-btn" data-ref="viewBtn" title="Ver notas" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                </button>
+                <button class="row-action-btn edit-btn" data-ref="editBtn" title="Agregar notas" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<!-- Pestaña de materia del modal -->
+<template id="tplMateriaTab">
+    <button class="materia-tab" type="button"></button>
+</template>
+
+<!-- Panel de una materia del modal (el JS le agrega los bloques de evaluación) -->
+<template id="tplMateriaPanel">
+    <div class="materia-panel">
+        <div class="materia-panel__promedio">
+            <span data-ref="label"></span>
+            <strong data-ref="prom"></strong>
+        </div>
+    </div>
+</template>
+
+<!-- Bloque de un tipo de evaluación (exámenes, tareas, etc.) -->
+<template id="tplEvalBlock">
+    <div class="eval-block">
+        <div class="eval-block__head">
+            <span class="eval-block__title" data-ref="titulo"></span>
+            <span class="eval-block__prom" data-ref="prom"></span>
+        </div>
+        <div class="eval-notas" data-ref="notas"></div>
+        <span class="eval-notas-empty" data-ref="vacio">Sin notas registradas.</span>
+        <form class="eval-add-form" data-ref="form">
+            <input class="eval-add-form__nota" data-ref="notaInput" type="number" min="0" max="100" step="0.1" placeholder="Nueva nota (0-100)" required />
+            <input class="eval-add-form__obs" data-ref="obsInput" type="text" maxlength="200" placeholder="Observación (opcional)" />
+            <button type="submit">Agregar</button>
+        </form>
+    </div>
+</template>
+
+<!-- Una nota con su observación (el JS muestra el campo editable o el texto según el modo) -->
+<template id="tplEvalNota">
+    <div class="eval-nota">
+        <span class="eval-nota-chip" data-ref="chip">
+            <span data-ref="valor"></span>
+            <button class="eval-nota-chip__remove" data-ref="quitar" title="Eliminar nota" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </span>
+        <input class="eval-nota-obs" data-ref="obsInput" type="text" maxlength="200" placeholder="Añadir observación..." />
+        <span class="eval-nota-obs-text" data-ref="obsTexto"></span>
+    </div>
+</template>
+
+<!-- Paginación (mismo diseño que el módulo de asistencia) -->
+<template id="tplPgBtn">
+    <button class="pg-btn" type="button"></button>
+</template>
+
+<template id="tplPgDots">
+    <span class="pg-dots">…</span>
+</template>
 
 @section Scripts {
     <!-- Librería para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->

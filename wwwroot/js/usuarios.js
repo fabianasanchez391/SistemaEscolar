@@ -1,5 +1,4 @@
-﻿
-(function () {
+﻿(function () {
     "use strict";
 
     // ---- Catálogo de grupos (para la asignación de docentes) ----
@@ -9,10 +8,29 @@
     GRADOS.forEach(g => SECCIONES.forEach(s => gruposCatalogo.push(`${g}${s}`)));
     const MAX_GRUPOS = 3;
 
+    // Cantidad de usuarios por página (igual que en el módulo de asistencia)
+    const USUARIOS_POR_PAGINA = 6;
+
     function grupoLabel(codigo) {
         const letra = codigo.slice(-1);
         const grado = codigo.slice(0, -1);
         return `${grado} - Grupo ${letra}`;
+    }
+
+    // ---- Utilidades de DOM (las plantillas viven en el .cshtml) ----
+    // Clona el primer elemento de un <template>.
+    function clonar(idTemplate) {
+        return document.getElementById(idTemplate).content.firstElementChild.cloneNode(true);
+    }
+
+    // Busca dentro de una plantilla clonada el elemento marcado con data-ref="nombre".
+    function ref(raiz, nombre) {
+        return raiz.querySelector(`[data-ref="${nombre}"]`);
+    }
+
+    // Muestra u oculta un elemento mediante la clase .is-hidden (definida en el CSS).
+    function mostrar(el, visible) {
+        el.classList.toggle("is-hidden", !visible);
     }
 
     // ---- Datos de ejemplo (modelo unificado) ----
@@ -34,64 +52,47 @@
     // "inactivo" es una pestaña especial: reúne usuarios de cualquier rol con activo === false,
     // separados por completo de las listas de activos (docente/admin solo muestran activos).
     let currentRole = "docente";
-    let currentSubFilter = "todos"; // grupo (docente) | no aplica (admin / inactivo)
     let currentSearch = "";
     let editingId = null;
+    let paginaActual = 1;
 
     // ---- Referencias DOM ----
-    const theadEl = document.getElementById("usersTableHead");
     const tbody = document.getElementById("usersTableBody");
     const emptyState = document.getElementById("emptyState");
-    const resultsCount = document.getElementById("resultsCount");
     const searchInput = document.getElementById("searchInput");
-    const grupoFilter = document.getElementById("grupoFilter");
-    const subFilterGroup = document.getElementById("subFilterGroup");
-    const subFilterLabel = document.getElementById("subFilterLabel");
     const roleStatsRow = document.getElementById("roleStatsRow");
-    const btnRegistrarUsuario = document.getElementById("btnRegistrarUsuario");
-    const btnRegistrarLabel = document.getElementById("btnRegistrarLabel");
+    const registrarGroup = document.getElementById("registrarGroup");
     const btnExportLabel = document.getElementById("btnExportLabel");
+    const usersResultsCount = document.getElementById("usersResultsCount");
+    const usersPagination = document.getElementById("usersPagination");
+    const tableHeadCells = document.querySelectorAll(".users-table thead [data-col]");
 
-    const avatarColorByRole = { docente: "#22b573", admin: "#5b6a91" };
     const rolLabelByRole = { docente: "Docente", admin: "Personal administrativo" };
     const rolBadgeClassByRole = { docente: "role-badge--docente", admin: "role-badge--admin" };
 
     // ---- Mensaje de confirmación centrado (éxito / error), desaparece solo a los 3s ----
+    const confirmOverlay = document.getElementById("confirmOverlay");
+    const confirmBox = document.getElementById("confirmBox");
+    const confirmMsg = document.getElementById("confirmMsg");
+    const confirmIconCheck = document.getElementById("confirmIconCheck");
+    const confirmIconX = document.getElementById("confirmIconX");
     let confirmTimer;
+
     function showToast(message, type) {
-        type = type === "error" ? "error" : "success";
+        const esError = type === "error";
 
-        let overlay = document.getElementById("confirmOverlay");
-        if (!overlay) {
-            overlay = document.createElement("div");
-            overlay.id = "confirmOverlay";
-            overlay.className = "confirm-overlay";
-            overlay.innerHTML = `
-                <div class="confirm-box">
-                    <div class="confirm-box__icon">
-                        <svg class="confirm-box__icon-svg" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"></svg>
-                    </div>
-                    <p class="confirm-box__msg"></p>
-                </div>`;
-            document.body.appendChild(overlay);
-        }
-
-        const box = overlay.querySelector(".confirm-box");
-        const iconSvg = overlay.querySelector(".confirm-box__icon-svg");
-
-        box.classList.remove("confirm-box--success", "confirm-box--error");
-        box.classList.add(type === "error" ? "confirm-box--error" : "confirm-box--success");
+        confirmBox.classList.toggle("confirm-box--error", esError);
+        confirmBox.classList.toggle("confirm-box--success", !esError);
 
         // Ícono de check (éxito) o X (error)
-        iconSvg.innerHTML = type === "error"
-            ? '<path d="M18 6 6 18M6 6l12 12" />'
-            : '<path d="m5 13 4 4L19 7" />';
+        mostrar(confirmIconCheck, !esError);
+        mostrar(confirmIconX, esError);
 
-        overlay.querySelector(".confirm-box__msg").textContent = message;
-        overlay.classList.add("is-visible");
+        confirmMsg.textContent = message;
+        confirmOverlay.classList.add("is-visible");
 
         clearTimeout(confirmTimer);
-        confirmTimer = setTimeout(() => overlay.classList.remove("is-visible"), 3000);
+        confirmTimer = setTimeout(() => confirmOverlay.classList.remove("is-visible"), 3000);
     }
 
     // ---- Validar cédula duplicada (entre todos los usuarios, excluyendo el que se edita) ----
@@ -110,108 +111,54 @@
         inactivo: { singular: "usuario inactivo", plural: "Inactivos" },
     };
 
-    // ---- Configuración de columnas por rol (encabezado + celdas) ----
-    const TABLE_HEADERS = {
-        docente: ["Nombre", "Cédula", "Correo electrónico", "Grupos asignados", "Estado", "Acciones"],
-        admin: ["Nombre", "Cédula", "Correo electrónico", "Estado", "Acciones"],
-        inactivo: ["Nombre", "Cédula", "Rol", "Correo electrónico", "Estado", "Acciones"],
+    // ---- Columnas visibles por pestaña (las columnas existen en el .cshtml con data-col) ----
+    const COLUMNAS = {
+        docente: ["nombre", "cedula", "correo", "grupos", "estado", "acciones"],
+        admin: ["nombre", "cedula", "correo", "estado", "acciones"],
+        inactivo: ["nombre", "cedula", "rol", "correo", "estado", "acciones"],
     };
 
-    function renderHead() {
-        const headers = TABLE_HEADERS[currentRole];
-        theadEl.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+    function aplicarColumnasEncabezado() {
+        const visibles = COLUMNAS[currentRole];
+        tableHeadCells.forEach(th => mostrar(th, visibles.includes(th.dataset.col)));
     }
 
-    function avatarCell(u) {
-        return `
-            <td>
-                <div class="user-cell">
-                    <div class="user-avatar" style="background:${avatarColorByRole[u.rol]}">${initials(u.nombre)}</div>
-                    <span class="user-cell__name">${u.nombre}</span>
-                </div>
-            </td>`;
-    }
+    // ---- Fila de la tabla ----
+    function crearFilaUsuario(u) {
+        const fila = clonar("tplUsuarioRow");
 
-    function statusCell(u) {
-        return `
-            <td>
-                <button class="status-pill ${u.activo ? "status-pill--activo" : "status-pill--inactivo"}" data-id="${u.id}" type="button">
-                    ${u.activo ? "Activo" : "Inactivo"}
-                </button>
-            </td>`;
-    }
+        // Solo se muestran las columnas que corresponden a la pestaña actual
+        const visibles = COLUMNAS[currentRole];
+        fila.querySelectorAll("[data-col]").forEach(td => mostrar(td, visibles.includes(td.dataset.col)));
 
-    function actionsCell(u) {
+        const avatar = ref(fila, "avatar");
+        avatar.classList.add(`avatar--${u.rol}`);
+        avatar.textContent = initials(u.nombre);
+
+        ref(fila, "nombre").textContent = u.nombre;
+        ref(fila, "cedula").textContent = u.cedula;
+        ref(fila, "correo").textContent = u.correo;
+
+        const rolEl = ref(fila, "rol");
+        rolEl.classList.add(rolBadgeClassByRole[u.rol]);
+        rolEl.textContent = rolLabelByRole[u.rol];
+
+        ref(fila, "grupos").replaceChildren(...(u.grupos || []).map(g => {
+            const tag = clonar("tplGrupoTag");
+            tag.textContent = grupoLabel(g);
+            return tag;
+        }));
+
+        const estado = ref(fila, "estado");
+        estado.classList.add(u.activo ? "status-pill--activo" : "status-pill--inactivo");
+        estado.textContent = u.activo ? "Activo" : "Inactivo";
+        estado.addEventListener("click", () => toggleStatus(u.id));
+
         // Sin botón de eliminar: solo editar y ver detalle.
-        return `
-            <td>
-                <div class="row-actions">
-                    <button class="row-action-btn edit-btn" data-id="${u.id}" title="Editar" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
-                    </button>
-                    <button class="row-action-btn view-btn" data-id="${u.id}" title="Ver detalle" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-                    </button>
-                </div>
-            </td>`;
-    }
+        ref(fila, "editBtn").addEventListener("click", () => openEditModal(u.id));
+        ref(fila, "viewBtn").addEventListener("click", () => openDetailModal(u.id));
 
-    // Fila unificada para la pestaña "Inactivos": mezcla usuarios de cualquier rol,
-    // así que muestra una columna de Rol.
-    function inactivoRowHtml(u) {
-        return `
-            ${avatarCell(u)}
-            <td>${u.cedula}</td>
-            <td><span class="role-badge ${rolBadgeClassByRole[u.rol]}">${rolLabelByRole[u.rol]}</span></td>
-            <td>${u.correo}</td>
-            ${statusCell(u)}
-            ${actionsCell(u)}
-        `;
-    }
-
-    function rowHtml(u) {
-        if (currentRole === "inactivo") return inactivoRowHtml(u);
-
-        if (u.rol === "docente") {
-            return `
-                ${avatarCell(u)}
-                <td>${u.cedula}</td>
-                <td>${u.correo}</td>
-                <td><div class="group-tags">${u.grupos.map(g => `<span class="role-badge role-badge--docente">${grupoLabel(g)}</span>`).join("")}</div></td>
-                ${statusCell(u)}
-                ${actionsCell(u)}
-            `;
-        }
-        // admin
-        return `
-            ${avatarCell(u)}
-            <td>${u.cedula}</td>
-            <td>${u.correo}</td>
-            ${statusCell(u)}
-            ${actionsCell(u)}
-        `;
-    }
-
-    // ---- Poblar el filtro secundario (Grupo) según la pestaña activa ----
-    // Solo aplica a Docentes; no aplica para Personal administrativo ni para Inactivos.
-    function refreshSubFilterOptions() {
-        currentSubFilter = "todos";
-
-        if (currentRole !== "docente") {
-            subFilterGroup.style.display = "none";
-            return;
-        }
-        subFilterGroup.style.display = "";
-
-        grupoFilter.innerHTML = '<option value="todos">Todos</option>';
-        gruposCatalogo.forEach(codigo => {
-            const opt = document.createElement("option");
-            opt.value = codigo;
-            opt.textContent = grupoLabel(codigo);
-            grupoFilter.appendChild(opt);
-        });
-        grupoFilter.value = "todos";
-        subFilterLabel.textContent = "Grupo asignado";
+        return fila;
     }
 
     // ---- Estadísticas ----
@@ -236,50 +183,83 @@
                 if (u.rol !== currentRole || !u.activo) return false;
             }
 
-            const matchSub = currentRole !== "docente" || currentSubFilter === "todos" ||
-                u.grupos.includes(currentSubFilter);
-
             const matchSearch = !q ||
                 u.nombre.toLowerCase().includes(q) ||
                 u.cedula.toLowerCase().includes(q) ||
                 (u.correo || "").toLowerCase().includes(q);
 
-            return matchSub && matchSearch;
+            return matchSearch;
         });
+    }
+
+    // ---- Paginación compacta: 1 … 4 5 6 … 12 (no se desborda en móvil) ----
+    function paginasVisibles(actual, total) {
+        const set = new Set([1, total, actual - 1, actual, actual + 1]);
+        const pages = [...set].filter(p => p >= 1 && p <= total).sort((a, b) => a - b);
+        const out = [];
+        pages.forEach((p, i) => {
+            if (i && p - pages[i - 1] > 1) out.push("…");
+            out.push(p);
+        });
+        return out;
+    }
+
+    function crearBotonPagina(texto, opciones) {
+        const btn = clonar("tplPgBtn");
+        btn.textContent = texto;
+        btn.classList.toggle("is-active", !!opciones.activo);
+        btn.disabled = !!opciones.deshabilitado;
+        btn.addEventListener("click", opciones.alClic);
+        return btn;
+    }
+
+    function renderPaginacion(totalPaginas) {
+        const nodos = [];
+
+        nodos.push(crearBotonPagina("‹", {
+            deshabilitado: paginaActual === 1,
+            alClic: () => { if (paginaActual > 1) { paginaActual--; render(); } },
+        }));
+
+        paginasVisibles(paginaActual, totalPaginas).forEach(p => {
+            if (p === "…") {
+                nodos.push(clonar("tplPgDots"));
+            } else {
+                nodos.push(crearBotonPagina(String(p), {
+                    activo: p === paginaActual,
+                    alClic: () => { paginaActual = p; render(); },
+                }));
+            }
+        });
+
+        nodos.push(crearBotonPagina("›", {
+            deshabilitado: paginaActual === totalPaginas,
+            alClic: () => { if (paginaActual < totalPaginas) { paginaActual++; render(); } },
+        }));
+
+        usersPagination.replaceChildren(...nodos);
     }
 
     // ---- Render tabla ----
     function render() {
         updateStats();
-        renderHead();
-        const list = getFiltered();
-        tbody.innerHTML = "";
+        aplicarColumnasEncabezado();
 
-        list.forEach(u => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = rowHtml(u);
-            tbody.appendChild(tr);
-        });
+        const listCompleta = getFiltered();
 
-        emptyState.style.display = list.length === 0 ? "block" : "none";
+        // Si la página actual quedó fuera de rango (por ejemplo, al inactivar al
+        // último usuario de la última página), se vuelve a la última página válida.
+        const totalPaginas = Math.max(1, Math.ceil(listCompleta.length / USUARIOS_POR_PAGINA));
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
 
-        const totalDeLaPestana = currentRole === "inactivo"
-            ? usersData.filter(u => !u.activo).length
-            : usersData.filter(u => u.rol === currentRole && u.activo).length;
-        resultsCount.textContent = `Mostrando ${list.length} de ${totalDeLaPestana} usuarios`;
-        attachRowEvents();
-    }
+        const inicio = (paginaActual - 1) * USUARIOS_POR_PAGINA;
+        const listPagina = listCompleta.slice(inicio, inicio + USUARIOS_POR_PAGINA);
 
-    function attachRowEvents() {
-        tbody.querySelectorAll(".status-pill").forEach(el => {
-            el.addEventListener("click", () => toggleStatus(el.dataset.id));
-        });
-        tbody.querySelectorAll(".edit-btn").forEach(el => {
-            el.addEventListener("click", () => openEditModal(parseInt(el.dataset.id, 10)));
-        });
-        tbody.querySelectorAll(".view-btn").forEach(el => {
-            el.addEventListener("click", () => openDetailModal(parseInt(el.dataset.id, 10)));
-        });
+        tbody.replaceChildren(...listPagina.map(crearFilaUsuario));
+        emptyState.classList.toggle("is-visible", listCompleta.length === 0);
+        usersResultsCount.textContent = `Mostrando ${listPagina.length} de ${listCompleta.length} usuarios`;
+
+        renderPaginacion(totalPaginas);
     }
 
     // El estado se puede activar/desactivar desde la tabla, pero nunca eliminar el registro.
@@ -287,7 +267,7 @@
     // (activo -> deja de aparecer en su rol y pasa a "Inactivos"; inactivo -> reactivado,
     // vuelve a la pestaña de su rol), así que basta con volver a renderizar.
     function toggleStatus(id) {
-        const u = usersData.find(x => x.id == id);
+        const u = usersData.find(x => x.id === id);
         if (!u) return;
         u.activo = !u.activo;
         render(); // TODO: reemplazar por llamada real al controlador
@@ -304,17 +284,12 @@
     function switchRole(rol) {
         currentRole = rol;
         currentSearch = "";
+        paginaActual = 1;
         searchInput.value = "";
-        refreshSubFilterOptions();
-
         document.querySelectorAll(".role-stat-card").forEach(c => c.classList.toggle("is-active", c.dataset.role === rol));
 
         // En "Inactivos" no tiene sentido "Registrar", ya que no se crean usuarios inactivos.
-        const esInactivos = rol === "inactivo";
-        btnRegistrarUsuario.style.display = esInactivos ? "none" : "";
-        if (!esInactivos) {
-            btnRegistrarLabel.textContent = `Registrar ${roleMeta[rol].singular}`;
-        }
+        mostrar(registrarGroup, rol !== "inactivo");
         btnExportLabel.textContent = `Exportar ${roleMeta[rol].plural.toLowerCase()}`;
 
         render();
@@ -327,40 +302,30 @@
         switchRole(card.dataset.role);
     });
 
-    // ---- Filtros: panel lateral ----
+    // ---- Filtros: barra sobre la tabla ----
     document.getElementById("btnAplicarFiltros").addEventListener("click", () => {
-        currentSubFilter = grupoFilter.value;
         currentSearch = searchInput.value;
+        paginaActual = 1;
         render();
     });
 
     document.getElementById("btnLimpiarFiltros").addEventListener("click", () => {
         currentSearch = "";
+        paginaActual = 1;
         searchInput.value = "";
-        refreshSubFilterOptions();
         render();
     });
 
     let searchTimer;
     searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => { currentSearch = searchInput.value; render(); }, 200);
-    });
-
-    // ---- Tip panel ----
-    document.getElementById("tipCloseBtn").addEventListener("click", () => {
-        document.getElementById("tipPanel").style.display = "none";
+        searchTimer = setTimeout(() => { currentSearch = searchInput.value; paginaActual = 1; render(); }, 200);
     });
 
     // =========================================================
-    // BOTÓN "Registrar usuario" -> abre el modal según la pestaña activa
+    // BOTONES "Registrar docente" / "Registrar personal administrativo"
+    // (barra de acciones; se ocultan en la pestaña Inactivos)
     // =========================================================
-    btnRegistrarUsuario.addEventListener("click", () => {
-        if (currentRole === "docente") openTeacherModal(null);
-        else if (currentRole === "admin") openAdminModal(null);
-        // en "inactivo" el botón está oculto, no hace falta manejarlo aquí
-    });
-
     document.getElementById("qaDocente").addEventListener("click", () => openTeacherModal(null));
     document.getElementById("qaAdmin").addEventListener("click", () => openAdminModal(null));
 
@@ -374,11 +339,18 @@
     const groupPicker = document.getElementById("groupPicker");
 
     gruposCatalogo.forEach(codigo => {
-        const wrap = document.createElement("div");
+        const opcion = clonar("tplGrupoOption");
         const inputId = `grp_${codigo}`;
-        wrap.innerHTML = `<input type="checkbox" class="group-check" id="${inputId}" value="${codigo}" /><label for="${inputId}">${grupoLabel(codigo)}</label>`;
-        groupPicker.appendChild(wrap.firstElementChild);
-        groupPicker.appendChild(wrap.lastElementChild);
+
+        const input = ref(opcion, "input");
+        input.id = inputId;
+        input.value = codigo;
+
+        const label = ref(opcion, "label");
+        label.htmlFor = inputId;
+        label.textContent = grupoLabel(codigo);
+
+        groupPicker.appendChild(opcion);
     });
 
     function getGroupCheckboxes() { return Array.from(groupPicker.querySelectorAll(".group-check")); }
@@ -516,18 +488,17 @@
     // =========================================================
     const detailModal = document.getElementById("detailModal");
     const detailModalHead = document.getElementById("detailModalHead");
-    const detailModalIcon = document.getElementById("detailModalIcon");
+    const detailIconDocente = document.getElementById("detailIconDocente");
+    const detailIconAdmin = document.getElementById("detailIconAdmin");
     const detailModalTitle = document.getElementById("detailModalTitle");
     const detailModalSubtitle = document.getElementById("detailModalSubtitle");
     const detailModalBody = document.getElementById("detailModalBody");
 
-    const iconsByRole = {
-        docente: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>',
-        admin: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M3 11h18M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>',
-    };
-
-    function detailRow(label, value) {
-        return `<div class="detail-row"><span class="d-label">${label}</span><span class="d-value">${value}</span></div>`;
+    function crearFilaDetalle(label, value) {
+        const fila = clonar("tplDetalleRow");
+        ref(fila, "label").textContent = label;
+        ref(fila, "value").textContent = value;
+        return fila;
     }
 
     function openDetailModal(id) {
@@ -535,19 +506,20 @@
         if (!u) return;
 
         detailModalHead.className = `modal-card__head head-${u.rol}`;
-        detailModalIcon.innerHTML = iconsByRole[u.rol];
+        mostrar(detailIconDocente, u.rol === "docente");
+        mostrar(detailIconAdmin, u.rol === "admin");
         detailModalTitle.textContent = u.nombre;
         detailModalSubtitle.textContent = rolLabelByRole[u.rol];
 
-        let rows = [detailRow("Cédula", u.cedula), detailRow("Correo", u.correo)];
+        const filas = [["Cédula", u.cedula], ["Correo", u.correo]];
 
         if (u.rol === "docente") {
-            rows.push(detailRow("Grupos asignados", u.grupos.map(grupoLabel).join(", ")));
+            filas.push(["Grupos asignados", u.grupos.map(grupoLabel).join(", ")]);
         }
 
-        rows.push(detailRow("Estado", u.activo ? "Activo" : "Inactivo"));
+        filas.push(["Estado", u.activo ? "Activo" : "Inactivo"]);
 
-        detailModalBody.innerHTML = rows.join("");
+        detailModalBody.replaceChildren(...filas.map(([label, value]) => crearFilaDetalle(label, value)));
         detailModal.classList.add("is-open");
     }
 
@@ -561,6 +533,7 @@
     // EXPORTAR A EXCEL — siempre solo la categoría de la pestaña
     // activa, nunca mezclada con las otras (archivo y hoja separados
     // por rol, con encabezado de color, bordes y anchos ajustados).
+    // Exporta TODOS los usuarios filtrados, no solo los de la página visible.
     // =========================================================
 
     const EXPORT_CONFIG = {
@@ -665,8 +638,6 @@
     });
 
     // ---- Inicial ----
-    refreshSubFilterOptions();
-    btnRegistrarLabel.textContent = `Registrar ${roleMeta[currentRole].singular}`;
     btnExportLabel.textContent = `Exportar ${roleMeta[currentRole].plural.toLowerCase()}`;
     render();
 })();

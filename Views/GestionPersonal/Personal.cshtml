@@ -10,7 +10,7 @@
 
 <div class="usuarios-layout">
 
-    <!-- =================== COLUMNA PRINCIPAL =================== -->
+    <!-- =================== CONTENIDO (ancho completo) =================== -->
     <div>
         <!-- ---- Hero ---- -->
         <div class="module-hero">
@@ -37,7 +37,6 @@
         </div>
 
         <!-- ---- Tarjetas de resumen / pestañas por rol ---- -->
-        <!-- Cada tarjeta funciona como pestaña exclusiva: solo un rol (o los inactivos) se muestra a la vez. -->
         <div class="role-stats-row" id="roleStatsRow">
             <div class="role-stat-card role-stat-card--docentes is-active" data-role="docente">
                 <div class="role-stat-card__icon">
@@ -61,8 +60,6 @@
                 </div>
             </div>
 
-            <!-- Pestaña de inactivos: reúne a los usuarios desactivados de cualquier rol,
-                 separados por completo de las listas de activos. -->
             <div class="role-stat-card role-stat-card--inactivos" data-role="inactivo">
                 <div class="role-stat-card__icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1-3.4 3.6-5.2 7-5.2" /><path d="M15 15l6 6M21 15l-6 6" /></svg>
@@ -75,12 +72,20 @@
             </div>
         </div>
 
-        <!-- ---- Barra de acciones ---- -->
+        <!-- ---- Barra de acciones ----
+             Botones para registrar docente / personal administrativo.
+             Se ocultan en la pestaña Inactivos (no se crean usuarios inactivos). -->
         <div class="main-actions-bar">
-            <button class="btn btn--success" id="btnRegistrarUsuario" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
-                <span id="btnRegistrarLabel">Registrar docente</span>
-            </button>
+            <div class="main-actions-bar__left" id="registrarGroup">
+                <button class="btn btn--success" id="qaDocente" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                    Registrar docente
+                </button>
+                <button class="btn btn--slate" id="qaAdmin" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                    Registrar personal administrativo
+                </button>
+            </div>
             <div class="main-actions-bar__right">
                 <button class="btn btn--outline" id="btnExport" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
@@ -89,13 +94,42 @@
             </div>
         </div>
 
-        <!-- ---- Tabla ---- -->
-        <!-- El encabezado (thead) se genera dinámicamente según el rol activo, -->
-        <!-- así cada pestaña muestra solo las columnas que le corresponden. -->
+        <!-- ---- Tabla (a todo el ancho) ---- -->
         <div class="table-card">
+
+            <!-- Barra horizontal de búsqueda sobre la tabla -->
+            <div class="table-toolbar">
+                <label class="filter-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    <input type="search" id="searchInput" placeholder="Buscar por nombre, cédula o correo..." />
+                </label>
+
+                <div class="filter-actions">
+                    <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
+                        Limpiar
+                    </button>
+                    <button class="btn btn--success" id="btnAplicarFiltros" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                        Aplicar
+                    </button>
+                </div>
+            </div>
+
             <div class="table-scroll">
                 <table class="users-table">
-                    <thead id="usersTableHead"></thead>
+                    <!-- Todas las columnas existen; el JS muestra solo las que corresponden a cada pestaña (data-col) -->
+                    <thead>
+                        <tr>
+                            <th data-col="nombre">Nombre</th>
+                            <th data-col="cedula">Cédula</th>
+                            <th data-col="rol">Rol</th>
+                            <th data-col="correo">Correo electrónico</th>
+                            <th data-col="grupos">Grupos asignados</th>
+                            <th data-col="estado">Estado</th>
+                            <th data-col="acciones">Acciones</th>
+                        </tr>
+                    </thead>
                     <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
@@ -105,82 +139,15 @@
                 <div>No se encontraron usuarios con los filtros seleccionados.</div>
             </div>
 
-            <div class="table-pagination">
-                <span id="resultsCount">Mostrando 0 de 0 usuarios</span>
-                <div class="pagination-btns">
-                    <button class="pg-btn" id="pgPrev" type="button">‹</button>
-                    <button class="pg-btn is-active" type="button">1</button>
-                    <button class="pg-btn" id="pgNext" type="button">›</button>
-                </div>
+            <!-- Pie de tabla: conteo y paginación (fuera de la tabla para que se acomode en responsive) -->
+            <div class="table-footer">
+                <span class="pg-info" id="usersResultsCount">Mostrando 0 de 0 usuarios</span>
+                <div class="pagination-btns" id="usersPagination"></div>
             </div>
+
         </div>
+
     </div>
-
-    <!-- =================== PANEL LATERAL =================== -->
-    <aside>
-        <!-- ---- Filtros ---- -->
-        <div class="side-panel">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
-                Filtros de búsqueda
-            </div>
-
-            <label class="filter-search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                <input type="search" id="searchInput" placeholder="Buscar por nombre, cédula o correo..." />
-            </label>
-
-            <!-- Este filtro solo aplica a la pestaña de Docentes (grupo asignado);
-                 se oculta en Personal administrativo e Inactivos -->
-            <div class="filter-group" id="subFilterGroup">
-                <label for="grupoFilter" id="subFilterLabel">Grupo asignado</label>
-                <select id="grupoFilter">
-                    <option value="todos">Todos</option>
-                </select>
-            </div>
-
-            <div class="filter-actions">
-                <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
-                    Limpiar
-                </button>
-                <button class="btn btn--success" id="btnAplicarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                    Aplicar
-                </button>
-            </div>
-        </div>
-
-        <!-- ---- Acciones rápidas ---- -->
-        <div class="side-panel">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3" /><circle cx="16" cy="9" r="2.4" /><path d="M3 19c.9-3 3.3-4.8 6-4.8s5.1 1.8 6 4.8" /><path d="M15 14.6c2 .3 3.6 1.8 4.2 3.9" /></svg>
-                Acciones rápidas
-            </div>
-            <button class="quick-action-btn quick-action-btn--teacher" id="qaDocente" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
-                Registrar docente
-            </button>
-            <button class="quick-action-btn quick-action-btn--admin" id="qaAdmin" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M3 11h18M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>
-                Registrar personal administrativo
-            </button>
-        </div>
-
-        <!-- ---- Recordatorio ---- -->
-        <div class="tip-panel" id="tipPanel">
-            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-            </button>
-            <div class="tip-panel__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
-            </div>
-            <div class="tip-panel__text">
-                <h4>Recuerda</h4>
-                <p>Todo usuario se registra como <strong>Activo</strong> por defecto. Al desactivar un usuario pasa a la pestaña <strong>Inactivos</strong>; ningún registro puede eliminarse desde este panel, solo editarse.</p>
-            </div>
-        </div>
-    </aside>
 </div>
 
 <!-- =================== MODAL DOCENTE =================== -->
@@ -216,13 +183,13 @@
                 <input type="email" id="tCorreo" placeholder="correo@elvalle.ed.cr" />
             </div>
             <div class="form-field full">
-                <label>Asignación de grupos <span style="font-weight:400;color:var(--ink-500)">(máximo 3)</span></label>
+                <label>Asignación de grupos <span class="label-hint">(máximo 3)</span></label>
                 <div class="group-picker" id="groupPicker"></div>
             </div>
         </div>
         <div class="modal-card__foot">
             <button class="btn btn--outline" id="teacherModalCancelBtn" type="button">Cancelar</button>
-            <button class="btn" id="teacherModalSaveBtn" type="button" style="background:var(--teal-600);border-color:var(--teal-600);color:#fff;">Guardar Docente</button>
+            <button class="btn btn--teal" id="teacherModalSaveBtn" type="button">Guardar Docente</button>
         </div>
     </div>
 </div>
@@ -262,17 +229,20 @@
         </div>
         <div class="modal-card__foot">
             <button class="btn btn--outline" id="adminModalCancelBtn" type="button">Cancelar</button>
-            <button class="btn" id="adminModalSaveBtn" type="button" style="background:var(--ink-700);border-color:var(--ink-700);color:#fff;">Guardar Personal</button>
+            <button class="btn btn--dark" id="adminModalSaveBtn" type="button">Guardar Personal</button>
         </div>
     </div>
 </div>
 
 <!-- =================== MODAL VER DETALLE =================== -->
 <div class="modal-overlay" id="detailModal">
-    <div class="modal-card" style="max-width:440px;">
+    <div class="modal-card modal-card--detalle">
         <div class="modal-card__head head-docente" id="detailModalHead">
             <div class="modal-card__head-info">
-                <div class="modal-card__head-icon" id="detailModalIcon"></div>
+                <div class="modal-card__head-icon">
+                    <svg id="detailIconDocente" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
+                    <svg id="detailIconAdmin" class="is-hidden" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M3 11h18M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>
+                </div>
                 <div>
                     <h2 id="detailModalTitle">Detalle de usuario</h2>
                     <p id="detailModalSubtitle">Información registrada</p>
@@ -288,6 +258,80 @@
         </div>
     </div>
 </div>
+
+<!-- =================== MENSAJE DE CONFIRMACIÓN (éxito / error) =================== -->
+<div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box confirm-box--success" id="confirmBox">
+        <div class="confirm-box__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4">
+                <path id="confirmIconCheck" d="m5 13 4 4L19 7" />
+                <path id="confirmIconX" class="is-hidden" d="M18 6 6 18M6 6l12 12" />
+            </svg>
+        </div>
+        <p class="confirm-box__msg" id="confirmMsg"></p>
+    </div>
+</div>
+
+<!-- =========================================================
+     PLANTILLAS HTML
+     El JS solo las clona y rellena con textos; no construye HTML.
+     ========================================================= -->
+<!-- Fila de usuario: contiene todas las columnas; el JS oculta las que no aplican a la pestaña -->
+<template id="tplUsuarioRow">
+    <tr>
+        <td data-col="nombre">
+            <div class="user-cell">
+                <div class="user-avatar" data-ref="avatar"></div>
+                <span class="user-cell__name" data-ref="nombre"></span>
+            </div>
+        </td>
+        <td data-col="cedula" data-ref="cedula"></td>
+        <td data-col="rol"><span class="role-badge" data-ref="rol"></span></td>
+        <td data-col="correo" data-ref="correo"></td>
+        <td data-col="grupos"><div class="group-tags" data-ref="grupos"></div></td>
+        <td data-col="estado"><button class="status-pill" data-ref="estado" type="button"></button></td>
+        <td data-col="acciones">
+            <div class="row-actions">
+                <button class="row-action-btn edit-btn" data-ref="editBtn" title="Editar" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+                </button>
+                <button class="row-action-btn view-btn" data-ref="viewBtn" title="Ver detalle" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<!-- Etiqueta de grupo asignado (columna "Grupos asignados") -->
+<template id="tplGrupoTag">
+    <span class="role-badge role-badge--docente"></span>
+</template>
+
+<!-- Opción de grupo del selector del modal de docente -->
+<template id="tplGrupoOption">
+    <div class="group-option">
+        <input type="checkbox" class="group-check" data-ref="input" />
+        <label data-ref="label"></label>
+    </div>
+</template>
+
+<!-- Fila del modal "Ver detalle" -->
+<template id="tplDetalleRow">
+    <div class="detail-row">
+        <span class="d-label" data-ref="label"></span>
+        <span class="d-value" data-ref="value"></span>
+    </div>
+</template>
+
+<!-- Paginación (mismo diseño que el módulo de asistencia) -->
+<template id="tplPgBtn">
+    <button class="pg-btn" type="button"></button>
+</template>
+
+<template id="tplPgDots">
+    <span class="pg-dots">…</span>
+</template>
 
 @section Scripts {
     <!-- Librerías para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->

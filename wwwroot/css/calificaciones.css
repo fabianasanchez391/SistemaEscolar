@@ -1,4 +1,7 @@
-﻿
+﻿/* ---------- Utilidad (la usa el JS para mostrar/ocultar sin estilos en línea) ---------- */
+.is-hidden {
+    display: none !important;
+}
 
 /* ---------- Hero (solo en la vista de secciones) ---------- */
 .module-hero {
@@ -70,79 +73,6 @@
         display: block;
     }
 
-/* ---------- Fila de estadísticas (dashboard) ---------- */
-.stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.stat-card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.stat-card__icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-}
-
-    .stat-card__icon svg {
-        width: 20px;
-        height: 20px;
-        color: #fff;
-    }
-
-.stat-card--blue .stat-card__icon {
-    background: linear-gradient(135deg, #2f6fed, #5b93ff);
-    box-shadow: 0 6px 14px rgba(47,111,237,0.28);
-}
-
-.stat-card--teal .stat-card__icon {
-    background: linear-gradient(135deg, #22b573, #35d492);
-    box-shadow: 0 6px 14px rgba(34,181,115,0.28);
-}
-
-.stat-card--purple .stat-card__icon {
-    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-    box-shadow: 0 6px 14px rgba(139,92,246,0.28);
-}
-
-.stat-card--orange .stat-card__icon {
-    background: linear-gradient(135deg, #f2994a, #f7b96e);
-    box-shadow: 0 6px 14px rgba(242,153,74,0.28);
-}
-
-.stat-card--red .stat-card__icon {
-    background: linear-gradient(135deg, #eb5757, #f38080);
-    box-shadow: 0 6px 14px rgba(235,87,87,0.28);
-}
-
-.stat-card__value {
-    font-size: 19px;
-    font-weight: 800;
-    color: var(--ink-900);
-    line-height: 1.1;
-}
-
-.stat-card__label {
-    font-size: 11.5px;
-    color: var(--ink-500);
-    font-weight: 600;
-    margin-top: 2px;
-}
-
 /* ---------- Leyenda de colores en la tabla ---------- */
 .table-card__legend {
     display: flex;
@@ -178,13 +108,11 @@
 }
 
 .calificaciones-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
-    gap: 20px;
-    align-items: start;
+    display: block;
+    min-width: 0;
 }
 
-    .calificaciones-layout > * {
+    .calificaciones-layout > div {
         min-width: 0;
     }
 
@@ -201,6 +129,12 @@
 .main-actions-bar__right {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Solo el conteo de secciones, alineado a la derecha */
+.main-actions-bar--end {
+    justify-content: flex-end;
 }
 
 .results-tag {
@@ -223,22 +157,6 @@
     white-space: nowrap;
 }
 
-/* Tarjetas de estadísticas clickeables */
-.stat-card--clickable {
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-    .stat-card--clickable:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 26px rgba(20, 30, 60, 0.12);
-    }
-
-    .stat-card--clickable.is-active {
-        border-color: #c0392b;
-        box-shadow: 0 0 0 2px rgba(192,57,43,0.25);
-    }
-
 .seccion-actual-group {
     display: flex;
     align-items: center;
@@ -246,9 +164,38 @@
     flex-wrap: wrap;
 }
 
+/* Nombre del grupo: etiqueta destacada con ícono y degradado */
 .seccion-actual {
-    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px 8px 8px;
+    border-radius: 999px;
+    background: linear-gradient(120deg, #eaf1ff 0%, #f6f9ff 100%);
+    border: 1px solid #cfe0fb;
+    box-shadow: 0 6px 18px rgba(47, 111, 237, 0.14);
+}
+
+.seccion-actual__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2f6fed, #5b93ff);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 14px rgba(47, 111, 237, 0.35);
+}
+
+    .seccion-actual__icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+.seccion-actual__name {
+    font-size: 17px;
     font-weight: 800;
+    letter-spacing: 0.01em;
     color: var(--ink-900);
 }
 
@@ -293,11 +240,34 @@
     background: #fff;
 }
 
-/* ---------- Búsqueda inline (arriba del grid de secciones) ---------- */
-.filter-search--inline {
-    max-width: 320px;
-    flex: 1;
+/* Botón "Volver a secciones": mismo diseño que .back-btn de los otros módulos */
+.btn--back {
+    gap: 7px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 16px;
+    margin-bottom: 0; /* aquí va dentro de la barra de acciones, no lleva margen inferior */
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--blue-600);
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
+
+    .btn--back svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+
+    .btn--back:hover {
+        background: var(--blue-100);
+        border-color: #cfe0fb;
+        transform: translateX(-2px);
+    }
 
 /* ---------- Grid de secciones ---------- */
 .secciones-grid {
@@ -359,20 +329,39 @@
     color: var(--ink-900);
 }
 
+/* Barra de progreso: se usa <progress> para no necesitar estilos en línea */
 .seccion-card__progress {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
     height: 7px;
+    border: none;
     border-radius: 999px;
     background: #eef1f8;
     overflow: hidden;
 }
 
-.seccion-card__progress-fill {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #22b573, #35d492);
-}
+    .seccion-card__progress::-webkit-progress-bar {
+        background: #eef1f8;
+        border-radius: 999px;
+    }
 
-    .seccion-card__progress-fill.fill--riesgo {
+    .seccion-card__progress::-webkit-progress-value {
+        border-radius: 999px;
+        background: linear-gradient(90deg, #22b573, #35d492);
+    }
+
+    .seccion-card__progress::-moz-progress-bar {
+        border-radius: 999px;
+        background: linear-gradient(90deg, #22b573, #35d492);
+    }
+
+    .seccion-card__progress.fill--riesgo::-webkit-progress-value {
+        background: linear-gradient(90deg, #eb5757, #f38080);
+    }
+
+    .seccion-card__progress.fill--riesgo::-moz-progress-bar {
         background: linear-gradient(90deg, #eb5757, #f38080);
     }
 
@@ -380,6 +369,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
     font-size: 12px;
     color: var(--ink-500);
 }
@@ -594,25 +585,42 @@
         border-color: transparent;
     }
 
-    .row-action-btn.edit-btn:hover {
-        background: #fdecd2;
-        color: #b9770e;
-        border-color: transparent;
+    /* Botón de agregar notas (verde, como los demás botones de "agregar") */
+    .row-action-btn.edit-btn {
+        color: #1a9d5b;
+        border-color: #bfe8d0;
+        background: #effaf4;
     }
 
-.table-pagination {
+        .row-action-btn.edit-btn:hover {
+            background: #d7f5e3;
+            color: #14804a;
+            border-color: transparent;
+        }
+
+/* ---------- Pie de tabla: conteo a la izquierda, paginación a la derecha ----------
+   Mismo diseño que el módulo de asistencia. Está fuera de la tabla (no es un
+   <tfoot>) para que no se desborde ni se corte con el scroll horizontal en
+   pantallas pequeñas. */
+.table-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
     padding: 14px 20px;
+    border-top: 1px solid var(--line);
     font-size: 12.5px;
     color: var(--ink-500);
-    flex-wrap: wrap;
-    gap: 10px;
 }
+
+    .table-footer .pagination-btns {
+        justify-content: flex-end;
+    }
 
 .pagination-btns {
     display: flex;
+    justify-content: center;
     gap: 6px;
     flex-wrap: wrap;
 }
@@ -641,6 +649,12 @@
         cursor: not-allowed;
     }
 
+.pg-dots {
+    align-self: center;
+    padding: 0 2px;
+    color: var(--ink-500);
+}
+
 .empty-state {
     text-align: center;
     padding: 50px 20px;
@@ -649,6 +663,10 @@
     display: none;
 }
 
+    .empty-state.is-visible {
+        display: block;
+    }
+
     .empty-state svg {
         width: 42px;
         height: 42px;
@@ -656,42 +674,29 @@
         margin-bottom: 10px;
     }
 
-/* ---------- Panel lateral: filtros ---------- */
-.side-panel {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    padding: 20px;
-    margin-bottom: 18px;
-}
-
-.side-panel__title {
+/* ---------- Barra de filtros (encabezado de la tabla) ---------- */
+.table-toolbar {
     display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 14.5px;
-    font-weight: 700;
-    color: var(--ink-900);
-    margin-bottom: 16px;
+    align-items: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
 }
-
-    .side-panel__title svg {
-        width: 18px;
-        height: 18px;
-        color: var(--blue-600);
-        flex-shrink: 0;
-    }
 
 .filter-search {
+    flex: 1 1 280px;
     display: flex;
     align-items: center;
     gap: 9px;
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 16px;
+    padding: 0 12px;
+    min-height: 40px;
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
 }
 
     .filter-search svg {
@@ -711,108 +716,6 @@
         font-family: inherit;
         min-width: 0;
     }
-
-.filter-group {
-    margin-bottom: 16px;
-}
-
-    .filter-group:last-of-type {
-        margin-bottom: 0;
-    }
-
-    .filter-group label {
-        display: block;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--ink-700);
-        margin-bottom: 7px;
-    }
-
-    .filter-group select {
-        width: 100%;
-        border: 1.5px solid var(--line);
-        border-radius: 10px;
-        padding: 9px 12px;
-        font-size: 12.5px;
-        font-family: inherit;
-        color: var(--ink-900);
-        background: #fff;
-        cursor: pointer;
-        outline: none;
-    }
-
-        .filter-group select:focus {
-            border-color: var(--blue-600);
-        }
-
-.filter-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 18px;
-}
-
-    .filter-actions .btn {
-        flex: 1;
-        justify-content: center;
-        padding: 9px;
-        font-size: 12.5px;
-    }
-
-/* ---------- Panel: recordatorio ---------- */
-.tip-panel {
-    background: var(--blue-100);
-    border: 1px solid #cfe0fb;
-    border-radius: var(--radius-lg);
-    padding: 16px 18px;
-    display: flex;
-    gap: 12px;
-    position: relative;
-}
-
-.tip-panel__icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: var(--blue-600);
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-}
-
-    .tip-panel__icon svg {
-        width: 17px;
-        height: 17px;
-        color: #fff;
-    }
-
-.tip-panel__text {
-    min-width: 0;
-}
-
-    .tip-panel__text h4 {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--ink-900);
-        margin: 0 0 4px;
-    }
-
-    .tip-panel__text p {
-        font-size: 12px;
-        color: var(--ink-700);
-        line-height: 1.5;
-        margin: 0;
-    }
-
-.tip-panel__close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--ink-500);
-    padding: 4px;
-}
 
 /* ---------- Modal: detalle de calificaciones ---------- */
 .modal-overlay {
@@ -838,6 +741,11 @@
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 25px 70px rgba(10, 16, 33, 0.3);
+}
+
+/* Ancho propio del modal de calificaciones (antes con estilo en línea) */
+.modal-card--calif {
+    max-width: 640px;
 }
 
 .modal-card__head {
@@ -1005,10 +913,62 @@
 
 .eval-notas {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
     margin-bottom: 10px;
 }
+
+/* Mensaje cuando no hay notas (antes tenía estilos en línea en el JS) */
+.eval-notas-empty {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-500);
+    margin-bottom: 10px;
+}
+
+/* Una nota con su espacio de observación al lado */
+.eval-nota {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .eval-nota .eval-nota-chip {
+        flex-shrink: 0;
+        min-width: 64px;
+        justify-content: space-between;
+    }
+
+.eval-nota-obs {
+    flex: 1;
+    min-width: 0;
+    border: 1.5px solid var(--line);
+    border-radius: 9px;
+    padding: 7px 11px;
+    font-size: 12.5px;
+    font-family: inherit;
+    color: var(--ink-900);
+    background: #fff;
+    outline: none;
+}
+
+    .eval-nota-obs:focus {
+        border-color: var(--blue-600);
+    }
+
+.eval-nota-obs-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 12.5px;
+    color: var(--ink-700);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+    .eval-nota-obs-text.is-empty {
+        color: var(--ink-500);
+        font-style: italic;
+    }
 
 .eval-nota-chip {
     display: inline-flex;
@@ -1067,6 +1027,11 @@
             border-color: var(--blue-600);
         }
 
+        /* La nota es corta; la observación ocupa el resto de la fila */
+        .eval-add-form input[type="number"] {
+            flex: 0 0 150px;
+        }
+
     .eval-add-form button {
         border: none;
         border-radius: 9px;
@@ -1094,14 +1059,6 @@
    ========================================================= */
 
 @media (max-width: 991px) {
-    .calificaciones-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .side-panel {
-        order: 2;
-    }
-
     .module-hero__illustration {
         width: 100px;
     }
@@ -1122,6 +1079,10 @@
     .seccion-actual-group {
         width: 100%;
         justify-content: space-between;
+    }
+
+    .table-toolbar {
+        padding: 14px 16px;
     }
 
     .main-actions-bar__right {
@@ -1152,14 +1113,21 @@
         align-items: stretch;
     }
 
-    .filter-search--inline {
-        max-width: 100%;
+    /* Pie de tabla: conteo arriba y paginación centrada debajo */
+    .table-footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 14px 16px;
     }
 
-    .table-pagination {
-        justify-content: center;
-        text-align: center;
-        flex-direction: column;
+        .table-footer .pagination-btns {
+            justify-content: center;
+        }
+
+    .pg-btn {
+        min-width: 36px;
+        height: 36px;
     }
 
     .modal-overlay {
@@ -1181,6 +1149,19 @@
     .eval-add-form {
         flex-direction: column;
     }
+
+        .eval-add-form input[type="number"] {
+            flex: none;
+        }
+
+    .eval-nota {
+        flex-wrap: wrap;
+    }
+
+    .eval-nota-obs,
+    .eval-nota-obs-text {
+        flex-basis: 100%;
+    }
 }
 
 @media (max-width: 420px) {
@@ -1196,10 +1177,6 @@
         display: none;
     }
 
-    .side-panel {
-        padding: 14px 16px;
-    }
-
     .row-actions {
         gap: 4px;
     }
@@ -1211,6 +1188,15 @@
 
     .secciones-grid {
         grid-template-columns: 1fr;
+    }
+
+    .seccion-actual__name {
+        font-size: 15px;
+    }
+
+    .seccion-actual__icon {
+        width: 32px;
+        height: 32px;
     }
 }
 

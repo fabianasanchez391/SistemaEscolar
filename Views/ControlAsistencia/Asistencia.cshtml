@@ -40,14 +40,8 @@
 
         <!-- ---- VISTA 1: Grid de secciones ---- -->
         <div id="seccionesView">
-            <div class="main-actions-bar">
-                <label class="filter-search filter-search--inline">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                    <input type="search" id="seccionSearchInput" placeholder="Buscar sección..." />
-                </label>
-                <div class="main-actions-bar__right">
-                    <span class="results-tag" id="seccionesCount">0 secciones</span>
-                </div>
+            <div class="main-actions-bar main-actions-bar--end">
+                <span class="results-tag" id="seccionesCount">0 secciones</span>
             </div>
 
             <div class="secciones-grid" id="seccionesGrid"></div>
@@ -59,7 +53,7 @@
         </div>
 
         <!-- ---- VISTA 2: Tabla de asistencia de una sección ---- -->
-        <div id="estudiantesView" style="display:none;">
+        <div id="estudiantesView" class="is-hidden">
 
             <div class="main-actions-bar">
                 <div class="seccion-actual-group">
@@ -70,6 +64,10 @@
                     <div class="seccion-actual" id="seccionActualLabel"></div>
                 </div>
                 <div class="main-actions-bar__right">
+                    <button class="btn btn--outline" id="btnMarcarTodosPresentes" type="button">
+                        <span class="legend-dot legend-dot--presente"></span>
+                        Marcar todos presentes
+                    </button>
                     <button class="btn btn--success" id="btnGuardarAsistencia" type="button">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" /><path d="M17 21v-8H7v8M7 3v5h8" /></svg>
                         Guardar asistencia
@@ -82,6 +80,19 @@
             </div>
 
             <div class="table-card">
+                <!-- Barra sobre la tabla: buscador y día a registrar -->
+                <div class="table-toolbar">
+                    <label class="filter-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                        <input type="search" id="estudianteSearchInput" placeholder="Buscar por nombre o cédula..." />
+                    </label>
+
+                    <div class="date-group">
+                        <label for="fechaAsistenciaInput">Día a registrar</label>
+                        <input type="date" id="fechaAsistenciaInput" class="date-input" />
+                    </div>
+                </div>
+
                 <div class="table-card__legend">
                     <span class="legend-item"><span class="legend-dot legend-dot--presente"></span>Presente</span>
                     <span class="legend-item"><span class="legend-dot legend-dot--tardia"></span>Tardía</span>
@@ -107,91 +118,21 @@
                     <div>No se encontraron estudiantes activos con los filtros seleccionados.</div>
                 </div>
 
-                <div class="table-pagination">
-                    <span id="estudiantesResultsCount">Mostrando 0 de 0 estudiantes</span>
+                <!-- Pie de tabla: conteo y paginación -->
+                <div class="table-footer">
+                    <span class="pg-info" id="estudiantesResultsCount">Mostrando 0 de 0 estudiantes</span>
                     <div class="pagination-btns" id="estudiantesPagination"></div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- =================== PANEL LATERAL =================== -->
-    <aside>
-        <!-- ---- Fecha y filtros (solo visibles dentro de una sección) ---- -->
-        <div class="side-panel" id="filtrosPanel" style="display:none;">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
-                Fecha de asistencia
-            </div>
-
-            <div class="filter-group">
-                <label for="fechaAsistenciaInput">Día a registrar</label>
-                <input type="date" id="fechaAsistenciaInput" class="date-input" />
-            </div>
-
-            <div class="side-panel__title" style="margin-top:4px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
-                Filtros de búsqueda
-            </div>
-
-            <label class="filter-search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                <input type="search" id="estudianteSearchInput" placeholder="Buscar por nombre o cédula..." />
-            </label>
-
-            <div class="filter-group">
-                <label for="estadoFilter">Estado del día</label>
-                <select id="estadoFilter">
-                    <option value="todos">Todos</option>
-                    <option value="presente">Presente</option>
-                    <option value="tardia">Tardía</option>
-                    <option value="ausente">Ausente</option>
-                    <option value="sinRegistrar">Sin registrar</option>
-                </select>
-            </div>
-
-            <div class="filter-actions">
-                <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
-                    Limpiar
-                </button>
-                <button class="btn btn--success" id="btnAplicarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                    Aplicar
-                </button>
-            </div>
-        </div>
-
-        <!-- ---- Acciones rápidas ---- -->
-        <div class="side-panel" id="accionesRapidasPanel" style="display:none;">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 3 14h7l-1 8 10-12h-7z" /></svg>
-                Acciones rápidas
-            </div>
-            <button class="btn btn--outline quick-action-btn" id="btnMarcarTodosPresentes" type="button">
-                <span class="legend-dot legend-dot--presente"></span> Marcar todos presentes
-            </button>
-        </div>
-
-        <!-- ---- Recordatorio ---- -->
-        <div class="tip-panel" id="tipPanel">
-            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-            </button>
-            <div class="tip-panel__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
-            </div>
-            <div class="tip-panel__text">
-                <h4>Recuerda</h4>
-                <p>Solo se muestran <strong>estudiantes activos</strong>. Puede cambiar el estado de cada uno con un clic y consultar su historial mensual desde "Ver historial".</p>
-            </div>
-        </div>
-    </aside>
 </div>
 
 <!-- =================== MODAL: HISTORIAL DE ASISTENCIA =================== -->
 <div class="modal-overlay" id="detailModal">
-    <div class="modal-card" style="max-width:560px;">
+    <div class="modal-card modal-card--historial">
         <div class="modal-card__head head-asistencia">
             <div class="modal-card__head-info">
                 <div class="modal-card__head-icon">
@@ -207,8 +148,14 @@
             </button>
         </div>
         <div class="modal-card__body">
-            <div class="historial-resumen" id="historialResumen"></div>
+            <div class="historial-resumen">
+                <div class="historial-resumen__item"><span class="legend-dot legend-dot--presente"></span><span id="histPresentes">0</span>&nbsp;presente(s)</div>
+                <div class="historial-resumen__item"><span class="legend-dot legend-dot--tardia"></span><span id="histTardias">0</span>&nbsp;tardía(s)</div>
+                <div class="historial-resumen__item"><span class="legend-dot legend-dot--ausente"></span><span id="histAusentes">0</span>&nbsp;ausente(s)</div>
+                <div class="historial-resumen__pct">Asistencia: <strong id="histPct">—</strong></div>
+            </div>
             <div class="historial-list" id="historialList"></div>
+            <div class="historial-empty is-hidden" id="historialEmpty">Aún no hay registros de asistencia para este estudiante.</div>
         </div>
         <div class="modal-card__foot">
             <button class="btn btn--outline" id="detailModalCloseBtn2" type="button">Cerrar</button>
@@ -229,6 +176,85 @@
         <div class="toast-success-text" id="successToastText">La asistencia se guardó correctamente</div>
     </div>
 </div>
+
+<!-- =========================================================
+     PLANTILLAS HTML
+     El JS solo las clona y rellena con textos; no construye HTML.
+     ========================================================= -->
+<!-- Tarjeta de sección -->
+<template id="tplSeccionCard">
+    <div class="seccion-card">
+        <div class="seccion-card__accent" data-ref="accent"></div>
+        <div class="seccion-card__body">
+            <div class="seccion-card__icon" data-ref="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+            </div>
+            <div>
+                <div class="seccion-card__name" data-ref="nombre"></div>
+            </div>
+            <progress class="seccion-card__progress" data-ref="progreso" max="100" value="0"></progress>
+            <div class="seccion-card__meta">
+                <span data-ref="activos"></span>
+                <span class="seccion-card__prom" data-ref="ausentes"></span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Fila de estudiante (en móvil el CSS la muestra como tarjeta usando data-label) -->
+<template id="tplEstudianteRow">
+    <tr>
+        <td>
+            <div class="user-cell">
+                <div class="user-avatar" data-ref="avatar"></div>
+                <span class="user-cell__name" data-ref="nombre"></span>
+            </div>
+        </td>
+        <td data-label="Cédula" data-ref="cedula"></td>
+        <td data-label="Estado del día">
+            <div class="estado-btns">
+                <button class="estado-btn estado-btn--presente" data-estado="presente" type="button" title="Presente">Presente</button>
+                <button class="estado-btn estado-btn--tardia" data-estado="tardia" type="button" title="Tardía">Tardía</button>
+                <button class="estado-btn estado-btn--ausente" data-estado="ausente" type="button" title="Ausente">Ausente</button>
+            </div>
+        </td>
+        <td data-label="Asistencia del mes">
+            <div class="mes-resumen">
+                <span class="mes-resumen__sin is-hidden" data-ref="mesSin">Sin registros este mes</span>
+                <div class="mes-resumen__bar" data-ref="mesBar">
+                    <progress class="mes-seg mes-seg--ausente" data-ref="segAusente" max="100" value="100"></progress>
+                    <progress class="mes-seg mes-seg--tardia" data-ref="segTardia" max="100" value="0"></progress>
+                    <progress class="mes-seg mes-seg--presente" data-ref="segPresente" max="100" value="0"></progress>
+                </div>
+                <span class="mes-resumen__pct" data-ref="mesPct"></span>
+            </div>
+        </td>
+        <td>
+            <div class="row-actions">
+                <button class="row-action-btn view-btn" data-ref="verBtn" title="Ver historial" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<!-- Paginación -->
+<template id="tplPgBtn">
+    <button class="pg-btn" type="button"></button>
+</template>
+
+<template id="tplPgDots">
+    <span class="pg-dots">…</span>
+</template>
+
+<!-- Fila del historial de asistencia -->
+<template id="tplHistRow">
+    <div class="hist-row">
+        <span class="hist-row__fecha" data-ref="fecha"></span>
+        <span class="hist-badge" data-ref="badge"></span>
+    </div>
+</template>
 
 @section Scripts {
     <!-- Librería para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->

@@ -1,19 +1,16 @@
-﻿
-(function () {
+﻿(function () {
     "use strict";
 
     // ---- Catálogos ----
     const GRADOS = ["Kínder", "1°", "2°", "3°", "4°", "5°", "6°"];
     const LETRAS = ["A", "B", "C"];
 
-    // Colores que rotan entre las tarjetas de sección.
-    const SECTION_COLORS = [
-        { name: "violeta", from: "#8b7cf6", to: "#5b4bd6" },
-        { name: "coral", from: "#ff8a7a", to: "#ef5b4e" },
-        { name: "teal", from: "#2dd4bf", to: "#0f9c8f" },
-        { name: "azul", from: "#4c86f5", to: "#2f6fed" },
-        { name: "ambar", from: "#ffb84c", to: "#f5910b" },
-    ];
+    // Cantidad de colores que rotan entre las tarjetas de sección.
+    // Los colores en sí viven en el CSS (clases .section-color--0 ... .section-color--4).
+    const CANTIDAD_COLORES = 5;
+
+    // Cantidad de estudiantes por página (igual que en el módulo de asistencia)
+    const ESTUDIANTES_POR_PAGINA = 6;
 
     // Docentes disponibles para asignar a una sección (vienen del módulo de usuarios).
     const docentesCatalogo = [
@@ -44,23 +41,47 @@
     let currentEstado = "todos";
     let editingSeccionId = null;
     let editingEstudianteId = null;
+    let paginaActual = 1;
+
+    // ---- Utilidades de DOM (las plantillas viven en el .cshtml) ----
+    // Clona el primer elemento de un <template>.
+    function clonar(idTemplate) {
+        return document.getElementById(idTemplate).content.firstElementChild.cloneNode(true);
+    }
+
+    // Busca dentro de una plantilla clonada el elemento marcado con data-ref="nombre".
+    function ref(raiz, nombre) {
+        return raiz.querySelector(`[data-ref="${nombre}"]`);
+    }
+
+    // Muestra u oculta un elemento mediante la clase .is-hidden (definida en el CSS).
+    function mostrar(el, visible) {
+        el.classList.toggle("is-hidden", !visible);
+    }
 
     // ---- Referencias DOM ----
     const statsRow = document.getElementById("statsRow");
+    const layoutEl = document.querySelector(".estudiantes-layout");
+    const filtersBar = document.getElementById("filtersBar");
     const seccionesView = document.getElementById("seccionesView");
     const estudiantesView = document.getElementById("estudiantesView");
     const seccionesGrid = document.getElementById("seccionesGrid");
     const seccionesEmpty = document.getElementById("seccionesEmpty");
-    const theadEl = document.getElementById("estudiantesTableHead");
+    const seccionesEmptyText = document.getElementById("seccionesEmptyText");
     const tbody = document.getElementById("estudiantesTableBody");
     const estudiantesEmpty = document.getElementById("estudiantesEmpty");
-    const resultsCount = document.getElementById("resultsCount");
+    const estudiantesEmptyText = document.getElementById("estudiantesEmptyText");
+    const estudiantesResultsCount = document.getElementById("estudiantesResultsCount");
+    const estudiantesPagination = document.getElementById("estudiantesPagination");
+    const tableHeadCells = document.querySelectorAll(".users-table thead [data-col]");
     const searchInput = document.getElementById("searchInput");
     const gradoFilter = document.getElementById("gradoFilter");
     const gradoFilterGroup = document.getElementById("gradoFilterGroup");
     const estadoFilter = document.getElementById("estadoFilter");
     const estadoFilterGroup = document.getElementById("estadoFilterGroup");
     const btnEditarSeccion = document.getElementById("btnEditarSeccion");
+    const btnVolverSecciones = document.getElementById("btnVolverSecciones");
+    const sectionHeader = document.getElementById("sectionHeader");
     const viewBadge = document.getElementById("viewBadge");
     const viewTitulo = document.getElementById("viewTitulo");
     const viewSubtitulo = document.getElementById("viewSubtitulo");
@@ -135,51 +156,39 @@
         }));
     }
 
-    function seccionCardHtml(s, index) {
+    function crearSeccionCard(s, index) {
         const est = estudiantesDeSeccion(s.id);
         const activos = est.filter(e => e.activo).length;
         const total = est.length;
         const porcentajeActivos = total === 0 ? 0 : Math.round((activos / total) * 100);
-        const color = SECTION_COLORS[index % SECTION_COLORS.length];
 
-        return `
-            <article class="section-card" data-id="${s.id}" style="--card-from:${color.from}; --card-to:${color.to};">
-                <button class="section-card__edit edit-section-btn" data-id="${s.id}" title="Editar sección" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
-                </button>
-                <div class="section-card__icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
-                </div>
-                <h3 class="section-card__title">${seccionLabel(s)}</h3>
-                <div class="section-card__docente">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
-                    ${docenteNombre(s.docenteId)}
-                </div>
-                <div class="section-card__progress">
-                    <div class="section-card__progress-fill" style="width:${porcentajeActivos}%;"></div>
-                </div>
-                <div class="section-card__footer">
-                    <span class="section-card__count">${total} estudiante(s)</span>
-                    <span class="section-card__pill">${activos} activo(s)</span>
-                </div>
-            </article>`;
+        const card = clonar("tplSeccionCard");
+        card.dataset.id = s.id;
+        card.classList.add(`section-color--${index % CANTIDAD_COLORES}`);
+
+        ref(card, "titulo").textContent = seccionLabel(s);
+        ref(card, "docente").textContent = docenteNombre(s.docenteId);
+        ref(card, "progreso").value = porcentajeActivos;
+        ref(card, "total").textContent = `${total} estudiante(s)`;
+        ref(card, "activos").textContent = `${activos} activo(s)`;
+
+        // Toda la tarjeta abre la sección; el lápiz (con stopPropagation) abre editar.
+        card.addEventListener("click", () => abrirSeccion(s.id));
+        ref(card, "editBtn").addEventListener("click", e => {
+            e.stopPropagation();
+            openSectionModal(s.id);
+        });
+
+        return card;
     }
 
     function renderSecciones() {
         const list = getSeccionesFiltradas();
-        seccionesGrid.innerHTML = list.map((s, i) => seccionCardHtml(s, i)).join("");
-        seccionesEmpty.style.display = list.length === 0 ? "block" : "none";
-        seccionesEmpty.querySelector("div").textContent = seccionesData.length === 0
+        seccionesGrid.replaceChildren(...list.map((s, i) => crearSeccionCard(s, i)));
+        seccionesEmpty.classList.toggle("is-visible", list.length === 0);
+        seccionesEmptyText.textContent = seccionesData.length === 0
             ? "Todavía no hay secciones. Cree la primera para empezar a registrar estudiantes."
             : "No se encontraron secciones con los filtros seleccionados.";
-
-        // Toda la tarjeta abre la sección; el lápiz (con stopPropagation) abre editar.
-        seccionesGrid.querySelectorAll(".section-card").forEach(card => {
-            card.addEventListener("click", () => abrirSeccion(parseInt(card.dataset.id, 10)));
-        });
-        seccionesGrid.querySelectorAll(".edit-section-btn").forEach(btn => {
-            btn.addEventListener("click", e => { e.stopPropagation(); openSectionModal(parseInt(btn.dataset.id, 10)); });
-        });
     }
 
     // =========================================================
@@ -205,71 +214,111 @@
         });
     }
 
-    function renderHead() {
-        const headers = ["Nombre", "Cédula", "Padre o encargado", "Celular"];
-        if (currentSeccionId === null) headers.push("Sección");
-        headers.push("Estado", "Acciones");
-        theadEl.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+    // Columnas visibles: la de "Sección" solo aparece en la vista global.
+    function columnasVisibles() {
+        const cols = ["nombre", "cedula", "encargado", "telefono"];
+        if (currentSeccionId === null) cols.push("seccion");
+        cols.push("estado", "acciones");
+        return cols;
     }
 
-    function estudianteRowHtml(e) {
+    function aplicarColumnasEncabezado() {
+        const visibles = columnasVisibles();
+        tableHeadCells.forEach(th => mostrar(th, visibles.includes(th.dataset.col)));
+    }
+
+    function crearFilaEstudiante(e) {
         const s = seccionById(e.seccionId);
-        const seccionCell = currentSeccionId === null
-            ? `<td><span class="section-tag">${s ? seccionLabel(s) : "Sin sección"}</span></td>`
-            : "";
-        return `
-            <td>
-                <div class="user-cell">
-                    <div class="user-avatar">${initials(e.nombre)}</div>
-                    <span class="user-cell__name">${e.nombre}</span>
-                </div>
-            </td>
-            <td>${e.cedula}</td>
-            <td>${e.encargado}</td>
-            <td>${e.telefono}</td>
-            ${seccionCell}
-            <td>
-                <button class="status-pill ${e.activo ? "status-pill--activo" : "status-pill--inactivo"}" data-id="${e.id}" type="button">
-                    ${e.activo ? "Activo" : "Inactivo"}
-                </button>
-            </td>
-            <td>
-                <div class="row-actions">
-                    <button class="row-action-btn edit-btn" data-id="${e.id}" title="Editar" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
-                    </button>
-                    <button class="row-action-btn view-btn" data-id="${e.id}" title="Ver información" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-                    </button>
-                </div>
-            </td>`;
+        const fila = clonar("tplEstudianteRow");
+
+        const visibles = columnasVisibles();
+        fila.querySelectorAll("[data-col]").forEach(td => mostrar(td, visibles.includes(td.dataset.col)));
+
+        ref(fila, "avatar").textContent = initials(e.nombre);
+        ref(fila, "nombre").textContent = e.nombre;
+        ref(fila, "cedula").textContent = e.cedula;
+        ref(fila, "encargado").textContent = e.encargado;
+        ref(fila, "telefono").textContent = e.telefono;
+        ref(fila, "seccion").textContent = s ? seccionLabel(s) : "Sin sección";
+
+        const estado = ref(fila, "estado");
+        estado.classList.add(e.activo ? "status-pill--activo" : "status-pill--inactivo");
+        estado.textContent = e.activo ? "Activo" : "Inactivo";
+        estado.addEventListener("click", () => toggleEstado(e.id));
+
+        ref(fila, "editBtn").addEventListener("click", () => openStudentModal(e.id));
+        ref(fila, "viewBtn").addEventListener("click", () => openDetailModal(e.id));
+
+        return fila;
     }
 
     // Encabezado de la vista: solo existe cuando se abrió una sección concreta.
     // En la vista global (activos/inactivos de todas las secciones) no se muestra
     // "Volver a secciones" ni la tarjeta de encabezado.
     function renderViewHeader() {
-        const backLink = document.getElementById("btnVolverSecciones");
-        const sectionHeader = document.querySelector(".section-header");
+        const enSeccion = currentSeccionId !== null;
 
         // El filtro de Estado solo tiene sentido en la vista global (todos los
         // estudiantes); dentro de una sección siempre se ven solo los activos.
-        estadoFilterGroup.style.display = currentSeccionId === null ? "" : "none";
+        mostrar(estadoFilterGroup, !enSeccion);
+        mostrar(btnVolverSecciones, enSeccion);
+        mostrar(sectionHeader, enSeccion);
 
-        if (currentSeccionId !== null) {
-            backLink.style.display = "";
-            sectionHeader.style.display = "";
+        if (!enSeccion) return;
 
-            const s = seccionById(currentSeccionId);
-            viewBadge.textContent = seccionCodigo(s);
-            viewTitulo.textContent = seccionLabel(s);
-            viewSubtitulo.textContent = `Docente a cargo: ${docenteNombre(s.docenteId)}`;
-            btnEditarSeccion.style.display = "";
-            return;
-        }
+        const s = seccionById(currentSeccionId);
+        viewBadge.textContent = seccionCodigo(s);
+        viewTitulo.textContent = seccionLabel(s);
+        viewSubtitulo.textContent = `Docente a cargo: ${docenteNombre(s.docenteId)}`;
+        mostrar(btnEditarSeccion, true);
+    }
 
-        backLink.style.display = "none";
-        sectionHeader.style.display = "none";
+    // ---- Paginación compacta: 1 … 4 5 6 … 12 (no se desborda en móvil) ----
+    function paginasVisibles(actual, total) {
+        const set = new Set([1, total, actual - 1, actual, actual + 1]);
+        const pages = [...set].filter(p => p >= 1 && p <= total).sort((a, b) => a - b);
+        const out = [];
+        pages.forEach((p, i) => {
+            if (i && p - pages[i - 1] > 1) out.push("…");
+            out.push(p);
+        });
+        return out;
+    }
+
+    function crearBotonPagina(texto, opciones) {
+        const btn = clonar("tplPgBtn");
+        btn.textContent = texto;
+        btn.classList.toggle("is-active", !!opciones.activo);
+        btn.disabled = !!opciones.deshabilitado;
+        btn.addEventListener("click", opciones.alClic);
+        return btn;
+    }
+
+    function renderPaginacion(totalPaginas) {
+        const nodos = [];
+
+        nodos.push(crearBotonPagina("‹", {
+            deshabilitado: paginaActual === 1,
+            alClic: () => { if (paginaActual > 1) { paginaActual--; renderEstudiantes(); } },
+        }));
+
+        paginasVisibles(paginaActual, totalPaginas).forEach(p => {
+            if (p === "…") {
+                nodos.push(clonar("tplPgDots"));
+            } else {
+                nodos.push(crearBotonPagina(String(p), {
+                    activo: p === paginaActual,
+                    alClic: () => { paginaActual = p; renderEstudiantes(); },
+                }));
+            }
+        });
+
+        nodos.push(crearBotonPagina("›", {
+            deshabilitado: paginaActual === totalPaginas,
+            alClic: () => { if (paginaActual < totalPaginas) { paginaActual++; renderEstudiantes(); } },
+        }));
+
+        estudiantesPagination.replaceChildren(...nodos);
     }
 
     function renderEstudiantes() {
@@ -277,35 +326,27 @@
         if (currentSeccionId !== null && !seccionById(currentSeccionId)) { volverASecciones(); return; }
 
         renderViewHeader();
-        renderHead();
+        aplicarColumnasEncabezado();
 
-        const list = getEstudiantesFiltrados();
-        tbody.innerHTML = "";
-        list.forEach(e => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = estudianteRowHtml(e);
-            tbody.appendChild(tr);
-        });
+        const listCompleta = getEstudiantesFiltrados();
 
-        estudiantesEmpty.style.display = list.length === 0 ? "block" : "none";
-        estudiantesEmpty.querySelector("div").textContent = currentSeccionId === null
+        // Si la página actual quedó fuera de rango (por ejemplo, al desactivar al
+        // último estudiante de la última página), se vuelve a la última página válida.
+        const totalPaginas = Math.max(1, Math.ceil(listCompleta.length / ESTUDIANTES_POR_PAGINA));
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+        const inicio = (paginaActual - 1) * ESTUDIANTES_POR_PAGINA;
+        const listPagina = listCompleta.slice(inicio, inicio + ESTUDIANTES_POR_PAGINA);
+
+        tbody.replaceChildren(...listPagina.map(crearFilaEstudiante));
+
+        estudiantesEmpty.classList.toggle("is-visible", listCompleta.length === 0);
+        estudiantesEmptyText.textContent = currentSeccionId === null
             ? "No se encontraron estudiantes con los filtros seleccionados."
             : "Esta sección todavía no tiene estudiantes activos registrados.";
 
-        const total = currentSeccionId === null
-            ? estudiantesData.length
-            : estudiantesDeSeccion(currentSeccionId).filter(e => e.activo).length;
-        resultsCount.textContent = `Mostrando ${list.length} de ${total} estudiantes`;
-
-        tbody.querySelectorAll(".status-pill").forEach(el => {
-            el.addEventListener("click", () => toggleEstado(parseInt(el.dataset.id, 10)));
-        });
-        tbody.querySelectorAll(".edit-btn").forEach(el => {
-            el.addEventListener("click", () => openStudentModal(parseInt(el.dataset.id, 10)));
-        });
-        tbody.querySelectorAll(".view-btn").forEach(el => {
-            el.addEventListener("click", () => openDetailModal(parseInt(el.dataset.id, 10)));
-        });
+        estudiantesResultsCount.textContent = `Mostrando ${listPagina.length} de ${listCompleta.length} estudiantes`;
+        renderPaginacion(totalPaginas);
     }
 
     // El registro nunca se elimina: solo cambia de estado.
@@ -331,12 +372,16 @@
 
     function aplicarVista() {
         const enEstudiantes = currentView === "estudiantes";
-        seccionesView.style.display = enEstudiantes ? "none" : "";
-        estudiantesView.style.display = enEstudiantes ? "" : "none";
-        gradoFilterGroup.style.display = enEstudiantes ? "none" : "";
-        // estadoFilterGroup se ajusta en renderViewHeader según si hay
-        // sección abierta o es la vista global de estudiantes.
-        estadoFilterGroup.style.display = enEstudiantes && currentSeccionId === null ? "" : "none";
+        // Dentro de una sección concreta se muestra una vista enfocada:
+        // solo buscador, "Volver a secciones", exportar y la tabla.
+        layoutEl.classList.toggle("is-section-focus", enEstudiantes && currentSeccionId !== null);
+        // En el inicio (lista de secciones) no se muestra la barra de filtros.
+        mostrar(filtersBar, enEstudiantes);
+        mostrar(seccionesView, !enEstudiantes);
+        mostrar(estudiantesView, enEstudiantes);
+        mostrar(gradoFilterGroup, !enEstudiantes);
+        // El filtro de estado solo aplica a la vista global de estudiantes.
+        mostrar(estadoFilterGroup, enEstudiantes && currentSeccionId === null);
         searchInput.placeholder = enEstudiantes
             ? "Buscar por nombre o cédula..."
             : "Buscar sección, docente o estudiante...";
@@ -346,6 +391,7 @@
         currentSearch = "";
         currentGrado = "todos";
         currentEstado = estado || "todos";
+        paginaActual = 1;
         searchInput.value = "";
         gradoFilter.value = "todos";
         estadoFilter.value = currentEstado;
@@ -398,16 +444,17 @@
         activarTarjeta(card);
     });
 
-    document.getElementById("btnVolverSecciones").addEventListener("click", volverASecciones);
+    btnVolverSecciones.addEventListener("click", volverASecciones);
     btnEditarSeccion.addEventListener("click", () => {
         if (currentSeccionId !== null) openSectionModal(currentSeccionId);
     });
 
-    // ---- Filtros del panel lateral ----
+    // ---- Barra de filtros ----
     document.getElementById("btnAplicarFiltros").addEventListener("click", () => {
         currentSearch = searchInput.value;
         currentGrado = gradoFilter.value;
         currentEstado = estadoFilter.value;
+        paginaActual = 1;
         render();
     });
 
@@ -418,18 +465,14 @@
 
     estadoFilter.addEventListener("change", () => {
         currentEstado = estadoFilter.value;
+        paginaActual = 1;
         render();
     });
 
     let searchTimer;
     searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => { currentSearch = searchInput.value; render(); }, 200);
-    });
-
-    // ---- Tip panel ----
-    document.getElementById("tipCloseBtn").addEventListener("click", () => {
-        document.getElementById("tipPanel").style.display = "none";
+        searchTimer = setTimeout(() => { currentSearch = searchInput.value; paginaActual = 1; render(); }, 200);
     });
 
     // =========================================================
@@ -445,7 +488,7 @@
     LETRAS.forEach(l => secLetra.add(new Option(`Grupo ${l}`, l)));
 
     function refreshDocenteOptions() {
-        secDocente.innerHTML = "";
+        secDocente.replaceChildren();
         secDocente.add(new Option("Sin asignar", ""));
         docentesCatalogo.forEach(d => secDocente.add(new Option(d.nombre, String(d.id))));
     }
@@ -525,7 +568,7 @@
     // El select de secciones se arma cada vez que se abre, para reflejar
     // las secciones creadas hasta ese momento.
     function refreshSeccionOptions() {
-        eSeccion.innerHTML = "";
+        eSeccion.replaceChildren();
         ordenarSecciones(seccionesData).forEach(s => eSeccion.add(new Option(seccionLabel(s), String(s.id))));
     }
 
@@ -613,8 +656,11 @@
     const detailModal = document.getElementById("detailModal");
     const detailModalBody = document.getElementById("detailModalBody");
 
-    function detailRow(label, value) {
-        return `<div class="detail-row"><span class="d-label">${label}</span><span class="d-value">${value}</span></div>`;
+    function crearFilaDetalle(label, value) {
+        const fila = clonar("tplDetalleRow");
+        ref(fila, "label").textContent = label;
+        ref(fila, "value").textContent = value;
+        return fila;
     }
 
     function openDetailModal(id) {
@@ -625,15 +671,16 @@
         document.getElementById("detailModalTitle").textContent = e.nombre;
         document.getElementById("detailModalSubtitle").textContent = s ? seccionLabel(s) : "Sin sección";
 
-        detailModalBody.innerHTML = [
-            detailRow("Cédula", e.cedula),
-            detailRow("Padre o encargado", e.encargado),
-            detailRow("Celular", e.telefono),
-            detailRow("Sección", s ? seccionLabel(s) : "Sin sección"),
-            detailRow("Docente a cargo", s ? docenteNombre(s.docenteId) : "Sin asignar"),
-            detailRow("Estado", e.activo ? "Activo" : "Inactivo"),
-        ].join("");
+        const filas = [
+            ["Cédula", e.cedula],
+            ["Padre o encargado", e.encargado],
+            ["Celular", e.telefono],
+            ["Sección", s ? seccionLabel(s) : "Sin sección"],
+            ["Docente a cargo", s ? docenteNombre(s.docenteId) : "Sin asignar"],
+            ["Estado", e.activo ? "Activo" : "Inactivo"],
+        ];
 
+        detailModalBody.replaceChildren(...filas.map(([label, value]) => crearFilaDetalle(label, value)));
         detailModal.classList.add("is-open");
     }
 
@@ -645,6 +692,7 @@
 
     // =========================================================
     // EXPORTAR A EXCEL
+    // Exporta TODOS los registros filtrados, no solo los de la página visible.
     // =========================================================
     async function exportarExcel({ sheetTitle, fileName, headers, widths, rows, estadoDeFila }) {
         const workbook = new ExcelJS.Workbook();

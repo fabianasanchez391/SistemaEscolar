@@ -1,0 +1,288 @@
+﻿@{
+    ViewData["Title"] = "Gestión de Boletas";
+    ViewData["Page"] = "boletas";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/boletas.css" asp-append-version="true" />
+}
+
+<!-- ---- Hero ---- -->
+<div class="module-hero">
+    <div class="module-hero__left">
+        <div class="module-hero__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1Z" /><path d="M4 22v-7" /></svg>
+        </div>
+        <div class="module-hero__text">
+            <h1>Gestión de Boletas</h1>
+            <p>Registre boletas de conducta: un simple aviso o la rebaja de 5 o 10 puntos. El padre de familia las marca como vistas y el docente puede confirmarlo.</p>
+        </div>
+    </div>
+    <div class="module-hero__illustration" aria-hidden="true">
+        <svg viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="110" cy="85" r="80" fill="#eaf1ff" />
+            <rect x="62" y="30" width="96" height="112" rx="8" fill="#1a2c56" />
+            <rect x="74" y="48" width="72" height="6" rx="3" fill="#eaf1ff" />
+            <rect x="74" y="62" width="72" height="6" rx="3" fill="#eaf1ff" />
+            <rect x="74" y="76" width="46" height="6" rx="3" fill="#eaf1ff" />
+            <circle cx="136" cy="116" r="16" fill="#f2994a" />
+            <path d="M136 108v9" stroke="#fff" stroke-width="3.4" stroke-linecap="round" />
+            <circle cx="136" cy="124" r="1.9" fill="#fff" />
+        </svg>
+    </div>
+</div>
+
+<div class="bol-layout">
+
+    <!-- Selector de vista (solo demostración: en producción el rol sale del inicio de sesión) -->
+    <div class="role-bar">
+        <span class="role-bar__label">Vista de demostración:</span>
+        <div class="role-switch" id="roleSwitch">
+            <button class="role-btn is-active" data-rol="docente" type="button">Docente</button>
+            <button class="role-btn" data-rol="padre" type="button">Padre de familia</button>
+        </div>
+    </div>
+
+    <!-- =================== LISTADO =================== -->
+    <section class="table-card bol-list-card">
+        <div class="bol-card-head bol-card-head--row">
+            <div>
+                <h2>Boletas de conducta</h2>
+                <p id="bolResultsTag">0 boletas</p>
+            </div>
+            <button class="btn btn--primary" id="btnNuevaBoleta" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+                Nueva boleta
+            </button>
+        </div>
+
+        <div class="table-toolbar">
+            <label class="filter-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                <input type="search" id="bolSearchInput" placeholder="Buscar por nombre o cédula..." />
+            </label>
+            <div class="chip-group" id="estadoChips">
+                <button class="chip is-active" data-estado="todas" type="button">Todas <span id="chipTodas">0</span></button>
+                <button class="chip" data-estado="pendiente" type="button">Pendientes de ver <span id="chipPendiente">0</span></button>
+                <button class="chip" data-estado="visto" type="button">Vistas <span id="chipVisto">0</span></button>
+            </div>
+        </div>
+
+        <div class="table-scroll">
+            <table class="attendance-table bol-table">
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Cédula</th>
+                        <th>Fecha</th>
+                        <th>Lo que hizo</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="bolTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" id="bolEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+            <div>No hay boletas que coincidan con los filtros.</div>
+        </div>
+
+        <!-- Pie de tabla: conteo y paginación (fuera de la tabla para que se acomode en responsive) -->
+        <div class="table-footer">
+            <span class="pg-info" id="bolCountInfo">Mostrando 0 de 0 boletas</span>
+            <div class="pagination-btns" id="bolPagination"></div>
+        </div>
+    </section>
+</div>
+
+<!-- =================== MODAL: NUEVA BOLETA =================== -->
+<div class="modal-overlay" id="formModal">
+    <div class="modal-card modal-card--md">
+        <div class="modal-card__head head-boleta">
+            <div class="modal-card__head-info">
+                <div class="modal-card__head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1Z" /><path d="M4 22v-7" /></svg>
+                </div>
+                <div>
+                    <h2>Nueva boleta</h2>
+                    <p>Los campos marcados con * son obligatorios</p>
+                </div>
+            </div>
+            <button class="modal-close" id="formModalCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="modal-card__body">
+            <form id="bolForm" class="bol-form" novalidate>
+                <div class="field">
+                    <label for="bolCedula">Cédula del estudiante *</label>
+                    <input type="text" id="bolCedula" class="field-input" placeholder="Ej: 1-0543-5678" maxlength="20" autocomplete="off" />
+                    <small class="field-hint" id="bolCedulaHint"></small>
+                </div>
+
+                <div class="field">
+                    <label for="bolNombre">Nombre del estudiante *</label>
+                    <input type="text" id="bolNombre" class="field-input" placeholder="Nombre completo" maxlength="80" autocomplete="off" />
+                </div>
+
+                <div class="field">
+                    <label for="bolFecha">Fecha del incidente *</label>
+                    <input type="date" id="bolFecha" class="field-input" />
+                </div>
+
+                <div class="field">
+                    <label for="bolTexto">Lo que hizo el estudiante *</label>
+                    <textarea id="bolTexto" class="field-input field-textarea" rows="4" maxlength="500" placeholder="Describa la conducta que motiva la boleta..."></textarea>
+                    <small class="field-hint field-hint--right"><span id="bolContador">0</span>/500</small>
+                </div>
+
+                <div class="field">
+                    <div class="field-label">Tipo de boleta *</div>
+                    <div class="tipo-options">
+                        <label class="tipo-option tipo-option--aviso">
+                            <input type="radio" name="boletaTipo" value="0" checked />
+                            <span class="tipo-option__card">
+                                <span class="tipo-option__value">Aviso</span>
+                                <span class="tipo-option__label">Sin rebaja de puntos</span>
+                            </span>
+                        </label>
+                        <label class="tipo-option tipo-option--5">
+                            <input type="radio" name="boletaTipo" value="5" />
+                            <span class="tipo-option__card">
+                                <span class="tipo-option__value">-5</span>
+                                <span class="tipo-option__label">puntos</span>
+                            </span>
+                        </label>
+                        <label class="tipo-option tipo-option--10">
+                            <input type="radio" name="boletaTipo" value="10" />
+                            <span class="tipo-option__card">
+                                <span class="tipo-option__value">-10</span>
+                                <span class="tipo-option__label">puntos</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-error is-hidden" id="bolError" role="alert"></div>
+            </form>
+        </div>
+        <div class="modal-card__foot">
+            <button class="btn btn--outline" id="btnCancelar" type="button">Cancelar</button>
+            <button class="btn btn--success" id="btnEnviar" type="submit" form="bolForm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
+                Registrar boleta
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- =================== MODAL: DETALLE =================== -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-card modal-card--md">
+        <div class="modal-card__head head-boleta">
+            <div class="modal-card__head-info">
+                <div class="modal-card__head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1Z" /><path d="M4 22v-7" /></svg>
+                </div>
+                <div>
+                    <h2 id="detailModalTitle">Boleta</h2>
+                    <p id="detailModalSubtitle">Estudiante</p>
+                </div>
+            </div>
+            <button class="modal-close" id="detailModalCloseBtn" type="button" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="modal-card__body" id="detailBody"></div>
+        <div class="modal-card__foot">
+            <button class="btn btn--outline" id="detailModalCloseBtn2" type="button">Cerrar</button>
+            <button class="btn btn--success is-hidden" id="btnDetalleVisto" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                Marcar como vista
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- =================== TOAST DE CONFIRMACIÓN =================== -->
+<div class="toast-success-overlay" id="successToast">
+    <div class="toast-success-card">
+        <div class="toast-success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+        </div>
+        <div class="toast-success-text" id="successToastText">La boleta se registró correctamente</div>
+    </div>
+</div>
+
+<!-- =========================================================
+     PLANTILLAS HTML
+     El JS solo las clona y rellena con textos; no construye HTML.
+     ========================================================= -->
+<!-- Fila de la tabla de boletas -->
+<template id="tplBoletaRow">
+    <tr>
+        <td>
+            <div class="user-cell">
+                <div class="user-avatar" data-ref="avatar"></div>
+                <span class="user-cell__name" data-ref="nombre"></span>
+            </div>
+        </td>
+        <td data-ref="cedula"></td>
+        <td class="bol-fecha-cell" data-ref="fecha"></td>
+        <td><div class="bol-texto-cell" data-ref="texto"></div></td>
+        <td class="cell-center"><span class="tipo-badge" data-ref="tipo"></span></td>
+        <td class="cell-center">
+            <div class="estado-cell">
+                <span class="hist-badge" data-ref="estado"></span>
+                <small class="estado-cell__fecha" data-ref="estadoFecha"></small>
+            </div>
+        </td>
+        <td>
+            <div class="row-actions">
+                <button class="row-action-btn view-btn" data-ref="ver" title="Ver detalle" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                </button>
+                <button class="row-action-btn seen-btn" data-ref="visto" title="Marcar como vista" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                </button>
+                <button class="row-action-btn delete-btn" data-ref="eliminar" title="Eliminar boleta" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5" /></svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<!-- Contenido del modal de detalle -->
+<template id="tplDetalle">
+    <div class="detail-content">
+        <div class="detail-grid">
+            <div class="detail-item"><small>Fecha del incidente</small><div class="detail-capitalize" data-ref="fecha"></div></div>
+            <div class="detail-item"><small>Tipo de boleta</small><div><span class="tipo-badge" data-ref="tipo"></span></div></div>
+            <div class="detail-item"><small>Registrada</small><div data-ref="enviada"></div></div>
+            <div class="detail-item"><small>Estado</small><div><span class="hist-badge" data-ref="estado"></span></div></div>
+            <div class="detail-item detail-item--full"><small>Visto por el padre</small><div data-ref="visto"></div></div>
+        </div>
+        <div>
+            <p class="detail-title">Lo que sucedió</p>
+            <div class="detail-texto" data-ref="texto"></div>
+        </div>
+    </div>
+</template>
+
+<!-- Paginación (mismo diseño que los demás módulos) -->
+<template id="tplPgBtn">
+    <button class="pg-btn" type="button"></button>
+</template>
+
+<template id="tplPgDots">
+    <span class="pg-dots">…</span>
+</template>
+
+@section Scripts {
+    <script src="~/js/boletas.js" asp-append-version="true"></script>
+}

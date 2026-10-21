@@ -1,19 +1,17 @@
-﻿
-/* ---------- Layout general: contenido + panel lateral ---------- */
+﻿/* ---------- Layout general: una sola columna a todo el ancho ---------- */
 .usuarios-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
-    gap: 20px;
-    align-items: start;
+    display: block;
+    min-width: 0;
 }
 
-    /* Corrige el "grid blowout": por defecto, un ítem de grid no se encoge
-   por debajo del tamaño de su contenido aunque la pista sí lo permita.
-   Como la tabla interna tiene min-width, sin esto empuja TODO el layout
-   a desbordarse horizontalmente en pantallas angostas. */
-    .usuarios-layout > * {
+    .usuarios-layout > div {
         min-width: 0;
     }
+
+/* ---------- Utilidades (las usa el JS para mostrar/ocultar sin estilos en línea) ---------- */
+.is-hidden {
+    display: none !important;
+}
 
 /* ---------- Hero ---------- */
 .module-hero {
@@ -230,6 +228,19 @@
     background: #fff;
 }
 
+/* Botones de guardar de los modales (antes tenían estilos en línea) */
+.btn--teal {
+    background: var(--teal-600);
+    border-color: var(--teal-600);
+    color: #fff;
+}
+
+.btn--dark {
+    background: var(--ink-700);
+    border-color: var(--ink-700);
+    color: #fff;
+}
+
 .main-actions-bar__right {
     display: flex;
     gap: 10px;
@@ -313,6 +324,15 @@
     box-shadow: 0 3px 8px rgba(20,30,60,0.15);
 }
 
+/* Color del avatar según el rol (antes se asignaba con estilo en línea) */
+.avatar--docente {
+    background: #22b573;
+}
+
+.avatar--admin {
+    background: #5b6a91;
+}
+
 .user-cell__name {
     font-size: 13.5px;
     font-weight: 600;
@@ -384,7 +404,14 @@
 .row-actions {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+}
+
+/* Columna "Acciones" centrada (encabezado y botones editar / ver) */
+.users-table thead th:last-child,
+.users-table tbody td:last-child {
+    text-align: center;
 }
 
 .row-action-btn {
@@ -416,19 +443,29 @@
         color: var(--purple-600);
     }
 
-.table-pagination {
+/* ---------- Pie de tabla: conteo a la izquierda, paginación a la derecha ----------
+   Mismo diseño que el módulo de asistencia. Está fuera de la tabla (no es un
+   <tfoot>) para que no se desborde ni se corte con el scroll horizontal en
+   pantallas pequeñas. */
+.table-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
     padding: 14px 20px;
+    border-top: 1px solid var(--line);
     font-size: 12.5px;
     color: var(--ink-500);
-    flex-wrap: wrap;
-    gap: 10px;
 }
+
+    .table-footer .pagination-btns {
+        justify-content: flex-end;
+    }
 
 .pagination-btns {
     display: flex;
+    justify-content: center;
     gap: 6px;
     flex-wrap: wrap;
 }
@@ -438,7 +475,7 @@
     height: 30px;
     padding: 0 8px;
     border-radius: 8px;
-    border: 1px solid var(--line);
+    border: 1px solid #afb1b8;
     background: #fff;
     font-size: 12.5px;
     font-weight: 600;
@@ -452,6 +489,17 @@
         color: #fff;
     }
 
+    .pg-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+.pg-dots {
+    align-self: center;
+    padding: 0 2px;
+    color: var(--ink-500);
+}
+
 .empty-state {
     text-align: center;
     padding: 50px 20px;
@@ -460,6 +508,10 @@
     display: none;
 }
 
+    .empty-state.is-visible {
+        display: block;
+    }
+
     .empty-state svg {
         width: 42px;
         height: 42px;
@@ -467,42 +519,29 @@
         margin-bottom: 10px;
     }
 
-/* ---------- Panel lateral: filtros ---------- */
-.side-panel {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    padding: 20px;
-    margin-bottom: 18px;
-}
-
-.side-panel__title {
+/* ---------- Barra de filtros (encabezado de la tabla) ---------- */
+.table-toolbar {
     display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 14.5px;
-    font-weight: 700;
-    color: var(--ink-900);
-    margin-bottom: 16px;
+    align-items: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
 }
-
-    .side-panel__title svg {
-        width: 18px;
-        height: 18px;
-        color: var(--blue-600);
-        flex-shrink: 0;
-    }
 
 .filter-search {
+    flex: 1 1 280px;
     display: flex;
     align-items: center;
     gap: 9px;
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 16px;
+    padding: 0 12px;
+    min-height: 40px;
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
 }
 
     .filter-search svg {
@@ -523,146 +562,34 @@
         min-width: 0;
     }
 
-.filter-group {
-    margin-bottom: 16px;
-}
-
-    .filter-group:last-of-type {
-        margin-bottom: 0;
-    }
-
-    .filter-group label {
-        display: block;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--ink-700);
-        margin-bottom: 7px;
-    }
-
-    .filter-group select {
-        width: 100%;
-        border: 1.5px solid var(--line);
-        border-radius: 10px;
-        padding: 9px 12px;
-        font-size: 12.5px;
-        font-family: inherit;
-        color: var(--ink-900);
-        background: #fff;
-        cursor: pointer;
-        outline: none;
-    }
-
-        .filter-group select:focus {
-            border-color: var(--blue-600);
-        }
-
 .filter-actions {
     display: flex;
     gap: 8px;
-    margin-top: 18px;
 }
 
     .filter-actions .btn {
-        flex: 1;
-        justify-content: center;
-        padding: 9px;
+        min-height: 40px;
+        padding: 9px 16px;
         font-size: 12.5px;
+        justify-content: center;
     }
 
-/* ---------- Panel: acciones rápidas ---------- */
-.quick-action-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 11px 14px;
-    border-radius: 11px;
-    border: none;
-    font-size: 13px;
-    font-weight: 700;
-    color: #fff;
-    cursor: pointer;
-    margin-bottom: 9px;
-    transition: filter 0.15s ease, transform 0.15s ease;
-}
-
-    .quick-action-btn:last-child {
-        margin-bottom: 0;
-    }
-
-    .quick-action-btn svg {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-    }
-
-    .quick-action-btn:hover {
-        filter: brightness(0.95);
-        transform: translateY(-1px);
-    }
-
-.quick-action-btn--teacher {
-    background: linear-gradient(135deg, #34c759, #22b573);
-}
-
-.quick-action-btn--admin {
+/* Botón gris azulado (registrar personal administrativo) */
+.btn--slate {
     background: linear-gradient(135deg, #8792a6, #5b6a91);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(91, 106, 145, 0.3);
 }
 
-/* ---------- Panel: recordatorio ---------- */
-.tip-panel {
-    background: var(--blue-100);
-    border: 1px solid #cfe0fb;
-    border-radius: var(--radius-lg);
-    padding: 16px 18px;
+    .btn--slate:hover {
+        box-shadow: 0 8px 20px rgba(91, 106, 145, 0.4);
+    }
+
+.main-actions-bar__left {
     display: flex;
-    gap: 12px;
-    position: relative;
-}
-
-.tip-panel__icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: var(--blue-600);
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-}
-
-    .tip-panel__icon svg {
-        width: 17px;
-        height: 17px;
-        color: #fff;
-    }
-
-.tip-panel__text {
-    min-width: 0;
-}
-
-    .tip-panel__text h4 {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--ink-900);
-        margin: 0 0 4px;
-    }
-
-    .tip-panel__text p {
-        font-size: 12px;
-        color: var(--ink-700);
-        line-height: 1.5;
-        margin: 0;
-    }
-
-.tip-panel__close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--ink-500);
-    padding: 4px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 /* ---------- Modales ---------- */
@@ -689,6 +616,11 @@
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 25px 70px rgba(10, 16, 33, 0.3);
+}
+
+/* Modal "Ver detalle" más angosto (antes con estilo en línea) */
+.modal-card--detalle {
+    max-width: 440px;
 }
 
 .modal-card__head {
@@ -807,6 +739,12 @@
         .form-field input:focus, .form-field select:focus {
             border-color: var(--blue-600);
         }
+
+/* Texto aclaratorio dentro de una etiqueta, ej. "(máximo 3)" */
+.label-hint {
+    font-weight: 400;
+    color: var(--ink-500);
+}
 
 .group-picker {
     display: flex;
@@ -976,17 +914,8 @@
    Breakpoints: 991 / 768 / 640 / 420 / 360
    ========================================================= */
 
-/* ----- ≤991px: coincide con el quiebre del sidebar (site.js) —
-   el panel lateral baja debajo del contenido ----- */
+/* ----- ≤991px ----- */
 @media (max-width: 991px) {
-    .usuarios-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .side-panel {
-        order: 2;
-    }
-
     .module-hero__illustration {
         width: 100px;
     }
@@ -1014,6 +943,10 @@
             justify-content: center;
         }
 
+    .table-toolbar {
+        padding: 14px 16px;
+    }
+
     .modal-card__head {
         padding: 18px 20px;
     }
@@ -1038,6 +971,22 @@
         align-items: stretch;
     }
 
+    .main-actions-bar__left {
+        flex-direction: column;
+    }
+
+        .main-actions-bar__left .btn {
+            justify-content: center;
+        }
+
+    .filter-actions {
+        width: 100%;
+    }
+
+        .filter-actions .btn {
+            flex: 1;
+        }
+
     .main-actions-bar__right {
         justify-content: stretch;
     }
@@ -1047,15 +996,21 @@
             justify-content: center;
         }
 
-    .table-pagination {
-        justify-content: center;
-        text-align: center;
+    /* Pie de tabla: conteo arriba y paginación centrada debajo */
+    .table-footer {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 14px 16px;
     }
 
-    .pagination-btns {
-        justify-content: center;
-        width: 100%;
+        .table-footer .pagination-btns {
+            justify-content: center;
+        }
+
+    .pg-btn {
+        min-width: 36px;
+        height: 36px;
     }
 
     .modal-overlay {
@@ -1099,10 +1054,6 @@
 
     .role-stat-card__value {
         font-size: 21px;
-    }
-
-    .side-panel {
-        padding: 16px;
     }
 
     .row-actions {

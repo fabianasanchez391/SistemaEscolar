@@ -71,100 +71,8 @@
             </div>
         </div>
 
-        <!-- =================== VISTA 1: LISTA DE SECCIONES =================== -->
-        <div id="seccionesView">
-            <div class="main-actions-bar">
-                <button class="btn btn--success" id="btnCrearSeccion" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
-                    Crear sección
-                </button>
-                <div class="main-actions-bar__right">
-                    <button class="btn btn--outline" id="btnExportSecciones" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
-                        Exportar secciones
-                    </button>
-                </div>
-            </div>
-
-            <div class="sections-grid" id="seccionesGrid"></div>
-
-            <div class="empty-state empty-state--block" id="seccionesEmpty">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18" /></svg>
-                <div>Todavía no hay secciones. Cree la primera para empezar a registrar estudiantes.</div>
-            </div>
-        </div>
-
-        <!-- =================== VISTA 2: ESTUDIANTES =================== -->
-        <!-- Sirve tanto para una sección concreta como para todas las secciones -->
-        <div id="estudiantesView" style="display:none;">
-            <button class="back-btn" id="btnVolverSecciones" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 6-6 6 6 6" /></svg>
-                Volver a secciones
-            </button>
-
-            <div class="section-header">
-                <div class="section-header__left">
-                    <div class="section-header__badge" id="viewBadge">5°A</div>
-                    <div>
-                        <h2 id="viewTitulo">5° - Grupo A</h2>
-                        <p id="viewSubtitulo">Docente a cargo: sin asignar</p>
-                    </div>
-                </div>
-                <button class="btn btn--outline" id="btnEditarSeccion" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
-                    Editar sección
-                </button>
-            </div>
-
-            <div class="main-actions-bar">
-                <button class="btn btn--success" id="btnRegistrarEstudiante" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
-                    Registrar estudiante
-                </button>
-                <div class="main-actions-bar__right">
-                    <button class="btn btn--outline" id="btnExportEstudiantes" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
-                        Exportar estudiantes
-                    </button>
-                </div>
-            </div>
-
-            <div class="table-card">
-                <div class="table-scroll">
-                    <!-- El encabezado se genera en JS: la columna "Sección" solo aparece
-                         cuando se están viendo estudiantes de todas las secciones. -->
-                    <table class="users-table">
-                        <thead id="estudiantesTableHead"></thead>
-                        <tbody id="estudiantesTableBody"></tbody>
-                    </table>
-                </div>
-
-                <div class="empty-state" id="estudiantesEmpty">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                    <div>No hay estudiantes que mostrar.</div>
-                </div>
-
-                <div class="table-pagination">
-                    <span id="resultsCount">Mostrando 0 de 0 estudiantes</span>
-                    <div class="pagination-btns">
-                        <button class="pg-btn" id="pgPrev" type="button">‹</button>
-                        <button class="pg-btn is-active" type="button">1</button>
-                        <button class="pg-btn" id="pgNext" type="button">›</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- =================== PANEL LATERAL =================== -->
-    <aside>
-        <!-- ---- Filtros ---- -->
-        <div class="side-panel">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
-                Filtros de búsqueda
-            </div>
-
+        <!-- ---- Barra de filtros ---- -->
+        <div class="filters-bar" id="filtersBar">
             <label class="filter-search">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
                 <input type="search" id="searchInput" placeholder="Buscar sección, docente o estudiante..." />
@@ -179,7 +87,7 @@
             </div>
 
             <!-- Solo aplica en la lista de estudiantes -->
-            <div class="filter-group" id="estadoFilterGroup" style="display:none;">
+            <div class="filter-group is-hidden" id="estadoFilterGroup">
                 <label for="estadoFilter">Estado</label>
                 <select id="estadoFilter">
                     <option value="todos">Todos</option>
@@ -200,41 +108,116 @@
             </div>
         </div>
 
-        <!-- ---- Acciones rápidas ---- -->
-        <div class="side-panel">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3" /><circle cx="16" cy="9" r="2.4" /><path d="M3 19c.9-3 3.3-4.8 6-4.8s5.1 1.8 6 4.8" /><path d="M15 14.6c2 .3 3.6 1.8 4.2 3.9" /></svg>
-                Acciones rápidas
+        <!-- =================== VISTA 1: LISTA DE SECCIONES =================== -->
+        <div id="seccionesView">
+            <div class="main-actions-bar">
+                <div class="main-actions-bar__left">
+                    <button class="btn btn--violet" id="btnCrearSeccion" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                        Crear sección
+                    </button>
+                    <button class="btn btn--blue" id="qaEstudiante" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                        Registrar estudiante
+                    </button>
+                </div>
+                <div class="main-actions-bar__right">
+                    <button class="btn btn--outline" id="btnExportSecciones" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+                        Exportar secciones
+                    </button>
+                </div>
             </div>
-            <button class="quick-action-btn quick-action-btn--section" id="qaSeccion" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18M9 10v10" /></svg>
-                Crear sección
-            </button>
-            <button class="quick-action-btn quick-action-btn--student" id="qaEstudiante" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
-                Registrar estudiante
-            </button>
+
+            <div class="sections-grid" id="seccionesGrid"></div>
+
+            <div class="empty-state empty-state--block" id="seccionesEmpty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18" /></svg>
+                <div id="seccionesEmptyText">Todavía no hay secciones. Cree la primera para empezar a registrar estudiantes.</div>
+            </div>
         </div>
 
-        <!-- ---- Recordatorio ---- -->
-        <div class="tip-panel" id="tipPanel">
-            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+        <!-- =================== VISTA 2: ESTUDIANTES =================== -->
+        <!-- Sirve tanto para una sección concreta como para todas las secciones -->
+        <div id="estudiantesView" class="is-hidden">
+            <button class="back-btn" id="btnVolverSecciones" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 6-6 6 6 6" /></svg>
+                Volver a secciones
             </button>
-            <div class="tip-panel__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
+
+            <div class="section-header" id="sectionHeader">
+                <div class="section-header__left">
+                    <div class="section-header__badge" id="viewBadge">5°A</div>
+                    <div>
+                        <h2 id="viewTitulo">5° - Grupo A</h2>
+                        <p id="viewSubtitulo">Docente a cargo: sin asignar</p>
+                    </div>
+                </div>
+                <button class="btn btn--outline" id="btnEditarSeccion" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+                    Editar sección
+                </button>
             </div>
-            <div class="tip-panel__text">
-                <h4>Recuerda</h4>
-                <p>Un estudiante siempre pertenece a una sección, así que primero cree la sección. Los registros no se eliminan: se editan o se marcan como <strong>Inactivos</strong>.</p>
+
+            <div class="main-actions-bar">
+                <div class="main-actions-bar__left">
+                    <button class="btn btn--violet" id="qaSeccion" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                        Crear sección
+                    </button>
+                    <button class="btn btn--blue" id="btnRegistrarEstudiante" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+                        Registrar estudiante
+                    </button>
+                </div>
+                <div class="main-actions-bar__right">
+                    <button class="btn btn--outline" id="btnExportEstudiantes" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4" /><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+                        Exportar estudiantes
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-scroll">
+                    <table class="users-table">
+                        <!-- Todas las columnas existen; el JS muestra solo las que corresponden a cada vista (data-col).
+                             La columna "Sección" solo aparece al ver estudiantes de todas las secciones. -->
+                        <thead>
+                            <tr>
+                                <th data-col="nombre">Nombre</th>
+                                <th data-col="cedula">Cédula</th>
+                                <th data-col="encargado">Padre o encargado</th>
+                                <th data-col="telefono">Celular</th>
+                                <th data-col="seccion">Sección</th>
+                                <th data-col="estado">Estado</th>
+                                <th data-col="acciones">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="estudiantesTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state" id="estudiantesEmpty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    <div id="estudiantesEmptyText">No hay estudiantes que mostrar.</div>
+                </div>
+
+                <!-- Pie de tabla: conteo y paginación (fuera de la tabla para que se acomode en responsive) -->
+                <div class="table-footer">
+                    <span class="pg-info" id="estudiantesResultsCount">Mostrando 0 de 0 estudiantes</span>
+                    <div class="pagination-btns" id="estudiantesPagination"></div>
+                </div>
+
             </div>
         </div>
-    </aside>
+    </div>
+
 </div>
 
 <!-- =================== MODAL SECCIÓN =================== -->
 <div class="modal-overlay" id="sectionModal">
-    <div class="modal-card" style="max-width:480px;">
+    <div class="modal-card modal-card--seccion">
         <div class="modal-card__head head-seccion">
             <div class="modal-card__head-info">
                 <div class="modal-card__head-icon">
@@ -270,7 +253,7 @@
         </div>
         <div class="modal-card__foot">
             <button class="btn btn--outline" id="sectionModalCancelBtn" type="button">Cancelar</button>
-            <button class="btn" id="sectionModalSaveBtn" type="button" style="background:var(--blue-600);border-color:var(--blue-600);color:#fff;">Guardar sección</button>
+            <button class="btn btn--primary" id="sectionModalSaveBtn" type="button">Guardar sección</button>
         </div>
     </div>
 </div>
@@ -323,14 +306,14 @@
         </div>
         <div class="modal-card__foot">
             <button class="btn btn--outline" id="studentModalCancelBtn" type="button">Cancelar</button>
-            <button class="btn" id="studentModalSaveBtn" type="button" style="background:var(--blue-600);border-color:var(--blue-600);color:#fff;">Guardar estudiante</button>
+            <button class="btn btn--primary" id="studentModalSaveBtn" type="button">Guardar estudiante</button>
         </div>
     </div>
 </div>
 
 <!-- =================== MODAL VER INFORMACIÓN =================== -->
 <div class="modal-overlay" id="detailModal">
-    <div class="modal-card" style="max-width:440px;">
+    <div class="modal-card modal-card--detalle">
         <div class="modal-card__head head-estudiante">
             <div class="modal-card__head-info">
                 <div class="modal-card__head-icon">
@@ -363,6 +346,76 @@
         <div class="toast-success-text" id="successToastText">Guardado correctamente</div>
     </div>
 </div>
+
+<!-- =========================================================
+     PLANTILLAS HTML
+     El JS solo las clona y rellena con textos; no construye HTML.
+     ========================================================= -->
+<!-- Tarjeta de sección -->
+<template id="tplSeccionCard">
+    <article class="section-card">
+        <button class="section-card__edit" data-ref="editBtn" title="Editar sección" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+        </button>
+        <div class="section-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
+        </div>
+        <h3 class="section-card__title" data-ref="titulo"></h3>
+        <div class="section-card__docente">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2" /><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" /></svg>
+            <span data-ref="docente"></span>
+        </div>
+        <progress class="section-card__progress" data-ref="progreso" max="100" value="0"></progress>
+        <div class="section-card__footer">
+            <span class="section-card__count" data-ref="total"></span>
+            <span class="section-card__pill" data-ref="activos"></span>
+        </div>
+    </article>
+</template>
+
+<!-- Fila de estudiante: contiene todas las columnas; el JS oculta las que no aplican a la vista -->
+<template id="tplEstudianteRow">
+    <tr>
+        <td data-col="nombre">
+            <div class="user-cell">
+                <div class="user-avatar" data-ref="avatar"></div>
+                <span class="user-cell__name" data-ref="nombre"></span>
+            </div>
+        </td>
+        <td data-col="cedula" data-ref="cedula"></td>
+        <td data-col="encargado" data-ref="encargado"></td>
+        <td data-col="telefono" data-ref="telefono"></td>
+        <td data-col="seccion"><span class="section-tag" data-ref="seccion"></span></td>
+        <td data-col="estado"><button class="status-pill" data-ref="estado" type="button"></button></td>
+        <td data-col="acciones">
+            <div class="row-actions">
+                <button class="row-action-btn edit-btn" data-ref="editBtn" title="Editar" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+                </button>
+                <button class="row-action-btn view-btn" data-ref="viewBtn" title="Ver información" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<!-- Fila del modal "Ver información" -->
+<template id="tplDetalleRow">
+    <div class="detail-row">
+        <span class="d-label" data-ref="label"></span>
+        <span class="d-value" data-ref="value"></span>
+    </div>
+</template>
+
+<!-- Paginación (mismo diseño que el módulo de asistencia) -->
+<template id="tplPgBtn">
+    <button class="pg-btn" type="button"></button>
+</template>
+
+<template id="tplPgDots">
+    <span class="pg-dots">…</span>
+</template>
 
 @section Scripts {
     <!-- Librerías para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->

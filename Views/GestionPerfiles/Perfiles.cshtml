@@ -52,6 +52,32 @@
 
         <!-- ---- Tabla ---- -->
         <div class="table-card">
+            <!-- Barra horizontal de búsqueda sobre la tabla -->
+            <div class="table-toolbar">
+                <label class="filter-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                    <input type="search" id="searchInput" placeholder="Buscar por nombre o cédula..." />
+                </label>
+
+                <div class="filter-group">
+                    <label for="seccionFilter">Sección del hijo</label>
+                    <select id="seccionFilter">
+                        <option value="todos">Todas</option>
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
+                        Limpiar
+                    </button>
+                    <button class="btn btn--success" id="btnAplicarFiltros" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                        Aplicar
+                    </button>
+                </div>
+            </div>
+
             <div class="table-scroll">
                 <table class="users-table">
                     <thead>
@@ -73,69 +99,19 @@
                 <div>No se encontraron padres con los filtros seleccionados.</div>
             </div>
 
-            <div class="table-pagination">
-                <span id="resultsCount">Mostrando 0 de 0 padres</span>
-                <div class="pagination-btns">
-                    <button class="pg-btn" id="pgPrev" type="button">‹</button>
-                    <button class="pg-btn is-active" type="button">1</button>
-                    <button class="pg-btn" id="pgNext" type="button">›</button>
-                </div>
+            <!-- Pie de tabla: conteo y paginación (fuera de la tabla para que se acomode en responsive) -->
+            <div class="table-footer">
+                <span class="pg-info" id="padresResultsCount">Mostrando 0 de 0 padres</span>
+                <div class="pagination-btns" id="padresPagination"></div>
             </div>
         </div>
     </div>
 
-    <!-- =================== PANEL LATERAL =================== -->
-    <aside>
-        <!-- ---- Filtros ---- -->
-        <div class="side-panel">
-            <div class="side-panel__title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16l-6 8v6l-4 2v-8Z" /></svg>
-                Filtros de búsqueda
-            </div>
-
-            <label class="filter-search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                <input type="search" id="searchInput" placeholder="Buscar por nombre o cédula..." />
-            </label>
-
-            <div class="filter-group">
-                <label for="seccionFilter">Sección del hijo</label>
-                <select id="seccionFilter">
-                    <option value="todos">Todas</option>
-                </select>
-            </div>
-
-            <div class="filter-actions">
-                <button class="btn btn--outline" id="btnLimpiarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
-                    Limpiar
-                </button>
-                <button class="btn btn--success" id="btnAplicarFiltros" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-                    Aplicar
-                </button>
-            </div>
-        </div>
-
-        <!-- ---- Recordatorio ---- -->
-        <div class="tip-panel" id="tipPanel">
-            <button class="tip-panel__close" id="tipCloseBtn" type="button" aria-label="Cerrar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-            </button>
-            <div class="tip-panel__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3Z" /></svg>
-            </div>
-            <div class="tip-panel__text">
-                <h4>Recuerda</h4>
-                <p>Este módulo solo permite consultar información. Los datos de padres y estudiantes se registran desde <strong>Registro de Estudiantes</strong>.</p>
-            </div>
-        </div>
-    </aside>
 </div>
 
 <!-- =================== MODAL VER DETALLE =================== -->
 <div class="modal-overlay" id="detailModal">
-    <div class="modal-card" style="max-width:460px;">
+    <div class="modal-card modal-card--detalle">
         <div class="modal-card__head head-padre">
             <div class="modal-card__head-info">
                 <div class="modal-card__head-icon">
@@ -163,6 +139,66 @@
         </div>
     </div>
 </div>
+
+<!-- =========================================================
+     PLANTILLAS HTML
+     El JS solo las clona y rellena con textos; no construye HTML.
+     ========================================================= -->
+<!-- Fila de padre -->
+<template id="tplPadreRow">
+    <tr>
+        <td>
+            <div class="user-cell">
+                <div class="user-avatar" data-ref="avatar"></div>
+                <span class="user-cell__name" data-ref="nombre"></span>
+            </div>
+        </td>
+        <td data-ref="cedula"></td>
+        <td data-ref="telefono"></td>
+        <td data-ref="correo"></td>
+        <td>
+            <span class="children-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
+                <span data-ref="hijos"></span>
+            </span>
+        </td>
+        <td>
+            <div class="row-actions">
+                <button class="row-action-btn view-btn" data-ref="viewBtn" title="Ver detalle" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<!-- Fila de datos del modal "Ver detalle" -->
+<template id="tplDetalleRow">
+    <div class="detail-row">
+        <span class="d-label" data-ref="label"></span>
+        <span class="d-value" data-ref="value"></span>
+    </div>
+</template>
+
+<!-- Tarjeta de hijo dentro del modal "Ver detalle" -->
+<template id="tplHijoCard">
+    <div class="child-card">
+        <div class="child-card__info">
+            <span class="child-card__name" data-ref="nombre"></span>
+            <span class="child-card__meta" data-ref="meta"></span>
+        </div>
+        <span class="status-pill" data-ref="estado"></span>
+    </div>
+</template>
+
+<!-- Paginación (mismo diseño que el módulo de asistencia) -->
+<template id="tplPgBtn">
+    <button class="pg-btn" type="button"></button>
+</template>
+
+<template id="tplPgDots">
+    <span class="pg-dots">…</span>
+</template>
 
 @section Scripts {
     <!-- Librería para exportar a Excel con formato (encabezado con color, bordes, anchos de columna) -->

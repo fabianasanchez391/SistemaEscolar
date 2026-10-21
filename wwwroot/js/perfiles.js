@@ -1,6 +1,19 @@
-﻿
-(function () {
+﻿(function () {
     "use strict";
+
+    // Cantidad de padres por página (igual que en el módulo de asistencia)
+    const PADRES_POR_PAGINA = 6;
+
+    // ---- Utilidades de DOM (las plantillas viven en el .cshtml) ----
+    // Clona el primer elemento de un <template>.
+    function clonar(idTemplate) {
+        return document.getElementById(idTemplate).content.firstElementChild.cloneNode(true);
+    }
+
+    // Busca dentro de una plantilla clonada el elemento marcado con data-ref="nombre".
+    function ref(raiz, nombre) {
+        return raiz.querySelector(`[data-ref="${nombre}"]`);
+    }
 
     // ---- Datos de ejemplo ----
     // Cada padre agrupa a sus hijos con la sección en la que están matriculados.
@@ -61,11 +74,13 @@
     // ---- Estado ----
     let currentSearch = "";
     let currentSeccion = "todos";
+    let paginaActual = 1;
 
     // ---- Referencias DOM ----
     const tbody = document.getElementById("padresTableBody");
     const emptyState = document.getElementById("emptyState");
-    const resultsCount = document.getElementById("resultsCount");
+    const padresResultsCount = document.getElementById("padresResultsCount");
+    const padresPagination = document.getElementById("padresPagination");
     const searchInput = document.getElementById("searchInput");
     const seccionFilter = document.getElementById("seccionFilter");
 
@@ -76,7 +91,8 @@
     // ---- Poblar el filtro de secciones a partir de los hijos registrados ----
     function refreshSeccionOptions() {
         const secciones = [...new Set(padresData.flatMap(p => p.hijos).map(h => h.seccion))].sort();
-        seccionFilter.innerHTML = '<option value="todos">Todas</option>';
+        seccionFilter.replaceChildren();
+        seccionFilter.add(new Option("Todas", "todos"));
         secciones.forEach(s => seccionFilter.add(new Option(s, s)));
     }
 
@@ -96,60 +112,99 @@
         });
     }
 
-    function padreRowHtml(p) {
-        return `
-            <td>
-                <div class="user-cell">
-                    <div class="user-avatar">${initials(p.nombre)}</div>
-                    <span class="user-cell__name">${p.nombre}</span>
-                </div>
-            </td>
-            <td>${p.cedula}</td>
-            <td>${p.telefono}</td>
-            <td>${p.correo}</td>
-            <td>
-                <span class="children-badge">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
-                    ${p.hijos.length} hijo(s)
-                </span>
-            </td>
-            <td>
-                <div class="row-actions">
-                    <button class="row-action-btn view-btn" data-id="${p.id}" title="Ver detalle" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-                    </button>
-                </div>
-            </td>`;
+    // ---- Fila de la tabla ----
+    function crearFilaPadre(p) {
+        const fila = clonar("tplPadreRow");
+
+        ref(fila, "avatar").textContent = initials(p.nombre);
+        ref(fila, "nombre").textContent = p.nombre;
+        ref(fila, "cedula").textContent = p.cedula;
+        ref(fila, "telefono").textContent = p.telefono;
+        ref(fila, "correo").textContent = p.correo;
+        ref(fila, "hijos").textContent = `${p.hijos.length} hijo(s)`;
+
+        ref(fila, "viewBtn").addEventListener("click", () => openDetailModal(p.id));
+
+        return fila;
+    }
+
+    // ---- Paginación compacta: 1 … 4 5 6 … 12 (no se desborda en móvil) ----
+    function paginasVisibles(actual, total) {
+        const set = new Set([1, total, actual - 1, actual, actual + 1]);
+        const pages = [...set].filter(p => p >= 1 && p <= total).sort((a, b) => a - b);
+        const out = [];
+        pages.forEach((p, i) => {
+            if (i && p - pages[i - 1] > 1) out.push("…");
+            out.push(p);
+        });
+        return out;
+    }
+
+    function crearBotonPagina(texto, opciones) {
+        const btn = clonar("tplPgBtn");
+        btn.textContent = texto;
+        btn.classList.toggle("is-active", !!opciones.activo);
+        btn.disabled = !!opciones.deshabilitado;
+        btn.addEventListener("click", opciones.alClic);
+        return btn;
+    }
+
+    function renderPaginacion(totalPaginas) {
+        const nodos = [];
+
+        nodos.push(crearBotonPagina("‹", {
+            deshabilitado: paginaActual === 1,
+            alClic: () => { if (paginaActual > 1) { paginaActual--; render(); } },
+        }));
+
+        paginasVisibles(paginaActual, totalPaginas).forEach(p => {
+            if (p === "…") {
+                nodos.push(clonar("tplPgDots"));
+            } else {
+                nodos.push(crearBotonPagina(String(p), {
+                    activo: p === paginaActual,
+                    alClic: () => { paginaActual = p; render(); },
+                }));
+            }
+        });
+
+        nodos.push(crearBotonPagina("›", {
+            deshabilitado: paginaActual === totalPaginas,
+            alClic: () => { if (paginaActual < totalPaginas) { paginaActual++; render(); } },
+        }));
+
+        padresPagination.replaceChildren(...nodos);
     }
 
     function render() {
-        const list = getFiltered();
-        tbody.innerHTML = "";
+        const listCompleta = getFiltered();
 
-        list.forEach(p => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = padreRowHtml(p);
-            tbody.appendChild(tr);
-        });
+        // Si la página actual quedó fuera de rango, se vuelve a la última página válida.
+        const totalPaginas = Math.max(1, Math.ceil(listCompleta.length / PADRES_POR_PAGINA));
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
 
-        emptyState.style.display = list.length === 0 ? "block" : "none";
-        resultsCount.textContent = `Mostrando ${list.length} de ${padresData.length} padres`;
+        const inicio = (paginaActual - 1) * PADRES_POR_PAGINA;
+        const listPagina = listCompleta.slice(inicio, inicio + PADRES_POR_PAGINA);
 
-        tbody.querySelectorAll(".view-btn").forEach(el => {
-            el.addEventListener("click", () => openDetailModal(parseInt(el.dataset.id, 10)));
-        });
+        tbody.replaceChildren(...listPagina.map(crearFilaPadre));
+        emptyState.classList.toggle("is-visible", listCompleta.length === 0);
+        padresResultsCount.textContent = `Mostrando ${listPagina.length} de ${listCompleta.length} padres`;
+
+        renderPaginacion(totalPaginas);
     }
 
-    // ---- Filtros del panel lateral ----
+    // ---- Barra de filtros ----
     document.getElementById("btnAplicarFiltros").addEventListener("click", () => {
         currentSearch = searchInput.value;
         currentSeccion = seccionFilter.value;
+        paginaActual = 1;
         render();
     });
 
     document.getElementById("btnLimpiarFiltros").addEventListener("click", () => {
         currentSearch = "";
         currentSeccion = "todos";
+        paginaActual = 1;
         searchInput.value = "";
         seccionFilter.value = "todos";
         render();
@@ -158,12 +213,7 @@
     let searchTimer;
     searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => { currentSearch = searchInput.value; render(); }, 200);
-    });
-
-    // ---- Tip panel ----
-    document.getElementById("tipCloseBtn").addEventListener("click", () => {
-        document.getElementById("tipPanel").style.display = "none";
+        searchTimer = setTimeout(() => { currentSearch = searchInput.value; paginaActual = 1; render(); }, 200);
     });
 
     // =========================================================
@@ -173,21 +223,23 @@
     const detailModalInfo = document.getElementById("detailModalInfo");
     const detailModalChildren = document.getElementById("detailModalChildren");
 
-    function detailRow(label, value) {
-        return `<div class="detail-row"><span class="d-label">${label}</span><span class="d-value">${value}</span></div>`;
+    function crearFilaDetalle(label, value) {
+        const fila = clonar("tplDetalleRow");
+        ref(fila, "label").textContent = label;
+        ref(fila, "value").textContent = value;
+        return fila;
     }
 
-    function childCardHtml(h) {
-        return `
-            <div class="child-card">
-                <div class="child-card__info">
-                    <span class="child-card__name">${h.nombre}</span>
-                    <span class="child-card__meta">${h.cedula} · ${h.seccion}</span>
-                </div>
-                <span class="status-pill ${h.activo ? "status-pill--activo" : "status-pill--inactivo"}">
-                    ${h.activo ? "Activo" : "Inactivo"}
-                </span>
-            </div>`;
+    function crearTarjetaHijo(h) {
+        const card = clonar("tplHijoCard");
+        ref(card, "nombre").textContent = h.nombre;
+        ref(card, "meta").textContent = `${h.cedula} · ${h.seccion}`;
+
+        const estado = ref(card, "estado");
+        estado.classList.add(h.activo ? "status-pill--activo" : "status-pill--inactivo");
+        estado.textContent = h.activo ? "Activo" : "Inactivo";
+
+        return card;
     }
 
     function openDetailModal(id) {
@@ -197,13 +249,14 @@
         document.getElementById("detailModalTitle").textContent = p.nombre;
         document.getElementById("detailModalSubtitle").textContent = `${p.hijos.length} hijo(s) registrado(s)`;
 
-        detailModalInfo.innerHTML = [
-            detailRow("Cédula", p.cedula),
-            detailRow("Celular", p.telefono),
-            detailRow("Correo", p.correo),
-        ].join("");
+        const filas = [
+            ["Cédula", p.cedula],
+            ["Celular", p.telefono],
+            ["Correo", p.correo],
+        ];
 
-        detailModalChildren.innerHTML = p.hijos.map(childCardHtml).join("");
+        detailModalInfo.replaceChildren(...filas.map(([label, value]) => crearFilaDetalle(label, value)));
+        detailModalChildren.replaceChildren(...p.hijos.map(crearTarjetaHijo));
 
         detailModal.classList.add("is-open");
     }
@@ -216,6 +269,7 @@
 
     // =========================================================
     // EXPORTAR A EXCEL
+    // Exporta TODOS los padres filtrados, no solo los de la página visible.
     // =========================================================
     document.getElementById("btnExport").addEventListener("click", async () => {
         const list = getFiltered();

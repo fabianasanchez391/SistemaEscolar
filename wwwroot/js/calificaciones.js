@@ -1,8 +1,8 @@
-﻿
-(function () {
+﻿(function () {
     "use strict";
 
     // ---- Configuración de materias y tipos de evaluación ----
+    // El orden de MATERIAS coincide con las columnas del encabezado y de la plantilla de fila.
     const MATERIAS = ["Español", "Estudios Sociales", "Ciencias", "Matemáticas", "Inglés"];
 
     const TIPOS_EVALUACION = [
@@ -14,6 +14,22 @@
 
     const NOTA_MINIMA_APROBADO = 70;
     const ESTUDIANTES_POR_PAGINA = 6;
+
+    // ---- Utilidades de DOM (las plantillas viven en el .cshtml) ----
+    // Clona el primer elemento de un <template>.
+    function clonar(idTemplate) {
+        return document.getElementById(idTemplate).content.firstElementChild.cloneNode(true);
+    }
+
+    // Busca dentro de una plantilla clonada el elemento marcado con data-ref="nombre".
+    function ref(raiz, nombre) {
+        return raiz.querySelector(`[data-ref="${nombre}"]`);
+    }
+
+    // Muestra u oculta un elemento mediante la clase .is-hidden (definida en el CSS).
+    function mostrar(el, visible) {
+        el.classList.toggle("is-hidden", !visible);
+    }
 
     // ---- Utilidad de color: asigna una de 6 paletas según el texto (estable) ----
     function colorIndex(text) {
@@ -65,16 +81,21 @@
         },
     ];
 
+    // Cada nota se guarda como { valor, obs }: la observación es opcional.
+    // Se convierte aquí el formato simple (número) de los datos de ejemplo.
+    seccionesData.forEach(s => s.estudiantes.forEach(e => {
+        MATERIAS.forEach(m => TIPOS_EVALUACION.forEach(t => {
+            e.calificaciones[m][t.key] = e.calificaciones[m][t.key].map(n =>
+                typeof n === "object" ? n : { valor: n, obs: "" });
+        }));
+    }));
+
     // ---- Estado ----
     let vistaActual = "secciones"; // "secciones" | "estudiantes"
     let seccionSeleccionadaId = null;
-    let seccionSearch = "";
     let estudianteSearch = "";
-    let materiaResaltada = "todas";
-    let rendimientoFilter = "todos";
     let materiaTabActiva = MATERIAS[0];
     let paginaActual = 1;
-    let soloSeccionesConRiesgo = false;
 
     // ---- Referencias DOM ----
     const seccionesView = document.getElementById("seccionesView");
@@ -82,28 +103,22 @@
     const seccionesGrid = document.getElementById("seccionesGrid");
     const seccionesEmptyState = document.getElementById("seccionesEmptyState");
     const seccionesCount = document.getElementById("seccionesCount");
-    const seccionSearchInput = document.getElementById("seccionSearchInput");
 
     const estudiantesTableBody = document.getElementById("estudiantesTableBody");
     const estudiantesEmptyState = document.getElementById("estudiantesEmptyState");
     const estudiantesResultsCount = document.getElementById("estudiantesResultsCount");
-    const seccionActualLabel = document.getElementById("seccionActualLabel");
+    const seccionActualNombre = document.getElementById("seccionActualNombre");
 
     const btnVolverSecciones = document.getElementById("btnVolverSecciones");
-    const filtrosPanel = document.getElementById("filtrosPanel");
     const estudianteSearchInput = document.getElementById("estudianteSearchInput");
-    const materiaFilter = document.getElementById("materiaFilter");
-    const rendimientoFilter_ = document.getElementById("rendimientoFilter");
 
     const moduleHero = document.getElementById("moduleHero");
-    const seccionesStats = document.getElementById("seccionesStats");
-    const estudiantesStats = document.getElementById("estudiantesStats");
     const estudiantesPagination = document.getElementById("estudiantesPagination");
 
     // ---- Utilidades de cálculo ----
     function promedio(arr) {
         if (!arr || arr.length === 0) return null;
-        return arr.reduce((a, b) => a + b, 0) / arr.length;
+        return arr.reduce((a, b) => a + b.valor, 0) / arr.length;
     }
 
     // Promedio de una materia: promedio simple de los 4 promedios de categoría con notas.
@@ -135,111 +150,43 @@
         return name.split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
     }
 
-    function statCardHtml(color, iconSvg, value, label, opts) {
-        opts = opts || {};
-        const clickable = opts.clickable ? "stat-card--clickable" : "";
-        const active = opts.active ? "is-active" : "";
-        const idAttr = opts.id ? `id="${opts.id}"` : "";
-        return `
-            <div class="stat-card stat-card--${color} ${clickable} ${active}" ${idAttr}>
-                <div class="stat-card__icon">${iconSvg}</div>
-                <div>
-                    <div class="stat-card__value">${value}</div>
-                    <div class="stat-card__label">${label}</div>
-                </div>
-            </div>`;
-    }
-
-    const ICON_SECCIONES = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></svg>';
-    const ICON_ESTUDIANTES = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M2 20c.8-3.6 3.4-5.6 7-5.6s6.2 2 7 5.6" /><circle cx="17.5" cy="8.5" r="2.4" /><path d="M15 14.4c2.6.4 4.3 2.1 5 5.6" /></svg>';
-    const ICON_PROMEDIO = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>';
-    const ICON_RIESGO = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 9v4" /><path d="M12 17h.01" /><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" /></svg>';
-    const ICON_APROBADOS = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="m5 13 4 4L19 7" /></svg>';
-
-    function renderSeccionesStats() {
-        const totalSecciones = seccionesData.length;
-        const totalEstudiantes = seccionesData.reduce((a, s) => a + s.estudiantes.length, 0);
-        const todosProm = seccionesData.flatMap(s => s.estudiantes.map(promedioGeneral)).filter(p => p !== null);
-        const promGeneral = todosProm.length ? todosProm.reduce((a, b) => a + b, 0) / todosProm.length : null;
-        const enRiesgo = todosProm.filter(p => p < NOTA_MINIMA_APROBADO).length;
-
-        seccionesStats.innerHTML = [
-            statCardHtml("blue", ICON_SECCIONES, totalSecciones, "Secciones"),
-            statCardHtml("purple", ICON_ESTUDIANTES, totalEstudiantes, "Estudiantes"),
-            statCardHtml("teal", ICON_PROMEDIO, fmt(promGeneral), "Promedio general"),
-            statCardHtml("red", ICON_RIESGO, enRiesgo, "Estudiantes en riesgo", { clickable: true, active: soloSeccionesConRiesgo, id: "statRiesgoSecciones" }),
-        ].join("");
-
-        const cardRiesgo = document.getElementById("statRiesgoSecciones");
-        if (cardRiesgo) {
-            cardRiesgo.addEventListener("click", () => {
-                soloSeccionesConRiesgo = !soloSeccionesConRiesgo;
-                renderSecciones();
-            });
-        }
-    }
-
     // =========================================================
     // VISTA 1: SECCIONES
     // =========================================================
     function getSeccionesFiltradas() {
-        const q = seccionSearch.trim().toLowerCase();
-        return seccionesData.filter(s => {
-            const matchSearch = !q || s.nombre.toLowerCase().includes(q);
-            const matchRiesgo = !soloSeccionesConRiesgo || s.estudiantes.some(e => {
-                const p = promedioGeneral(e);
-                return p !== null && p < NOTA_MINIMA_APROBADO;
-            });
-            return matchSearch && matchRiesgo;
-        });
+        return seccionesData;
     }
 
-    function seccionCardHtml(s, idx) {
+    function crearSeccionCard(s, idx) {
         const prom = promedioSeccion(s);
         const riesgo = prom !== null && prom < NOTA_MINIMA_APROBADO;
         const c = colorIndex(s.nombre + idx);
-        const pct = prom !== null ? Math.max(4, Math.min(100, prom)) : 0;
-        return `
-            <div class="seccion-card" data-id="${s.id}">
-                <div class="seccion-card__accent accent--${c}"></div>
-                <div class="seccion-card__body">
-                    <div class="seccion-card__icon accent--${c}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 9 12 5 2 9l10 4 10-4Z" /><path d="M6 11v4c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5v-4" /></svg>
-                    </div>
-                    <div>
-                        <div class="seccion-card__name">${s.nombre}</div>
-                    </div>
-                    <div class="seccion-card__progress">
-                        <div class="seccion-card__progress-fill ${riesgo ? "fill--riesgo" : ""}" style="width:${pct}%;"></div>
-                    </div>
-                    <div class="seccion-card__meta">
-                        <span>${s.estudiantes.length} estudiante(s)</span>
-                        <span class="seccion-card__prom ${riesgo ? "prom--riesgo" : ""}">Prom. ${fmt(prom)}</span>
-                    </div>
-                </div>
-            </div>`;
+
+        const card = clonar("tplSeccionCard");
+        card.dataset.id = s.id;
+        ref(card, "accent").classList.add(`accent--${c}`);
+        ref(card, "icon").classList.add(`accent--${c}`);
+        ref(card, "nombre").textContent = s.nombre;
+
+        const progreso = ref(card, "progreso");
+        progreso.value = prom !== null ? Math.max(4, Math.min(100, prom)) : 0;
+        progreso.classList.toggle("fill--riesgo", riesgo);
+
+        ref(card, "total").textContent = `${s.estudiantes.length} estudiante(s)`;
+        const chipProm = ref(card, "prom");
+        chipProm.textContent = `Prom. ${fmt(prom)}`;
+        chipProm.classList.toggle("prom--riesgo", riesgo);
+
+        card.addEventListener("click", () => abrirSeccion(s.id));
+        return card;
     }
 
     function renderSecciones() {
-        renderSeccionesStats();
         const list = getSeccionesFiltradas();
-        seccionesGrid.innerHTML = list.map((s, i) => seccionCardHtml(s, i)).join("");
-        seccionesEmptyState.style.display = list.length === 0 ? "block" : "none";
+        seccionesGrid.replaceChildren(...list.map((s, i) => crearSeccionCard(s, i)));
+        seccionesEmptyState.classList.toggle("is-visible", list.length === 0);
         seccionesCount.textContent = `${list.length} sección(es)`;
-
-        const riesgoTag = document.getElementById("riesgoFilterTag");
-        riesgoTag.style.display = soloSeccionesConRiesgo ? "inline-flex" : "none";
-
-        seccionesGrid.querySelectorAll(".seccion-card").forEach(card => {
-            card.addEventListener("click", () => abrirSeccion(parseInt(card.dataset.id, 10)));
-        });
     }
-
-    let seccionSearchTimer;
-    seccionSearchInput.addEventListener("input", () => {
-        clearTimeout(seccionSearchTimer);
-        seccionSearchTimer = setTimeout(() => { seccionSearch = seccionSearchInput.value; renderSecciones(); }, 200);
-    });
 
     // =========================================================
     // VISTA 2: ESTUDIANTES DE UNA SECCIÓN
@@ -248,12 +195,8 @@
         seccionSeleccionadaId = id;
         vistaActual = "estudiantes";
         estudianteSearch = "";
-        materiaResaltada = "todas";
-        rendimientoFilter = "todos";
         paginaActual = 1;
         estudianteSearchInput.value = "";
-        materiaFilter.value = "todas";
-        rendimientoFilter_.value = "todos";
         actualizarVista();
     }
 
@@ -265,14 +208,13 @@
 
     function actualizarVista() {
         const enSeccion = vistaActual === "estudiantes";
-        moduleHero.style.display = enSeccion ? "none" : "flex";
-        seccionesView.style.display = enSeccion ? "none" : "block";
-        estudiantesView.style.display = enSeccion ? "block" : "none";
-        filtrosPanel.style.display = enSeccion ? "block" : "none";
+        mostrar(moduleHero, !enSeccion);
+        mostrar(seccionesView, !enSeccion);
+        mostrar(estudiantesView, enSeccion);
 
         if (enSeccion) {
             const seccion = seccionesData.find(s => s.id === seccionSeleccionadaId);
-            seccionActualLabel.textContent = seccion.nombre;
+            seccionActualNombre.textContent = seccion.nombre;
             renderEstudiantes();
         } else {
             renderSecciones();
@@ -287,139 +229,106 @@
         const seccion = getSeccionActual();
         const q = estudianteSearch.trim().toLowerCase();
 
-        return seccion.estudiantes.filter(e => {
-            const matchSearch = !q || e.nombre.toLowerCase().includes(q) || e.cedula.toLowerCase().includes(q);
-
-            let matchRendimiento = true;
-            if (rendimientoFilter !== "todos") {
-                const prom = promedioGeneral(e);
-                matchRendimiento = rendimientoFilter === "aprobado"
-                    ? (prom !== null && prom >= NOTA_MINIMA_APROBADO)
-                    : (prom !== null && prom < NOTA_MINIMA_APROBADO);
-            }
-
-            return matchSearch && matchRendimiento;
-        });
+        return seccion.estudiantes.filter(e =>
+            !q || e.nombre.toLowerCase().includes(q) || e.cedula.toLowerCase().includes(q));
     }
 
-    function renderEstudiantesStats() {
-        const seccion = getSeccionActual();
-        const proms = seccion.estudiantes.map(promedioGeneral).filter(p => p !== null);
-        const promSeccion = proms.length ? proms.reduce((a, b) => a + b, 0) / proms.length : null;
-        const aprobados = proms.filter(p => p >= NOTA_MINIMA_APROBADO).length;
-        const enRiesgo = proms.filter(p => p < NOTA_MINIMA_APROBADO).length;
-
-        estudiantesStats.innerHTML = [
-            statCardHtml("blue", ICON_ESTUDIANTES, seccion.estudiantes.length, "Estudiantes"),
-            statCardHtml("teal", ICON_PROMEDIO, fmt(promSeccion), "Promedio de sección"),
-            statCardHtml("purple", ICON_APROBADOS, aprobados, "Aprobados"),
-            statCardHtml("red", ICON_RIESGO, enRiesgo, "En riesgo", { clickable: true, active: rendimientoFilter === "riesgo", id: "statRiesgoEstudiantes" }),
-        ].join("");
-
-        document.getElementById("statRiesgoEstudiantes").addEventListener("click", () => {
-            rendimientoFilter = rendimientoFilter === "riesgo" ? "todos" : "riesgo";
-            rendimientoFilter_.value = rendimientoFilter;
-            paginaActual = 1;
-            renderEstudiantes();
-        });
-    }
-
-    function celdaMateria(estudiante, materia) {
-        const prom = promedioMateria(estudiante, materia);
-        const riesgo = prom !== null && prom < NOTA_MINIMA_APROBADO;
-        const resaltar = materiaResaltada === materia ? "font-weight:800;" : "";
-        return `<td class="grade-cell ${riesgo ? "grade-cell--riesgo" : "grade-cell--bien"}" style="${resaltar}">${fmt(prom)}</td>`;
-    }
-
-    function estudianteRowHtml(e, idx) {
-        const prom = promedioGeneral(e);
-        const riesgo = prom !== null && prom < NOTA_MINIMA_APROBADO;
+    function crearFilaEstudiante(e, idx) {
+        const fila = clonar("tplEstudianteRow");
         const c = colorIndex(e.nombre + idx);
-        return `
-            <td>
-                <div class="user-cell">
-                    <div class="user-avatar accent--${c}">${initials(e.nombre)}</div>
-                    <span class="user-cell__name">${e.nombre}</span>
-                </div>
-            </td>
-            <td>${e.cedula}</td>
-            ${MATERIAS.map(m => celdaMateria(e, m)).join("")}
-            <td class="grade-cell">
-                <span class="prom-pill ${riesgo ? "pill--riesgo" : ""}">${fmt(prom)}</span>
-            </td>
-            <td>
-                <div class="row-actions">
-                    <button class="row-action-btn view-btn" data-id="${e.id}" title="Ver notas" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-                    </button>
-                    <button class="row-action-btn edit-btn" data-id="${e.id}" title="Registrar / editar notas" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
-                    </button>
-                </div>
-            </td>`;
+
+        const avatar = ref(fila, "avatar");
+        avatar.classList.add(`accent--${c}`);
+        avatar.textContent = initials(e.nombre);
+        ref(fila, "nombre").textContent = e.nombre;
+        ref(fila, "cedula").textContent = e.cedula;
+
+        // Una celda por materia, en el mismo orden que el encabezado
+        MATERIAS.forEach((m, i) => {
+            const prom = promedioMateria(e, m);
+            const riesgo = prom !== null && prom < NOTA_MINIMA_APROBADO;
+            const celda = ref(fila, `materia${i}`);
+            celda.classList.add(riesgo ? "grade-cell--riesgo" : "grade-cell--bien");
+            celda.textContent = fmt(prom);
+        });
+
+        const promGeneral = promedioGeneral(e);
+        const pill = ref(fila, "promedio");
+        pill.textContent = fmt(promGeneral);
+        pill.classList.toggle("pill--riesgo", promGeneral !== null && promGeneral < NOTA_MINIMA_APROBADO);
+
+        ref(fila, "viewBtn").addEventListener("click", () => openDetailModal(e.id, "view"));
+        ref(fila, "editBtn").addEventListener("click", () => openDetailModal(e.id, "edit"));
+
+        return fila;
     }
 
-    function renderPaginacion(totalItems) {
-        const totalPaginas = Math.max(1, Math.ceil(totalItems / ESTUDIANTES_POR_PAGINA));
-        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
-
-        let botones = `<button class="pg-btn" id="pgPrev" type="button" ${paginaActual === 1 ? "disabled" : ""}>‹</button>`;
-        for (let p = 1; p <= totalPaginas; p++) {
-            botones += `<button class="pg-btn ${p === paginaActual ? "is-active" : ""}" data-page="${p}" type="button">${p}</button>`;
-        }
-        botones += `<button class="pg-btn" id="pgNext" type="button" ${paginaActual === totalPaginas ? "disabled" : ""}>›</button>`;
-
-        estudiantesPagination.innerHTML = botones;
-
-        document.getElementById("pgPrev").addEventListener("click", () => { if (paginaActual > 1) { paginaActual--; renderEstudiantes(); } });
-        document.getElementById("pgNext").addEventListener("click", () => { if (paginaActual < totalPaginas) { paginaActual++; renderEstudiantes(); } });
-        estudiantesPagination.querySelectorAll("[data-page]").forEach(btn => {
-            btn.addEventListener("click", () => { paginaActual = parseInt(btn.dataset.page, 10); renderEstudiantes(); });
+    // ---- Paginación compacta: 1 … 4 5 6 … 12 (no se desborda en móvil) ----
+    function paginasVisibles(actual, total) {
+        const set = new Set([1, total, actual - 1, actual, actual + 1]);
+        const pages = [...set].filter(p => p >= 1 && p <= total).sort((a, b) => a - b);
+        const out = [];
+        pages.forEach((p, i) => {
+            if (i && p - pages[i - 1] > 1) out.push("…");
+            out.push(p);
         });
+        return out;
+    }
+
+    function crearBotonPagina(texto, opciones) {
+        const btn = clonar("tplPgBtn");
+        btn.textContent = texto;
+        btn.classList.toggle("is-active", !!opciones.activo);
+        btn.disabled = !!opciones.deshabilitado;
+        btn.addEventListener("click", opciones.alClic);
+        return btn;
+    }
+
+    function renderPaginacion(totalPaginas) {
+        const nodos = [];
+
+        nodos.push(crearBotonPagina("‹", {
+            deshabilitado: paginaActual === 1,
+            alClic: () => { if (paginaActual > 1) { paginaActual--; renderEstudiantes(); } },
+        }));
+
+        paginasVisibles(paginaActual, totalPaginas).forEach(p => {
+            if (p === "…") {
+                nodos.push(clonar("tplPgDots"));
+            } else {
+                nodos.push(crearBotonPagina(String(p), {
+                    activo: p === paginaActual,
+                    alClic: () => { paginaActual = p; renderEstudiantes(); },
+                }));
+            }
+        });
+
+        nodos.push(crearBotonPagina("›", {
+            deshabilitado: paginaActual === totalPaginas,
+            alClic: () => { if (paginaActual < totalPaginas) { paginaActual++; renderEstudiantes(); } },
+        }));
+
+        estudiantesPagination.replaceChildren(...nodos);
     }
 
     function renderEstudiantes() {
-        const seccion = getSeccionActual();
-        renderEstudiantesStats();
-
         const listCompleta = getEstudiantesFiltrados();
+
+        // Si la página actual quedó fuera de rango, se vuelve a la última página válida.
+        const totalPaginas = Math.max(1, Math.ceil(listCompleta.length / ESTUDIANTES_POR_PAGINA));
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
         const inicio = (paginaActual - 1) * ESTUDIANTES_POR_PAGINA;
         const listPagina = listCompleta.slice(inicio, inicio + ESTUDIANTES_POR_PAGINA);
 
-        estudiantesTableBody.innerHTML = listPagina.map((e, i) => `<tr>${estudianteRowHtml(e, inicio + i)}</tr>`).join("");
-        estudiantesEmptyState.style.display = listCompleta.length === 0 ? "block" : "none";
+        estudiantesTableBody.replaceChildren(...listPagina.map((e, i) => crearFilaEstudiante(e, inicio + i)));
+        estudiantesEmptyState.classList.toggle("is-visible", listCompleta.length === 0);
         estudiantesResultsCount.textContent = `Mostrando ${listPagina.length} de ${listCompleta.length} estudiantes`;
 
-        renderPaginacion(listCompleta.length);
-
-        estudiantesTableBody.querySelectorAll(".view-btn").forEach(el => {
-            el.addEventListener("click", () => openDetailModal(parseInt(el.dataset.id, 10), "view"));
-        });
-        estudiantesTableBody.querySelectorAll(".edit-btn").forEach(el => {
-            el.addEventListener("click", () => openDetailModal(parseInt(el.dataset.id, 10), "edit"));
-        });
+        renderPaginacion(totalPaginas);
     }
 
-    // ---- Filtros del panel lateral ----
-    document.getElementById("btnAplicarFiltros").addEventListener("click", () => {
-        estudianteSearch = estudianteSearchInput.value;
-        materiaResaltada = materiaFilter.value;
-        rendimientoFilter = rendimientoFilter_.value;
-        paginaActual = 1;
-        renderEstudiantes();
-    });
-
-    document.getElementById("btnLimpiarFiltros").addEventListener("click", () => {
-        estudianteSearch = "";
-        materiaResaltada = "todas";
-        rendimientoFilter = "todos";
-        paginaActual = 1;
-        estudianteSearchInput.value = "";
-        materiaFilter.value = "todas";
-        rendimientoFilter_.value = "todos";
-        renderEstudiantes();
-    });
-
+    // ---- Buscador (filtra mientras se escribe) ----
     let estudianteSearchTimer;
     estudianteSearchInput.addEventListener("input", () => {
         clearTimeout(estudianteSearchTimer);
@@ -427,11 +336,6 @@
     });
 
     btnVolverSecciones.addEventListener("click", volverASecciones);
-
-    // ---- Tip panel ----
-    document.getElementById("tipCloseBtn").addEventListener("click", () => {
-        document.getElementById("tipPanel").style.display = "none";
-    });
 
     // =========================================================
     // MODAL DETALLE DE CALIFICACIONES
@@ -443,94 +347,106 @@
     let estudianteActualId = null;
     let modalModo = "view"; // "view" | "edit"
 
-    function evalBlockHtml(estudiante, materia, tipo) {
-        const notas = estudiante.calificaciones[materia][tipo.key];
-        const prom = promedio(notas);
-        const editable = modalModo === "edit";
-        return `
-            <div class="eval-block" data-tipo="${tipo.key}">
-                <div class="eval-block__head">
-                    <span class="eval-block__title">${tipo.label}</span>
-                    <span class="eval-block__prom">Prom. ${fmt(prom)}</span>
-                </div>
-                <div class="eval-notas">
-                    ${notas.map((n, i) => `
-                        <span class="eval-nota-chip ${n < NOTA_MINIMA_APROBADO ? "chip--riesgo" : ""}">
-                            ${n}
-                            ${editable ? `
-                            <button class="eval-nota-chip__remove" data-materia="${materia}" data-tipo="${tipo.key}" data-idx="${i}" title="Eliminar nota" type="button">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                            </button>` : ""}
-                        </span>`).join("") || `<span style="font-size:12px;color:var(--ink-500);">Sin notas registradas.</span>`}
-                </div>
-                ${editable ? `
-                <form class="eval-add-form" data-materia="${materia}" data-tipo="${tipo.key}">
-                    <input type="number" min="0" max="100" step="0.1" placeholder="Nueva nota (0-100)" required />
-                    <button type="submit">Agregar</button>
-                </form>` : ""}
-            </div>`;
+    function getEstudianteActual() {
+        return getSeccionActual().estudiantes.find(e => e.id === estudianteActualId);
     }
 
-    function materiaPanelHtml(estudiante, materia) {
-        const prom = promedioMateria(estudiante, materia);
-        return `
-            <div class="materia-panel" data-materia="${materia}">
-                <div class="materia-panel__promedio">
-                    <span>Promedio de ${materia}</span>
-                    <strong>${fmt(prom)}</strong>
-                </div>
-                ${TIPOS_EVALUACION.map(t => evalBlockHtml(estudiante, materia, t)).join("")}
-            </div>`;
+    // Una nota con su observación: editable en modo edición, solo texto en modo lectura.
+    function crearNota(lista, nota, editable) {
+        const fila = clonar("tplEvalNota");
+
+        ref(fila, "valor").textContent = nota.valor;
+        ref(fila, "chip").classList.toggle("chip--riesgo", nota.valor < NOTA_MINIMA_APROBADO);
+
+        const quitar = ref(fila, "quitar");
+        const obsInput = ref(fila, "obsInput");
+        const obsTexto = ref(fila, "obsTexto");
+
+        mostrar(quitar, editable);
+        mostrar(obsInput, editable);
+        mostrar(obsTexto, !editable);
+
+        if (editable) {
+            obsInput.value = nota.obs;
+
+            // Editar la observación de una nota existente (se guarda mientras se escribe)
+            obsInput.addEventListener("input", () => { nota.obs = obsInput.value.trim(); });
+
+            // Eliminar nota
+            quitar.addEventListener("click", () => {
+                lista.splice(lista.indexOf(nota), 1);
+                renderMateriaPanels();
+                renderEstudiantes();
+            });
+        } else {
+            obsTexto.textContent = nota.obs ? nota.obs : "Sin observación";
+            obsTexto.classList.toggle("is-empty", !nota.obs);
+        }
+
+        return fila;
+    }
+
+    // Bloque de un tipo de evaluación: lista de notas y, en modo edición, el formulario para agregar.
+    function crearBloqueEval(estudiante, materia, tipo) {
+        const lista = estudiante.calificaciones[materia][tipo.key];
+        const editable = modalModo === "edit";
+        const bloque = clonar("tplEvalBlock");
+
+        ref(bloque, "titulo").textContent = tipo.label;
+        ref(bloque, "prom").textContent = `Prom. ${fmt(promedio(lista))}`;
+
+        const contenedorNotas = ref(bloque, "notas");
+        contenedorNotas.replaceChildren(...lista.map(n => crearNota(lista, n, editable)));
+        mostrar(contenedorNotas, lista.length > 0);
+        mostrar(ref(bloque, "vacio"), lista.length === 0);
+
+        const form = ref(bloque, "form");
+        mostrar(form, editable);
+
+        if (editable) {
+            // Agregar nota (con observación opcional)
+            form.addEventListener("submit", ev => {
+                ev.preventDefault();
+                const valor = parseFloat(ref(form, "notaInput").value);
+                if (isNaN(valor) || valor < 0 || valor > 100) return;
+                lista.push({ valor, obs: ref(form, "obsInput").value.trim() });
+                renderMateriaPanels();
+                renderEstudiantes();
+            });
+        }
+
+        return bloque;
+    }
+
+    function crearPanelMateria(estudiante, materia) {
+        const panel = clonar("tplMateriaPanel");
+        panel.dataset.materia = materia;
+        panel.classList.toggle("is-active", materia === materiaTabActiva);
+
+        ref(panel, "label").textContent = `Promedio de ${materia}`;
+        ref(panel, "prom").textContent = fmt(promedioMateria(estudiante, materia));
+
+        panel.append(...TIPOS_EVALUACION.map(t => crearBloqueEval(estudiante, materia, t)));
+        return panel;
     }
 
     function renderMateriaTabs() {
-        materiaTabsEl.innerHTML = MATERIAS.map(m => `
-            <button class="materia-tab ${m === materiaTabActiva ? "is-active" : ""}" data-materia="${m}" type="button">${m}</button>
-        `).join("");
-
-        materiaTabsEl.querySelectorAll(".materia-tab").forEach(btn => {
-            btn.addEventListener("click", () => {
-                materiaTabActiva = btn.dataset.materia;
+        materiaTabsEl.replaceChildren(...MATERIAS.map(m => {
+            const tab = clonar("tplMateriaTab");
+            tab.textContent = m;
+            tab.classList.toggle("is-active", m === materiaTabActiva);
+            tab.addEventListener("click", () => {
+                materiaTabActiva = m;
                 renderMateriaTabs();
                 renderMateriaPanels();
             });
-        });
+            return tab;
+        }));
     }
 
     function renderMateriaPanels() {
-        const estudiante = getSeccionActual().estudiantes.find(e => e.id === estudianteActualId);
-        materiaPanelsEl.innerHTML = MATERIAS.map(m => materiaPanelHtml(estudiante, m)).join("");
-
-        materiaPanelsEl.querySelectorAll(".materia-panel").forEach(p => {
-            p.classList.toggle("is-active", p.dataset.materia === materiaTabActiva);
-        });
-
-        if (modalModo !== "edit") return;
-
-        // Eliminar nota
-        materiaPanelsEl.querySelectorAll(".eval-nota-chip__remove").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const { materia, tipo, idx } = btn.dataset;
-                estudiante.calificaciones[materia][tipo].splice(parseInt(idx, 10), 1);
-                renderMateriaPanels();
-                renderEstudiantes();
-            });
-        });
-
-        // Agregar nota
-        materiaPanelsEl.querySelectorAll(".eval-add-form").forEach(form => {
-            form.addEventListener("submit", (ev) => {
-                ev.preventDefault();
-                const input = form.querySelector("input");
-                const valor = parseFloat(input.value);
-                if (isNaN(valor) || valor < 0 || valor > 100) return;
-                const { materia, tipo } = form.dataset;
-                estudiante.calificaciones[materia][tipo].push(valor);
-                input.value = "";
-                renderMateriaPanels();
-                renderEstudiantes();
-            });
-        });
+        const estudiante = getEstudianteActual();
+        materiaPanelsEl.replaceChildren(...MATERIAS.map(m => crearPanelMateria(estudiante, m)));
     }
 
     function openDetailModal(id, modo) {
@@ -562,6 +478,7 @@
 
     // =========================================================
     // EXPORTAR A EXCEL (calificaciones de la sección actual)
+    // Exporta TODOS los estudiantes filtrados, no solo los de la página visible.
     // =========================================================
     document.getElementById("btnExportSeccion").addEventListener("click", async () => {
         const seccion = getSeccionActual();
